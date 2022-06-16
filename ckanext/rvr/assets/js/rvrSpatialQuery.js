@@ -109,8 +109,10 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
         $('a.leaflet-draw-draw-rectangle', module.el).on('click', function(e) {
           if (!is_exanded) {
             $('body').addClass('dataset-map-expanded');
+            console.log("BEFORE EXPANDING MAP", map)
             if (should_zoom && !extentLayer) {
               map.zoomIn();
+              console.log("AFTER EXPANDING MAP", map)
             }
             resetMap();
             is_exanded = true;

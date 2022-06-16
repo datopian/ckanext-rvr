@@ -1,3 +1,9 @@
+import cgi
+import urllib
+import logging
+from ckan.logic import schema as ckan_schema
+from ckanext.rvr.views.dataset import dataset_blueprint
+from ckanext.rvr.views.organization import organization_blueprint
 import logging
 import ckan.plugins.toolkit as tk
 import ckan.plugins as p
@@ -20,6 +26,22 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
     p.implements(p.IFacets, inherit=True)
     p.implements(p.IBlueprint)
     p.implements(p.IActions)
+
+    schema_options = { 
+        'default': [
+            tk.get_validator('ignore_missing'),
+            tk.get_converter('convert_to_extras')
+        ],
+        'not_empty': [tk.get_validator('not_empty')]
+    }
+
+
+    # IBlueprint
+    def get_blueprint(self):
+        return [
+            dataset_blueprint
+        ]
+
     
     # IConfigurer
     def update_config(self, config_):
@@ -52,8 +74,10 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         schema = super(RvrPlugin, self).create_package_schema()
         # our custom field
         schema.update({
-            'notes': [tk.get_validator('not_empty')],
-            'owner_org': [tk.get_validator('not_empty')],
+            'notes': self.schema_options['not_empty'],
+            'owner_org': self.schema_options['not_empty'],
+            'dataset_spatial': self.schema_options['default'],
+            'spatial': self.schema_options['default']
         })
         return schema
 
@@ -62,8 +86,10 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         schema = super(RvrPlugin, self).update_package_schema()
         # our custom field
         schema.update({
-            'notes': [tk.get_validator('not_empty')],
-            'owner_org': [tk.get_validator('not_empty')],
+            'notes': self.schema_options['not_empty'],
+            'owner_org': self.schema_options['not_empty'],
+            'dataset_spatial': self.schema_options['default'],
+            'spatial': self.schema_options['default']
         })
         return schema
         
@@ -95,8 +121,35 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
             'package_search': rvrActions.package_search
         }
 
-class RvrSpatialQueryPlugin(SpatialQuery):
 
+class RvrSpatialQueryPlugin(SpatialQuery, tk.DefaultOrganizationForm):
+    p.implements(p.IGroupForm, inherit=True)
+
+    # IBlueprint
+    def get_blueprint(self):
+        return [organization_blueprint]
+
+    def is_fallback(self):
+        return False
+
+    def group_types(self):
+        return ('organization',)
+
+    # IGroupForm
+    def form_to_db_schema(self):
+        schema = ckan_schema.group_form_schema()
+        schema.update({'org_spatial' : [tk.get_validator('ignore_missing'),
+                                        tk.get_converter('convert_to_extras')]})
+        return schema
+
+    def db_to_form_schema(self):
+        schema = ckan_schema.default_show_group_schema()
+        schema.update({'org_spatial' : [tk.get_validator('ignore_missing'),
+                                        tk.get_converter('convert_to_extras')]})
+        return schema
+
+    def group_form(self, group_type='organization'):
+        return 'organization/snippets/organization_form.html'
     def configure(self, config):
         self.search_backend = config.get('ckanext.spatial.search_backend', 'postgis')
         if self.search_backend != 'postgis' and not tk.check_ckan_version('2.0.1'):

@@ -37,6 +37,7 @@
   
         var baseLayer;
 
+        console.log("RVR MAP: LEAFLET MAP OPTIONS", leafletMapOptions)
         map = new L.Map(container, leafletMapOptions);
   
         if (mapConfig.type == 'mapbox') {

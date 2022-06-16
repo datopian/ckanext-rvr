@@ -891,6 +891,17 @@ div.social-media a i{
     padding: 5px 10px !important;
 }
 
+.map-draw-form-group {
+    display: block;
+    height: 384px;
+    background-color: white;
+    margin: 0;
+}
+
+div#dataset-map-container.map-draw-field {
+    height: 340px;
+    position: relative;
+}
 .ccc-tabbable .checkbox-toggle-label::after {
     content: "" !important;
     display: none !important;
