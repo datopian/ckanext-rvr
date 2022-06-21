@@ -21,6 +21,7 @@ from ckan.lib.plugins import lookup_package_plugin
 from ckan.lib.search import SearchError, SearchQueryError, SearchIndexError
 from ckan.views.dataset import CreateView, EditView, _get_package_type, _tag_string_to_list, _form_save_redirect, text_type, CACHE_PARAMETERS
 import ckan.lib.navl.dictization_functions as dict_fns
+from ckanext.rvr.helpers import is_valid_spatial, get_org_spatial
 
 
 NotFound = logic.NotFound
@@ -307,11 +308,6 @@ def search(package_type):
         ),
         u'dateranges': dateranges
     }
-    log.info("***************************************")
-    log.info("***************************************")
-    log.info("***************************************")
-    log.info("SEARCH DATA DICT")
-    log.info(data_dict)
 
     try:
         query = get_action(u'package_search')(context, data_dict)
@@ -427,19 +423,16 @@ class RvrCreateView(CreateView):
             data_dict[u'type'] = package_type
             context[u'message'] = data_dict.get(u'log_message', u'')
 
-            # If the dataset has a spatial, make it the default
-            if data_dict['dataset_spatial']:
-                data_dict['spatial'] = data_dict['dataset_spatial']
+            # If the dataset has a spatial and it is valid, make it the default
+            spatial = data_dict.get('spatial', '')
+            dataset_spatial = data_dict.get('dataset_spatial', '')
+            if is_valid_spatial(dataset_spatial) and spatial != dataset_spatial:
+                data_dict['spatial'] = dataset_spatial
             else:
                 # if the organization has a spatial, use that
+                data_dict['spatial'] = ''
                 if data_dict.get('owner_org', None):
-                    org_dict = get_action(u'organization_show')(context,
-                        {u'id': data_dict['owner_org'], u'include_datasets': False}
-                    )
-                    org_spatial = ''
-                    for extra in org_dict.get('extras', []):
-                        if extra.get('key') == 'org_spatial':
-                            org_spatial = extra.get('value')
+                    org_spatial = get_org_spatial(data_dict['owner_org'])
                     if org_spatial:
                         data_dict['spatial'] = org_spatial
 
@@ -524,26 +517,6 @@ class RvrCreateView(CreateView):
             u'package_form', package_type=package_type
         )
 
-        # Remove the spatial and bbox coordinates from extras before passing
-        # it to the templates
-        spatial_dict = {}
-        dataset_spatial_dict = {}
-        for i in range(len(data.get('extras', []))):
-            if data['extras'][i]['key'] == 'spatial':
-                spatial_dict = data['extras'][i]
-            if data['extras'][i]['key'] == 'dataset_spatial':
-                dataset_spatial_dict = data['extras'][i]
-        try:
-            data['extras'].remove(spatial_dict)
-        except ValueError:
-            pass
-        try:
-            data['extras'].remove(dataset_spatial_dict)
-        except ValueError:
-            pass
-        data['spatial'] = spatial_dict.get('value', '')
-        data['dataset_spatial'] = dataset_spatial_dict.get('value', '')
-
         form_vars = {
             u'data': data,
             u'errors': errors,
@@ -585,12 +558,6 @@ class RvrEditView(EditView):
             )
         except dict_fns.DataError:
             return base.abort(400, _(u'Integrity Error'))
-        import pprint
-        log.info("************************************")
-        log.info("************************************")
-        log.info("************************************")
-        log.info("DATASET POST METHOD")
-        log.info(pprint.pformat(data_dict))
         try:
             if u'_ckan_phase' in data_dict:
                 # we allow partial updates to not destroy existing resources
@@ -605,8 +572,10 @@ class RvrEditView(EditView):
             data_dict['id'] = id
 
             # If the dataset has a spatial, make it the default
-            if data_dict['dataset_spatial'] and data_dict['spatial'] != data_dict['dataset_spatial']:
-                data_dict['spatial'] = data_dict['dataset_spatial']
+            spatial = data_dict.get('spatial', '')
+            dataset_spatial = data_dict.get('dataset_spatial', '')
+            if is_valid_spatial(dataset_spatial) and spatial != dataset_spatial:
+                data_dict['spatial'] = dataset_spatial
 
             pkg_dict = get_action(u'package_update')(context, data_dict)
 
@@ -683,25 +652,8 @@ class RvrEditView(EditView):
             u'package_form', package_type=package_type
         )
 
-        # Remove the spatial and bbox coordinates from extras before passing
-        # it to the templates
-        spatial_dict = {}
-        dataset_spatial_dict = {}
-        for i in range(len(data.get('extras', []))):
-            if data['extras'][i]['key'] == 'spatial':
-                spatial_dict = data['extras'][i]
-            if data['extras'][i]['key'] == 'dataset_spatial':
-                dataset_spatial_dict = data['extras'][i]
-        try:
-            data['extras'].remove(spatial_dict)
-        except ValueError:
-            pass
-        try:
-            data['extras'].remove(dataset_spatial_dict)
-        except ValueError:
-            pass
-        data['spatial'] = spatial_dict.get('value', '')
-        data['dataset_spatial'] = dataset_spatial_dict.get('value', '')
+        # Get the org spatial
+        data['org_spatial'] = get_org_spatial(data['organization']['name'])
 
         form_vars = {
             u'data': data,

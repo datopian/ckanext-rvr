@@ -14,29 +14,27 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
                 clickable: false
             }
         },
+        currentGeoJSON: {},
+        spatialFieldId: '',
+        initialGeoJSON: {},
+        parentDefaultGeoJSON: {},
 
         initialize: function () {
             $.proxyAll(this, /_on/);
-            var corner1 = L.latLng(51.2, 8.1);
-            var corner2 = L.latLng(52, 6.1);
+            var corner1 = L.latLng(52.58198281531925, 10.1568603515625);
+            var corner2 = L.latLng(49.8122251229721, 4.2132568359375);
             bounds = L.latLngBounds(corner1, corner2);
 
             // Get the current spatial data
-            var currentGeoJSON = this.el.data('currentspatial');
+            var initialGeoJSON = this.el.data('currentspatial');
             var spatialFieldId = this.el.data('spatialfield');
+            var parentDefaultGeoJSON = this.el.data('parentspatial');
 
             this.options.default_extent = bounds;
-            this.currentGeoJSON = currentGeoJSON;
-            this.spatialFieldId = spatialFieldId;
+            if (initialGeoJSON['coordinates']) {this.initialGeoJSON = initialGeoJSON;}
+            if (parentDefaultGeoJSON['coordinates']) {this.parentDefaultGeoJSON = parentDefaultGeoJSON;}
+            if (spatialFieldId) { this.spatialFieldId = spatialFieldId;}
             this.el.ready(this._onReady);
-        },
-
-        _getParameterByName: function (name) {
-            var match = RegExp('[?&]' + name + '=([^&]*)')
-                            .exec(window.location.search);
-            return match ?
-                decodeURIComponent(match[1].replace(/\+/g, ' '))
-                : null;
         },
 
         _drawExtentFromCoords: function(xmin, ymin, xmax, ymax) {
@@ -67,7 +65,9 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
             const leafletMapOptions = {
                 attributionControl: false,
                 drawControlTooltips: true,
-                minZoom: 8
+                maxBounds: module.options.default_extent,
+                maxBoundsViscosity: 0.9,
+                minZoom: 7.2
             }
             map = ckan.rvrWebMap(
                 'dataset-map-container',
@@ -90,11 +90,21 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
             // Handle the apply expanded action
             $('#apply-map-draw-modal').on('click', function() {
                 applyChange();
-                setCurrent(true);
+            });
+
+            // Handle the cancel expanded action
+            $('#cancel-map-draw-modal').on('click', function() {
+                cancelChanges();
+            });
+
+            // Handle the cancel expanded action
+            $('#use-org-spatial').on('click', function() {
+                applyParentDefault();
             });
     
             // When user finishes drawing the box, record it and add it to the map
             map.on('draw:created', function (e) {
+                $('#cancel-map-draw-modal').removeClass('disabled').addClass('btn-primary');
                 if (extentLayer) {
                     map.removeLayer(extentLayer);
                 }
@@ -104,19 +114,17 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
             });
 
             // The zoom leafletMapOption doesn't seem to work, so manually zoom on load
-            map.on('load', e => map.setZoom(7.2));
+            map.on('load', e => map.setZoom(7.4));
     
             // Ok setup the default state for the map
             setCurrent();
     
             function setCurrent(useExtent=false) {
                 if (useExtent === true) {
-                    console.log("USING CURRENT EXTENT LAYER")
                     map.addLayer(extentLayer);
                     map.fitBounds(extentLayer.getBounds());
-                } else if (module.currentGeoJSON instanceof Object) {
-                    console.log("USING EXTENT LAYER FROM GEOJSON")
-                    extentLayer = module._drawExtentFromGeoJSON(module.currentGeoJSON);
+                } else if (module.initialGeoJSON['coordinates']) {
+                    extentLayer = module._drawExtentFromGeoJSON(module.initialGeoJSON);
                     map.addLayer(extentLayer);
                     map.fitBounds(extentLayer.getBounds());
                 } else {
@@ -126,10 +134,39 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
 
             // Apply updates to map
             function applyChange() {
+                setCurrent(true);
                 $('#apply-map-draw-modal').removeClass('btn-primary').addClass('disabled');
-                console.log("ELEMENT SPATIAL FIELD VALUE", $(`#${module.spatialFieldId}`).val());
-                $(`#${module.spatialFieldId}`).val(JSON.stringify(extentLayer.toGeoJSON().geometry));
-                console.log("SECOND SPATIAL FIELD VALUE", $(`#${module.spatialFieldId}`).val());
+                module.currentGeoJSON = extentLayer.toGeoJSON().geometry
+                $(`#${module.spatialFieldId}`).val(JSON.stringify(module.currentGeoJSON));
+                // console.log("SPATIAL FIELD VALUE", $(`#${module.spatialFieldId}`).val());
+            }
+
+            function cancelChanges() {
+                map.removeLayer(extentLayer);
+                setCurrent();
+                $('#apply-map-draw-modal').removeClass('btn-primary').addClass('disabled');
+                $('#cancel-map-draw-modal').removeClass('btn-primary').addClass('disabled');
+                $('#use-org-spatial').removeClass('disabled').addClass('btn-info');
+                if (module.initialGeoJSON['coordinates']) {
+                    $(`#${module.spatialFieldId}`).val(JSON.stringify(module.initialGeoJSON));
+                } else {
+                    $(`#${module.spatialFieldId}`).val('');
+                }
+            }
+
+            function applyParentDefault() {
+                $('#cancel-map-draw-modal').removeClass('disabled').addClass('btn-primary');
+                $('#use-org-spatial').addClass('disabled').removeClass('btn-info');
+                if (extentLayer) {
+                    map.removeLayer(extentLayer);
+                }
+                if (module.parentDefaultGeoJSON['coordinates']) {
+                    console.log("USING EXTENT LAYER FROM PARENT GEOJSON")
+                    extentLayer = module._drawExtentFromGeoJSON(module.parentDefaultGeoJSON);
+                    map.addLayer(extentLayer);
+                    map.fitBounds(extentLayer.getBounds());
+                    $(`#${module.spatialFieldId}`).val('');
+                }
             }
         }
     }

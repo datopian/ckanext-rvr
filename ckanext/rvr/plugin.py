@@ -2,6 +2,8 @@ import cgi
 import urllib
 import logging
 from ckan.logic import schema as ckan_schema
+from ckanext.rvr.helpers import is_valid_spatial
+
 from ckanext.rvr.views.dataset import dataset_blueprint
 from ckanext.rvr.views.organization import organization_blueprint
 import logging
@@ -9,6 +11,7 @@ import ckan.plugins.toolkit as tk
 import ckan.plugins as p
 from ckan.lib.plugins import DefaultTranslation
 from ckanext.rvr import actions as rvrActions
+from ckanext.rvr.commands import rvr_spatial
 from ckanext.rvr import helpers as rvrHelpers
 import ckanext.rvr.views as rvrViews
 from ckanext.spatial.plugin import SpatialQuery
@@ -70,7 +73,7 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
 
     # IDatasetForm
     def create_package_schema(self):
-        # let's grab the default schema in our plugin
+        # let's grab the default schema in our pluginWS
         schema = super(RvrPlugin, self).create_package_schema()
         # our custom field
         schema.update({
@@ -118,12 +121,25 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         Available via API /api/action/{action-name}
         '''
         return {
-            'package_search': rvrActions.package_search
+            'package_search': rvrActions.package_search,
+            'package_show': rvrActions.package_show
         }
 
 
 class RvrSpatialQueryPlugin(SpatialQuery, tk.DefaultOrganizationForm):
     p.implements(p.IGroupForm, inherit=True)
+    p.implements(p.IClick)
+    p.implements(p.ITemplateHelpers)
+
+    # IClick
+    def get_commands(self):
+        return [rvr_spatial]
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {
+            'is_valid_spatial': is_valid_spatial
+        }
 
     # IBlueprint
     def get_blueprint(self):

@@ -11,6 +11,7 @@ import ckan.authz as authz
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.search as search
 import ckan.model as model
+from ckan.logic.action.get import package_show as ckan_package_show
 
 log = logging.getLogger(__name__)
 toolkit = plugins.toolkit
@@ -490,6 +491,31 @@ def package_search(context, data_dict):
 
     return search_results
 
+@toolkit.side_effect_free
+def package_show(context, data_dict):
+    context['api_version'] = 3
+    context['use_cache'] = False
+    dataset = ckan_package_show(context, data_dict)
+    
+    spatial_dict = {}
+    dataset_spatial_dict = {}
+    for i in range(len(dataset.get('extras', []))):
+        if dataset['extras'][i]['key'] == 'spatial':
+            spatial_dict = dataset['extras'][i]
+        if dataset['extras'][i]['key'] == 'dataset_spatial':
+            dataset_spatial_dict = dataset['extras'][i]
+    try:
+        dataset['extras'].remove(spatial_dict)
+    except ValueError:
+        pass
+    try:
+        dataset['extras'].remove(dataset_spatial_dict)
+    except ValueError:
+        pass
+    dataset['spatial'] = spatial_dict.get('value', '')
+    dataset['dataset_spatial'] = dataset_spatial_dict.get('value', '')
+
+    return dataset
 
 def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:
     """
@@ -574,7 +600,10 @@ def update_dataset_spatial(data: dict) -> None:
         if extra.get('key', None) == 'org_spatial':
             org_spatial = extra['value']
 
-    for dataset in data.get('packages', []):
+    context = { u'model': model, u'session': model.Session }
+
+    for pkg in data.get('packages', []):
+        dataset = get_action('package_show')(context, {'id': pkg['id']})
         has_bbox = False
 
         # Before the addition of the features to allows datasets inherit spatial
@@ -585,32 +614,19 @@ def update_dataset_spatial(data: dict) -> None:
         # hence we would also not override datasets that have any of these extras
         # TODO: This is temporary and when it is certain that the data has been 
         # normalized, this should be set to use only the 'dataset_spatial' field
-        required = ['bbox-east-long', 'bbox-north-lat', 'bbox-south-lat', 'bbox-west-long', 'dataset_spatial']
+        required = ['bbox-east-long', 'bbox-north-lat', 'bbox-south-lat', 'bbox-west-long']
         # Check if the dataset has a bbox value
-        for extra in dataset.get('extras', []):
-            if extra['key'] in required and len(extra['value']) > 0:
-                has_bbox = True
+        if dataset.get('dataset_spatial', None):
+            has_bbox = True
+        else:
+            for extra in dataset.get('extras', []):
+                if extra['key'] in required and len(extra['value']) > 0:
+                    has_bbox = True
+                    break
         if not has_bbox:
             try:
                 # Update the package spatial field to the org bbox value
-                context = { u'model': model, u'session': model.Session }
-                spatial_dict = {}
-                dataset_spatial_dict = {}
-                for i in range(len(dataset.get('extras', []))):
-                    if dataset['extras'][i]['key'] == 'spatial':
-                        spatial_dict = dataset['extras'][i]
-                    if dataset['extras'][i]['key'] == 'dataset_spatial':
-                        dataset_spatial_dict = dataset['extras'][i]
-                try:
-                    dataset['extras'].remove(spatial_dict)
-                except ValueError:
-                    pass
-                try:
-                    dataset['extras'].remove(dataset_spatial_dict)
-                except ValueError:
-                    pass
                 dataset['spatial'] = org_spatial
-                dataset['dataset_spatial'] = dataset_spatial_dict.get('value', '')
                 get_action('package_update')(context, dataset)
             except Exception as e:
                 log.warn("""Failed to update dataset: {} with spatial data from \

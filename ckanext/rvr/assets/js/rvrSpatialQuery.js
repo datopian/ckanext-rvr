@@ -22,8 +22,8 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
         var module = this;
         $.proxyAll(this, /_on/);
   
-        var corner1 = L.latLng(51.1675, 8.05544)
-        var corner2 = L.latLng(51.8609, 6.2279)
+        var corner1 = L.latLng(52.58198281531925, 10.1568603515625)
+        var corner2 = L.latLng(49.8122251229721, 4.2132568359375)
         bounds = L.latLngBounds(corner1, corner2);
 
         this.options.default_extent = bounds;
@@ -88,8 +88,8 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
             attributionControl: false,
             drawControlTooltips: false,
             maxBounds: this.options.default_extent,
-            maxBoundsViscosity: 1.0,
-            minZoom: 8
+            maxBoundsViscosity: 0.8,
+            minZoom: 7.2
           }
         );
   
@@ -109,10 +109,8 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
         $('a.leaflet-draw-draw-rectangle', module.el).on('click', function(e) {
           if (!is_exanded) {
             $('body').addClass('dataset-map-expanded');
-            console.log("BEFORE EXPANDING MAP", map)
             if (should_zoom && !extentLayer) {
               map.zoomIn();
-              console.log("AFTER EXPANDING MAP", map)
             }
             resetMap();
             is_exanded = true;
