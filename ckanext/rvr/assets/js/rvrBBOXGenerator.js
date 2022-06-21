@@ -21,13 +21,16 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
 
         initialize: function () {
             $.proxyAll(this, /_on/);
-            var corner1 = L.latLng(52.58198281531925, 10.1568603515625);
-            var corner2 = L.latLng(49.8122251229721, 4.2132568359375);
-            bounds = L.latLngBounds(corner1, corner2);
+            // The max bounds for the map
+            var northEast = L.latLng(51.8609, 8.05544);
+            var southWest = L.latLng(51.1675, 6.2279);
+            bounds = L.latLngBounds(northEast, southWest);
 
             // Get the current spatial data
             var initialGeoJSON = this.el.data('currentspatial');
+            // The id of the spatial field that would be updated
             var spatialFieldId = this.el.data('spatialfield');
+            // parent default geoJSON. For datasets this should be the organization spatial. For organizations, this can be their own spatial.
             var parentDefaultGeoJSON = this.el.data('parentspatial');
 
             this.options.default_extent = bounds;
@@ -66,7 +69,7 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
                 attributionControl: false,
                 drawControlTooltips: true,
                 maxBounds: module.options.default_extent,
-                maxBoundsViscosity: 0.9,
+                maxBoundsViscosity: 1,
                 minZoom: 7.2
             }
             map = ckan.rvrWebMap(
@@ -119,6 +122,7 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
             // Ok setup the default state for the map
             setCurrent();
     
+            // Add layers and fitbounds
             function setCurrent(useExtent=false) {
                 if (useExtent === true) {
                     map.addLayer(extentLayer);

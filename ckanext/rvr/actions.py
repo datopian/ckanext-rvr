@@ -263,7 +263,7 @@ def package_search(context, data_dict):
     dateranges = data_dict.pop('dateranges', {})
     data_dict.pop('date_filters', {})
     items_per_page = int(data_dict.pop('rows', 20))
-    start = data_dict.pop('start', 0)
+    start = int(data_dict.pop('start', 0))
     data_dict['rows'] = 1000
     data_dict['start'] = 0
 
@@ -493,17 +493,24 @@ def package_search(context, data_dict):
 
 @toolkit.side_effect_free
 def package_show(context, data_dict):
+    """
+    Extends the default ckan package_show to move the `spatial` and \
+    `dataset_spatial` fields from the extras to the main dict object.
+
+    This is necessary to fix bugs with the package dict getting updated with \
+    both fields in the extras and the main package schema.
+    """
     context['api_version'] = 3
     context['use_cache'] = False
     dataset = ckan_package_show(context, data_dict)
     
     spatial_dict = {}
     dataset_spatial_dict = {}
-    for i in range(len(dataset.get('extras', []))):
-        if dataset['extras'][i]['key'] == 'spatial':
-            spatial_dict = dataset['extras'][i]
-        if dataset['extras'][i]['key'] == 'dataset_spatial':
-            dataset_spatial_dict = dataset['extras'][i]
+    for extra in dataset.get('extras', []):
+        if extra.get('key', '') == 'spatial':
+            spatial_dict = extra
+        if extra.get('key', '')== 'dataset_spatial':
+            dataset_spatial_dict = extra
     try:
         dataset['extras'].remove(spatial_dict)
     except ValueError:

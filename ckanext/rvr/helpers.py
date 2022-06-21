@@ -23,6 +23,14 @@ context = {
 }
 
 def is_valid_spatial(spatial: str) -> bool:
+    """Checks is a spatial string is a valid GeoJSON spatial
+
+    Args:
+        spatial (str): the string to check
+
+    Returns:
+        bool: True if it is a valid GeoJSON polygon, false if otherwise
+    """
     try:
         spatial_dict = json.loads(spatial)
         if spatial_dict['type'].lower() != 'polygon':
@@ -35,6 +43,15 @@ def is_valid_spatial(spatial: str) -> bool:
         return False
 
 def get_org_spatial(org_id: str, context: dict = context) -> str:
+    """Get the spatial data for the organization
+
+    Args:
+        org_id (str): the organization id
+        context (dict, optional): Defaults to the script context.
+
+    Returns:
+        str: The organization spatial string
+    """
     org_dict = get_action(u'organization_show')(context,
         {u'id': org_id, u'include_datasets': False}
     )

@@ -94,3 +94,20 @@ ckan rvr-spatial migrate --dry-run
 > For the [ckanext-spatial](https://github.com/ckan/ckanext-spatial) extension to run spatial queries against datasets, they are required to have the `spatial` field. This plugin allows setting the spatial fields from the organization and the datasets can inherit that if they don't have their own spatial defined.<br>
 > To achieve that, a `dataset_spatial` field has been added for datasets and an `org_spatial` field has been added for organizations. The `spatial` field still tracks the dataset spatial data, but now if a spatial is assigned to the dataset, it is stored in the `dataset_spatial` field instead and then copied into the `spatial` field before indexing. If no spatial is assigned, the `spatial` field defaults to the organization spatial defined in the `org_spatial` field of the organization. <br>
 > If this feature is just being implemented for the first time, some datasets might already have data in their `spatial` fields but their `dataset_spatial` fields would be empty, this would mean that the data would get overriden by the organization default and could be lost. To prevent that the command was created to automatically copy the spatial fields into the `dataset_spatial` fields.
+
+If this warning is seen in a dataset metadata page instead of the dataset map:
+
+![](images/unmigrated-warning.png)
+
+> Editing spatial fields for this dataset has been disabled. Please contact the admin to enable spatial inheritance for this dataset.
+
+The `ckan rvr-spatial migrate` command should be run to fix that. What is happening is that the spatial map is not being displayed to prevent the organization default from overriding the spatial before it saved in the `dataset_spatial` field of the dataset.
+
+### Map Configurations
+
+> The maps currently use [leaflet version 0.7.7](https://leafletjs.com/reference-0.7.7.html). In this extension, the [ckanext/rvr/assets/js/rvrMap.js file](../ckanext/rvr/assets/js/rvrMap.js) contains the code for instantiating the leaflet map. Changes made here affect all ckanext-rvr maps.
+>
+> The maps can be further configured with any of the configurations in the [leaflet.js documentation](https://leafletjs.com/reference-0.7.7.html)
+
+* The configuration and code for the dataset and organization metadata maps are defined in the [ckanext/rvr/assets/js/rvrBBOXGenerator.js file](../ckanext/rvr/assets/js/rvrBBOXGenerator.js).
+* The configuration and code for the dataset search map is defined in the [ckanext/rvr/assets/js/rvrSpatialQuery.js file](../ckanext/rvr/assets/js/rvrSpatialQuery.js)

@@ -61,6 +61,9 @@ migrating them.
 )
 @click.option('--dry-run', 'dry_run', is_flag=True, help=dry_run_help)
 def migrate_spatial(dry_run) -> None:
+    """
+    Function handling the `ckan rvr-spatial migrate` command
+    """
     echo("Sit tight, this might take a few minutes...")
     echo("Getting datasets to migrate...")
     mig_dict = get_datasets_to_migrate()
@@ -102,10 +105,22 @@ def migrate_spatial(dry_run) -> None:
                 echo(e)
                 echo("UNABLE TO MIGRATE: <DATASET title={} name={}>".format(
                     data['title'], data['name']))
-            break
+            echo('SUCCESSFULLY MIGRATED <DATASET title="{}" name={}>'.format(
+                    data['title'], data['name']))
     return
 
 def get_org_spatials() -> dict:
+    """Get all organizations and their spatial data
+
+    Returns:
+        dict: dict object where the keys are the organization ids and \
+            and the values are dicts in the format:
+            {
+                'title': (str),
+                'name': (str),
+                'org_spatial': (str)
+            } 
+    """
     # Get all organizations
     org_ids = get_action('organization_list')(context, {})
     org_spatials = {}
@@ -134,25 +149,24 @@ def get_org_spatials() -> dict:
     return org_spatials
 
 def needs_migration(pkg_dict: dict, org_spatials: dict):
-    """
-    Summary line.
-  
-    Extended description of function.
-  
-    Parameters:
-    arg1 (int): Description of arg1
-  
+    """Checks if a dataset needs to be migrated
+
+    Args:
+        pkg_dict (`dict`): the dataset dict object\n
+        org_spatials (`dict`): dict object where the keys are the organization \
+            ids and and the values are dicts in the format:
+            {
+                'title': (str),
+                'name': (str),
+                'org_spatial': (str)
+            }
+
     Returns:
-    int: Description of return value
-  
+        (bool | str) : `False` if the dataset doesn't need to be migrated or \
+            the spatial value if it does
     """
     dataset_spatial = pkg_dict['dataset_spatial']
     spatial = pkg_dict['spatial']
-    # for extra in pkg_dict.get('extras', []):
-    #     if extra['key'] == 'dataset_spatial':
-    #         dataset_spatial = extra['value']
-    #     if extra['key'] == 'spatial':
-    #         spatial = extra['value']
     
     if is_valid_spatial(dataset_spatial):
         return False
@@ -162,18 +176,39 @@ def needs_migration(pkg_dict: dict, org_spatials: dict):
     return False
 
 def get_datasets_to_migrate() -> dict:
+    """Gets the datasets that need to be migrated grouped by their organizations
+
+    Returns:
+        dict: dict object in the format
+             {
+                'org_count': (int) number of organizations
+                'pkg_count': (int) total number of packages across all organizations
+                'migration_dict': {
+                    (str) the organization id: {
+                        {
+                            'title': (str) the org title,
+                            'name': (str) the org name,
+                            'org_spatial': (str) the org spatial value
+                            'datasets': [
+                                (dict) the dataset dictionary object
+                                ...
+                            ]
+                        }
+                    }
+                }
+             }
+    """
     migration_dict = {}
     pkg_count = 0
     org_count = 0
     org_spatials = get_org_spatials()
     
     pkg_ids = all_package_list()
+    echo('Found a total of {} datasets on the portal. Checking which ones need to be migrated'.format(len(pkg_ids)))
     for pkg_id in pkg_ids:
         data = get_action('package_show')(context, {
             "id": pkg_id
         })
-        echo('PACKAGE_SHOW')
-        echo(pformat(data))
         dataset_spatial = needs_migration(data, org_spatials)
         if dataset_spatial:
             data['dataset_spatial'] = dataset_spatial
@@ -198,9 +233,8 @@ def migrate_dataset(data: dict, context: dict = context):
     """Updates the dataset_spatial field of a dataset
 
     Args:
-        data (dict): object with `dataset_spatial` and `id` fields and any other required fields as per the schema
+        data (dict): object with `dataset_spatial` and `id` fields and any \
+            other required fields as per the schema
         context (dict, optional): context object. Defaults to script context.
     """
     updated = get_action('package_update')(context, data)
-    echo('UPDATED DATASET')
-    echo(pformat(updated))
