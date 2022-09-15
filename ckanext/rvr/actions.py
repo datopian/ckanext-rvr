@@ -513,10 +513,14 @@ def package_show(context, data_dict):
             dataset_spatial_dict = extra
     try:
         dataset['extras'].remove(spatial_dict)
+    except KeyError:
+        pass
     except ValueError:
         pass
     try:
         dataset['extras'].remove(dataset_spatial_dict)
+    except KeyError:
+        pass
     except ValueError:
         pass
     dataset['spatial'] = spatial_dict.get('value', '')
