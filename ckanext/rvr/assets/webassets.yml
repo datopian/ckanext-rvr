@@ -27,16 +27,11 @@ spatial_query_js:
     - js/rvrSpatialQuery.js
     - js/rvrMap.js
 
-svg_map_search_css:
-  output: rvr/%(version)s_svg_map.css
-  contents:
-    - css/highcharts.css
-
 svg_map_search_js:
   output: rvr/%(version)s_svg_map.js
   extra:
     preload:
       - vendor/jquery
-    contents:
-      - js/highcharts.js
+  contents:
+    - js/svgMapSearch.js
 
