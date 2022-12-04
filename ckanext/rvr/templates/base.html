@@ -6,7 +6,13 @@
 {% block styles %}
   {{ super() }}
 
-
   {% asset 'rvr/main_css' %}
+
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+
+  {% asset 'rvr/svg_map_search_js' %}
 
 {% endblock %}

@@ -26,3 +26,12 @@ spatial_query_js:
   contents:
     - js/rvrSpatialQuery.js
     - js/rvrMap.js
+
+svg_map_search_js:
+  output: rvr/%(version)s_svg_map.js
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - js/svgMapSearch.js
+
