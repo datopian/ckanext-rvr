@@ -4,6 +4,7 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.rvr.views.dataset import dataset_blueprint
 from ckanext.rvr import actions as rvrActions
 from ckanext.spatial.plugin import SpatialQuery
+import ckan.logic.converters as converters
 
 import logging
 log = logging.getLogger(__name__)
@@ -114,7 +115,7 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
         # our custom field
         schema.update({
             'notes': [toolkit.get_validator('not_empty')],
-            'owner_org': [toolkit.get_validator('not_empty')]
+            'owner_org': [toolkit.get_validator('not_empty')],
         })
         return schema
 
@@ -124,10 +125,10 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
         # our custom field
         schema.update({
             'notes': [toolkit.get_validator('not_empty')],
-            'owner_org': [toolkit.get_validator('not_empty')]
+            'owner_org': [toolkit.get_validator('not_empty')],
         })
         return schema
-
+        
     def is_fallback(self):
         # Return True to register this plugin as the default handler for
         # package types not handled by any other IDatasetForm plugin.
