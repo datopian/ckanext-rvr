@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   if ( checkAll() == false) {
     // Set the button class="btn btn-primary" in div class="form-actions" to enabled
     document.getElementsByClassName("btn btn-primary")[0].disabled = true;
+    document.getElementsByClassName("btn btn-primary")[0].title = setButtonTooltip();
   } else {
     // Set the button class="btn btn-primary" in div class="form-actions" to enabled
     document.getElementsByClassName("btn btn-primary")[0].disabled = false;
