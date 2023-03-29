@@ -22,11 +22,11 @@
     {{ form.input('maintainer_email', label=_('Maintainer Email'), id='field-maintainer-email', placeholder=_('joe@example.com'), value=data.maintainer_email, error=errors.maintainer_email, classes=['control-medium']) }}
   {% endblock %}
 
-  <!-- {% block package_metadata_fields_custom %}
+  {% block package_metadata_fields_custom %}
     {% block custom_fields %}
       {% snippet 'snippets/custom_form_fields.html', extras=data.extras, errors=errors, limit=3 %}
     {% endblock %}
-  {% endblock %} -->
+  {% endblock %}
 
   {% block dataset_fields %}
   {% endblock %}

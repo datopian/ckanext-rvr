@@ -49,27 +49,6 @@
     {% snippet "package/snippets/tags.html", tags=pkg.tags %}
   {% endblock %}
 
-  {% if pkg.groups %}
-    <form method="post">
-      {% snippet 'group/snippets/group_list.html', groups=pkg.groups %}
-    </form>
-  {% else %}
-    <p class="empty">{{ _('There are no groups associated with this dataset') }}</p>
-  {% endif %}
-
-  {% set _class = _class or 'tag-list' %}
-  {% block group_list %}
-    <ul class="tag-list well">
-      {% for group in pkg.groups %}
-      {% set type = group.type or 'group' %}
-      {% set url = h.url_for(type ~ '.read', id=group.name) %}
-        <li>
-          <a class="{% block tag_list_item_class %}tag{% endblock %}" href="{{ url }}">{{ group.display_name }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endblock %}
-
   {% block package_additional_info %}
     {% snippet "package/snippets/additional_info.html", pkg_dict=pkg %}
   {% endblock %}
