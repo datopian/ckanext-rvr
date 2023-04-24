@@ -1,0 +1,111 @@
+{% extends 'home/page.html' %}
+{% set faq_content = h.get_faq_page() %}
+
+{% block primary %}
+<div>
+<h1 id="title" style="text-align: center; font-size: 28px;">FAQ Open Data Portal Metropole Ruhr</h1>
+</div>
+<div>
+
+{% for item in faq_content %}
+  {% if item.tag == 'h1' %}
+    <h1 id="section_{{loop.index}}" style="text-align: center; font-size: 26px; color: grey;">{{ item.value[0] }}</h1>
+  {% endif %}
+  {% if item.tag == 'h2' %}
+    {% set idx = loop.index %}
+      <button style="text-align: left; font-size: 18px; font-weight: bold; margin-left: 180px; margin-right: 180px; position: relative;
+      display: block; padding-left: 30px; padding-top: 10px; padding-bottom: 10px; border:none; background-color:#eeee;" 
+      id="faq_question_{{loop.index}}" data-target="#faq_answer_{{loop.index}}" aria-expanded="false" aria-controls="faq_answer_{{loop.index}}" data-toggle="collapse" 
+      class="faq-question collapsed">
+      <i class="fa fa-chevron-up collapse-indicator" aria-hidden="true"></i>
+      {{ item.value[0] }}
+      </button>
+  {% endif %}
+  {% if item.tag == 'div' %}
+    <div id="faq_answer_{{loop.index - 1}}" class="collapse" role="region" aria-labelledby="faq_question_{{loop.index}}" aria-expanded="false" >
+      {% for val in item.value %}
+        <p style="text-align: left; font-size: 16px; margin-left: 200px; margin-right: 200px; display: block;">{{ val }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endfor %}
+</div>
+{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+<style>
+  .faq-question {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    --open-government: #f7f7f7;
+    --open-government-out: #ffffff;
+    --open-data: #cceef0;
+    --open-data-out: #80d4da;
+    --beteiligung: #f6f0b3;
+    --beteiligung-out: #eadc4d;
+    --zusammenarbeit: #bfe6dc;
+    --zusammenarbeit-out: #feffff;
+    -webkit-font-smoothing: antialiased;
+    color: none;
+    font: inherit;
+    margin: 0;
+    overflow: visible;
+    text-transform: none;
+    font-family: inherit;
+    margin-bottom: 0;
+    font-weight: normal;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: none;
+    background-image: none;
+    padding: 5px 15px;
+    line-height: 1.6;
+    border-radius: 0;
+    user-select: none;
+    background-color: none;
+    align-items: baseline;
+    outline: none;
+    font-size: 20px;
+    white-space: normal;
+    text-align: left;
+    width: 100%;
+    display: inline-block;
+    vertical-align: baseline;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .collapse-indicator {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    font-size: 14px; /* adjust as needed */
+    color: grey; /* adjust as needed */
+    transition: transform 0.1s;
+  }
+  .faq-question.collapsed .collapse-indicator {
+    position: absolute;
+    top: 30% !important;
+    left: 0 !important;
+    transform: rotate(180deg);
+  }
+
+  .collapse {
+    display: block;
+    padding-top: 10px;
+  }
+
+  .collapsed + .collapse {
+    display: none;
+  }
+</style>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+<script>
+  $('.faq-question').click(function() {
+    $(this).toggleClass('collapsed');
+    $(this).find('.collapse-indicator').toggleClass('collapsed');
+  });
+</script>
+{% endblock %}
