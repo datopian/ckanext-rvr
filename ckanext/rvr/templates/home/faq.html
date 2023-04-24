@@ -7,24 +7,23 @@
 </div>
 <div>
 
+<div class="faq">
 {% for item in faq_content %}
   {% if item.tag == 'h1' %}
     <h1 id="section_{{loop.index}}" style="text-align: center; font-size: 26px; color: grey;">{{ item.value[0] }}</h1>
   {% endif %}
   {% if item.tag == 'h2' %}
     {% set idx = loop.index %}
-      <button style="text-align: left; font-size: 18px; font-weight: bold; margin-left: 180px; margin-right: 180px; position: relative;
-      display: block; padding-left: 30px; padding-top: 10px; padding-bottom: 10px; border:none; background-color:#eeee;" 
-      id="faq_question_{{loop.index}}" data-target="#faq_answer_{{loop.index}}" aria-expanded="false" aria-controls="faq_answer_{{loop.index}}" data-toggle="collapse" 
+      <button id="faq_question_{{loop.index}}" data-target="#faq_answer_{{loop.index}}" aria-expanded="false" aria-controls="faq_answer_{{loop.index}}" data-toggle="collapse" 
       class="faq-question collapsed">
       <i class="fa fa-chevron-up collapse-indicator" aria-hidden="true"></i>
-      {{ item.value[0] }}
+      <span>{{ item.value[0] }}</span>
       </button>
   {% endif %}
   {% if item.tag == 'div' %}
     <div id="faq_answer_{{loop.index - 1}}" class="collapse" role="region" aria-labelledby="faq_question_{{loop.index}}" aria-expanded="false" >
       {% for val in item.value %}
-        <p style="text-align: left; font-size: 16px; margin-left: 200px; margin-right: 200px; display: block;">{{ val }}</p>
+        <p>{{ val }}</p>
       {% endfor %}
     </div>
   {% endif %}
@@ -35,6 +34,11 @@
 {% block styles %}
   {{ super() }}
 <style>
+  .faq {
+    margin-left: 180px;
+    margin-right: 180px;
+    background-color:#cceef0
+  }
   .faq-question {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -47,14 +51,20 @@
     --zusammenarbeit: #bfe6dc;
     --zusammenarbeit-out: #feffff;
     -webkit-font-smoothing: antialiased;
+    text-align: left;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    position: relative;
+    /* display: block; */
+    padding-left: 30px;
+    background-color:#cceef0;
     color: none;
     font: inherit;
-    margin: 0;
     overflow: visible;
     text-transform: none;
     font-family: inherit;
     margin-bottom: 0;
-    font-weight: normal;
+    font-weight: bold;
     touch-action: manipulation;
     cursor: pointer;
     border: none;
@@ -63,40 +73,83 @@
     line-height: 1.6;
     border-radius: 0;
     user-select: none;
-    background-color: none;
     align-items: baseline;
     outline: none;
-    font-size: 20px;
     white-space: normal;
     text-align: left;
     width: 100%;
     display: inline-block;
-    vertical-align: baseline;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    left: 10;
   }
+
+  .faq-question span {
+    margin-left: 10px;
+  }
+
   .collapse-indicator {
     position: absolute;
-    top: 30%;
+    top: 20%;
     left: 0;
-    font-size: 14px; /* adjust as needed */
+    padding-right: -20px;
+    margin-right: 10px;
+    font-size: 12px; /* adjust as needed */
     color: grey; /* adjust as needed */
-    transition: transform 0.1s;
+    transition: transform 0.1s !important;
   }
   .faq-question.collapsed .collapse-indicator {
     position: absolute;
-    top: 30% !important;
+    padding-right: -20px;
+    margin-right: 10px;
+    top: 20% !important;
     left: 0 !important;
     transform: rotate(180deg);
   }
 
   .collapse {
     display: block;
-    padding-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 15px;
+  }
+
+  .collapse p {
+    font-family: inherit;
+    font-weight: 300 !important;
+    display: block;
+    text-align: left;
+    font-size: 16px;
   }
 
   .collapsed + .collapse {
     display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    /* Adjust the styles for screens smaller than 768px wide */
+    .faq {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    .faq-question {
+      font-size: 20px !important;
+      margin-left: 5px;
+    }
+    .collapse-indicator {
+      font-size: 12px;
+      margin-right: 20px;
+    }
+    .collapse p {
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    text-align: left;
+    font-size: 20px !important;
+    margin-left: 15px;
+    }
+    .faq-question.collapsed .collapse-indicator {
+      margin-right: 0px;
+    }
   }
 </style>
 {% endblock %}
