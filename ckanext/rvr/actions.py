@@ -259,7 +259,7 @@ def package_search(context, data_dict):
     # Get dateranges
     dateranges = data_dict.pop('dateranges', {})
     data_dict.pop('date_filters', {})
-    items_per_page = data_dict.pop('rows', 20)
+    items_per_page = int(data_dict.pop('rows', 20))
     start = data_dict.pop('start', 0)
     data_dict['rows'] = 1000
     data_dict['start'] = 0
