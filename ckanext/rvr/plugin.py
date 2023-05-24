@@ -2,14 +2,9 @@ import cgi
 import urllib
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.plugins import DefaultTranslation
-from ckanext.rvr.views.dataset import dataset_blueprint
 from ckanext.rvr import actions as rvrActions
+import ckanext.rvr.views as rvrViews
 from ckanext.spatial.plugin import SpatialQuery
-import ckan.logic.converters as converters
-import ckan.lib.base as base
-from flask import Blueprint, current_app
-from flask.cli import with_appcontext
-import ckan.logic as logic
 
 import logging
 log = logging.getLogger(__name__)
@@ -92,11 +87,6 @@ def get_faq_page():
     return faq_page_dict
 
 
-# @with_appcontext
-def faq():
-    return toolkit.render('home/faq.html')
-
-
 def build_pages_nav_main(*args):
 
     about_menu = toolkit.asbool(config.get('ckanext.pages.about_menu', True))
@@ -151,28 +141,10 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm, DefaultTranslatio
     p.implements(p.IActions)
     p.implements(p.IRoutes, inherit=True)
     
-    # IRoutes
-    def before_map(self, map):
-        return map
-    
-    def after_map(self, map):
-        map.connect('faq', '/faq', controller='ckanext.rvr.plugin:faq')
-        return map
-    
-    # def update_config(self, config):
-    #     toolkit.add_template_directory(config, 'public')
-    
     # IBlueprint
     def get_blueprint(self):
-        '''Return blueprints to be registered by the app.
-
-        This method can return either a Flask Blueprint object or
-        a list of Flask Blueprint objects.
-        '''
-        faq_blueprint = Blueprint('faq', self.__module__)
-        faq_blueprint.add_url_rule('/faq', 'faq', faq)
-
-        return [dataset_blueprint, faq_blueprint]
+        '''Return a Flask blueprint to be registered in the app.'''
+        return rvrViews.get_rvr_blueprint()
     
     # IConfigurer
     def get_helpers(self):
