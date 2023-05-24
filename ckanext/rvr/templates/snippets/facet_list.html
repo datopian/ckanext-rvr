@@ -13,7 +13,7 @@
                 <section class="{{ wrapper_class or 'module module-narrow module-shallow' }}">
                     {% block facet_list_heading %}
                     <h2 class="module-heading" data-toggle="collapse" data-module="collapse-arrow"  href="#collapse-{{name}}" aria-expanded="false" aria-controls="collapse-{{name}}">
-                        <span class="fa fa-chevron-up collapse-arrow"></span>
+                        <span class="fa fa-chevron-down collapse-arrow"></span>
                         <i class="fa fa-filter"></i>
                         {% set title = title or h.get_facet_title(name) %}
                         {{ title }}

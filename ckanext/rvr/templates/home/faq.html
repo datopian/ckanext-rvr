@@ -16,7 +16,7 @@
     {% set idx = loop.index %}
       <button id="faq_question_{{loop.index}}" data-target="#faq_answer_{{loop.index}}" aria-expanded="false" aria-controls="faq_answer_{{loop.index}}" data-toggle="collapse" 
       class="faq-question collapsed">
-      <i class="fa fa-chevron-up collapse-indicator" aria-hidden="true"></i>
+      <i class="fa fa-chevron-down collapse-indicator" aria-hidden="true"></i>
       <span>{{ item.value[0] }}</span>
       </button>
   {% endif %}
