@@ -125,6 +125,7 @@ def build_pages_nav_main(*args):
 
 def get_facet_description(facet_name):
     facet_description = {
+        
         'organization': tk._('Datenbereitstellende Institutionen'),
         'groups': tk._('Nach CKAN standardisierte Datenkategorien'),
         'tags': tk._('Selbstgewählte Schlagworte'),

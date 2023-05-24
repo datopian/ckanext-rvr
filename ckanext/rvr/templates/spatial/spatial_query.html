@@ -17,6 +17,7 @@ e.g.
         <i class="fa fa-globe"></i>
         {{ _('Filter this by location') }}
         <a href="{{ h.remove_url_param(['ext_bbox','ext_prev_extent', 'ext_location']) }}" class="action">{{ _('Clear') }}</a>
+        <p class="module-subheading">{{ _('Mit Klick auf den Stift Filterbereich festlegen.') }} </p>
     </h2>
     {% set map_config = h.get_common_map_config() %}
     <div id="collapse-dataset-map" aria-expanded="true" class="collapse in">
