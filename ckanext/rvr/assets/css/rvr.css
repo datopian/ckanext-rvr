@@ -49,6 +49,17 @@ h1,h2,h3,h4{
     background-color: white;
     border-radius: 3px;
 }
+
+.collapse-arrow {
+    float: right;
+    transition: transform 0.3s ease;
+}
+
+.collapsed-arrow {
+    float: right;
+    transform: rotate(182deg);
+    transition: transform 0.3s ease;
+}
     
 ul.dataset-list.list-unstyled li.dataset-item div.dataset-content div{
     font-family: "Montserrat-Regular" !important;
@@ -543,6 +554,14 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
     color: #888888;
     font-weight: 400;
     font-size: 13px;
+}
+
+.module-heading[data-toggle="collapse"]  {
+    cursor: pointer;
+}
+
+.module-heading .action {
+    padding-right: 12px;
 }
 
 .module-subheading {

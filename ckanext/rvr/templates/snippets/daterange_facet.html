@@ -6,22 +6,24 @@
     {% set enddate = '' %}
 {% endif %}
 
-<div class="nav-item daterange-picker">
-    <select id="daterange-select">
-        {% for option in options %}
-            <option value={{ option['name'] }} {% if option['name'] == active %} selected="selected"{% endif %}>
-                {{ option['title'] }}
-            </option>
-        {% endfor %}
-    </select>
-</div>
-
-<div id="daterange-parent" class="nav-item daterange-picker">
-    <input
-        type="text"
-        name="daterange"
-        id="daterange-input-field"
-        data-startdate="{{ startdate }}"
-        data-enddate="{{ enddate }}"
-    />
+<div id="collapse-{{name}}" aria-expanded="false" class="collapse">
+    <div class="nav-item daterange-picker">
+        <select id="daterange-select">
+            {% for option in options %}
+                <option value={{ option['name'] }} {% if option['name'] == active %} selected="selected"{% endif %}>
+                    {{ option['title'] }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div id="daterange-parent" class="nav-item daterange-picker">
+        <input
+            type="text"
+            name="daterange"
+            id="daterange-input-field"
+            data-startdate="{{ startdate }}"
+            data-enddate="{{ enddate }}"
+        />
+    </div>
 </div>
