@@ -1,6 +1,7 @@
 import cgi
 import urllib
 import ckan.plugins.toolkit as toolkit
+from ckan.lib.plugins import DefaultTranslation
 from ckanext.rvr.views.dataset import dataset_blueprint
 from ckanext.rvr import actions as rvrActions
 from ckanext.spatial.plugin import SpatialQuery
@@ -37,6 +38,18 @@ def get_specific_page(name=""):
         if page['name'] == name:
             new_list.append(page)
     return new_list
+
+def get_facet_description(facet_name):
+    facet_description = {
+        'organization':toolkit._('Datenbereitstellende Institutionen'),
+        'groups':toolkit._('Nach CKAN standardisierte Datenkategorien'),
+        'tags': toolkit._('Selbstgewählte Schlagworte'),
+        'res_format': toolkit._('Zur Auswahl stehende Dateiformate'),
+        'license_id': toolkit._('rechtliche Vorgaben zur Nutzung der Daten'), 
+        'date_filters': toolkit._('Filter nach Erstellungsdatum der Daten')
+        }
+    return facet_description[facet_name]
+
 
 def get_faq_page():
 
@@ -128,7 +141,8 @@ def build_pages_nav_main(*args):
 
     return  output 
 
-class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
+class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm, DefaultTranslation):
+    p.implements(p.ITranslation)
     p.implements(p.IConfigurer)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IDatasetForm)
@@ -174,6 +188,7 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
             'build_nav_main': build_pages_nav_main,
             'get_specific_page': get_specific_page,
             'get_faq_page': get_faq_page,
+            'get_facet_description': get_facet_description
         }
 
     def update_config(self, config_):

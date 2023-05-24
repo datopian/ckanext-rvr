@@ -16,6 +16,7 @@
                         <i class="fa fa-filter"></i>
                         {% set title = title or h.get_facet_title(name) %}
                         {{ title }}
+                        <p class="module-subheading">{{ h.get_facet_description(name) }} </p>
                     </h2>
                     {% endblock %}
 

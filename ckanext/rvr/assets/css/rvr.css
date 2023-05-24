@@ -531,6 +531,26 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
 }
 
 
+
+.filter-title h3 {
+    padding: 12px 0 0 12px;
+    margin: 0;
+}
+
+.filter-title h6 {
+    padding: 4px 0 12px 12px;
+    margin: 0;
+    color: #888888;
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.module-subheading {
+    font-size: 13px;
+    padding: 6px 0px;
+    margin: 0;
+}
+
 .module-content.box.box1{
     /* margin-right: 0;
     margin-left: 5%;
