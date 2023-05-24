@@ -4,6 +4,11 @@ import ckan.plugins.toolkit as toolkit
 from ckanext.rvr.views.dataset import dataset_blueprint
 from ckanext.rvr import actions as rvrActions
 from ckanext.spatial.plugin import SpatialQuery
+import ckan.logic.converters as converters
+import ckan.lib.base as base
+from flask import Blueprint, current_app
+from flask.cli import with_appcontext
+import ckan.logic as logic
 
 import logging
 log = logging.getLogger(__name__)
@@ -12,6 +17,8 @@ ignore_missing = toolkit.get_validator('ignore_missing')
 
 import ckan.plugins as p
 import ckan.lib.helpers as h
+
+from lxml import html
 
 def get_newest_datasets():
     results = toolkit.get_action('current_package_list_with_resources')({},{"limit":5})
@@ -30,6 +37,52 @@ def get_specific_page(name=""):
         if page['name'] == name:
             new_list.append(page)
     return new_list
+
+def get_faq_page():
+
+    page_list = toolkit.get_action('ckanext_pages_list')(None, {'ignore_auth': True, 'user': 'ckan_admin', 'page_type': 'page', 'private': True})
+    print(f"OVO JE {page_list}")
+    for page in page_list:
+        if page['name'] == "faq":
+            faq_page = page["content"]
+            if isinstance(faq_page, str):
+                faq_page = faq_page.replace("\r\n", "")
+            else:
+                log.warning("Page content is not a string type: {}".format(faq_page))
+    # print(faq_page)
+    doc = html.fromstring(faq_page)
+    faq_page_dict = []
+
+    tag_is_p = False
+    idx = 0
+    for element in doc.xpath('//h1 | //h2 | //p'):
+        tag = element.tag
+        if tag != "p":
+            tag = element.tag
+            value = [element.text]
+            if value:
+                faq_page_dict.append({"tag": tag, "value": value})
+                idx += 1
+            tag_is_p = False
+        elif tag == "p":
+            if not tag_is_p:
+                value = [element.text]
+                tag = "div"
+                faq_page_dict.append({"tag": tag, "value": value})
+                idx += 1
+                tag_is_p = True
+            else:
+                last_el = faq_page_dict[idx-1]
+                last_el["value"].append(element.text)
+                faq_page_dict[idx-1] = last_el
+                tag_is_p = True
+    return faq_page_dict
+
+
+# @with_appcontext
+def faq():
+    return toolkit.render('home/faq.html')
+
 
 def build_pages_nav_main(*args):
 
@@ -82,12 +135,31 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
     p.implements(p.IFacets, inherit=True)
     p.implements(p.IBlueprint)
     p.implements(p.IActions)
-
-
+    p.implements(p.IRoutes, inherit=True)
+    
+    # IRoutes
+    def before_map(self, map):
+        return map
+    
+    def after_map(self, map):
+        map.connect('faq', '/faq', controller='ckanext.rvr.plugin:faq')
+        return map
+    
+    # def update_config(self, config):
+    #     toolkit.add_template_directory(config, 'public')
+    
     # IBlueprint
     def get_blueprint(self):
-        return [dataset_blueprint]
+        '''Return blueprints to be registered by the app.
 
+        This method can return either a Flask Blueprint object or
+        a list of Flask Blueprint objects.
+        '''
+        faq_blueprint = Blueprint('faq', self.__module__)
+        faq_blueprint.add_url_rule('/faq', 'faq', faq)
+
+        return [dataset_blueprint, faq_blueprint]
+    
     # IConfigurer
     def get_helpers(self):
         '''Register the most_popular_groups() function above as a template
@@ -100,7 +172,8 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
         return {
             'get_newest_datasets': get_newest_datasets,
             'build_nav_main': build_pages_nav_main,
-            'get_specific_page': get_specific_page
+            'get_specific_page': get_specific_page,
+            'get_faq_page': get_faq_page,
         }
 
     def update_config(self, config_):
@@ -108,13 +181,18 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('assets', 'rvr')
 
+        # config['routes.named_routes'] = {
+        #     'faq': toolkit.url_for(controller='ckanext.rvr.plugin:faq', action='faq')
+        # }
+        # config['routes.map'] = toolkit.redirect_map(config['routes.map'], config['routes.named_routes'])
+
     def create_package_schema(self):
         # let's grab the default schema in our plugin
         schema = super(RvrPlugin, self).create_package_schema()
         # our custom field
         schema.update({
             'notes': [toolkit.get_validator('not_empty')],
-            'owner_org': [toolkit.get_validator('not_empty')]
+            'owner_org': [toolkit.get_validator('not_empty')],
         })
         return schema
 
@@ -124,10 +202,10 @@ class RvrPlugin(p.SingletonPlugin, toolkit.DefaultDatasetForm):
         # our custom field
         schema.update({
             'notes': [toolkit.get_validator('not_empty')],
-            'owner_org': [toolkit.get_validator('not_empty')]
+            'owner_org': [toolkit.get_validator('not_empty')],
         })
         return schema
-
+        
     def is_fallback(self):
         # Return True to register this plugin as the default handler for
         # package types not handled by any other IDatasetForm plugin.

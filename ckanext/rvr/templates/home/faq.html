@@ -1,0 +1,157 @@
+{% extends 'home/page.html' %}
+{% set faq_content = h.get_faq_page() %}
+
+{% block primary %}
+<div>
+<h1 id="title" style="text-align: center; font-size: 28px;">FAQ Open Data Portal Metropole Ruhr</h1>
+</div>
+<div>
+
+<div class="faq">
+{% for item in faq_content %}
+  {% if item.tag == 'h1' %}
+    <h1 id="section_{{loop.index}}" style="text-align: center; font-size: 26px; color: grey;">{{ item.value[0] }}</h1>
+  {% endif %}
+  {% if item.tag == 'h2' %}
+    {% set idx = loop.index %}
+      <button id="faq_question_{{loop.index}}" data-target="#faq_answer_{{loop.index}}" aria-expanded="false" aria-controls="faq_answer_{{loop.index}}" data-toggle="collapse" 
+      class="faq-question collapsed">
+      <i class="fa fa-chevron-up collapse-indicator" aria-hidden="true"></i>
+      <span>{{ item.value[0] }}</span>
+      </button>
+  {% endif %}
+  {% if item.tag == 'div' %}
+    <div id="faq_answer_{{loop.index - 1}}" class="collapse" role="region" aria-labelledby="faq_question_{{loop.index}}" aria-expanded="false" >
+      {% for val in item.value %}
+        <p>{{ val }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endfor %}
+</div>
+{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+<style>
+  .faq {
+    margin-left: 180px;
+    margin-right: 180px;
+    background: inherit;
+  }
+  .faq-question {
+    -webkit-text-size-adjust: 100%;
+    text-align: left;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    position: relative;
+    padding-left: 30px;
+    background: inherit;
+    color: none;
+    font: inherit;
+    overflow: visible;
+    text-transform: none;
+    font-family: inherit;
+    margin-bottom: 0;
+    font-weight: bold;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: none;
+    background-image: none;
+    padding: 5px 15px;
+    line-height: 1.6;
+    border-radius: 0;
+    user-select: none;
+    align-items: baseline;
+    outline: none;
+    white-space: normal;
+    text-align: left;
+    width: 100%;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    left: 10;
+  }
+
+  .faq-question span {
+    margin-left: 10px;
+  }
+
+  .collapse-indicator {
+    position: absolute;
+    top: 25%;
+    left: 0;
+    padding-right: -20px;
+    margin-right: 10px;
+    font-size: 12px !important; /* adjust as needed */
+    color: grey; /* adjust as needed */
+    transition: transform 0.1s !important;
+  }
+  .faq-question.collapsed .collapse-indicator {
+    position: absolute;
+    padding-right: -20px;
+    margin-right: 10px;
+    top: 25% !important;
+    left: 0 !important;
+    transform: rotate(180deg);
+  }
+
+  .collapse {
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    width: 100%;
+  }
+
+  .collapse p {
+    font-family: inherit;
+    font-weight: 300 !important;
+    display: block;
+    text-align: left;
+    font-size: 16px;
+  }
+
+  .collapsed + .collapse {
+    display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    /* Adjust the styles for screens smaller than 768px wide */
+    .faq {
+      margin-left: 5px;
+      margin-right: 5px;
+      background-color: #eee;
+    }
+    .faq-question {
+      font-size: 20px !important;
+      margin-left: 5px;
+    }
+    .collapse-indicator {
+      font-size: 2px;
+      margin-right: 20px;
+    }
+    .collapse p {
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    padding-right: 0px !important;
+    text-align: left;
+    font-size: 20px !important;
+    margin-left: 15px;
+    margin-right: 15px;
+    }
+    .faq-question.collapsed .collapse-indicator {
+      margin-right: 0px;
+    }
+  }
+</style>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+<script>
+  $('.faq-question').click(function() {
+    $(this).toggleClass('collapsed');
+    $(this).find('.collapse-indicator').toggleClass('collapsed');
+  });
+</script>
+{% endblock %}

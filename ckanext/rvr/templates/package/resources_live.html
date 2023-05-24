@@ -5,11 +5,4 @@
 
 {% set user = c.userobj %}
 {{ super() }}
-<!--<a data-toggle="tooltip" title="Mit dem Tool können Sie CSV Dateien in weitere Formate konvertieren und alle Dateiformate automatisch unter den Ressourcen bereitstellen."  incon="plus" class="btn btn-primary" href="https://odconvert-rvr.ckan.de/ckanconverter/?dataset_name={{ c.pkg_dict.name }}&api_token={{ user.apikey }}">
-    <i class="fa fa-plus"></i>{{ _('CSV Multikonverter') }}</a>-->
-
-    <!--<a incon="plus" class="btn btn-primary" href="https://odconvert-rvr.ckan.de/ogrconverter/?dataset_name={{ c.pkg_dict.name }}&api_token={{ user.apikey }}">
-        <i class="fa fa-plus"></i>{{ _('Ogr2Ogr via ODConvert') }}</a>
-    -->
-
 {% endblock %}

@@ -2,14 +2,6 @@
 {% block basic_fields %}
     {% if stage is iterable and stage is not number  %}
         {% set user = c.userobj %}
-
-        <a data-toggle="tooltip" 
-        title="Mit dem Tool können Sie CSV Dateien in weitere Formate konvertieren und alle Dateiformate automatisch unter den Ressourcen bereitstellen."  
-        incon="plus" 
-        class="btn btn-primary" 
-        href="https://odconvert-rvr.ckan.de/ckanconverter/?dataset_name={{ pkg_name }}&api_token={{ user.apikey }}&action_name=new_resource">
-        <i class="fa fa-plus"></i>{{ _('CSV Multikonverter') }}</a>    
     {% endif %}
-
     {{ super() }}
 {% endblock %}
