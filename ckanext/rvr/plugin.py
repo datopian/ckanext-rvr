@@ -46,6 +46,7 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         '''Return a Flask blueprint to be registered in the app.'''
         return rvrViews.get_rvr_blueprint()
 
+    # IDatasetForm
     def create_package_schema(self):
         # let's grab the default schema in our plugin
         schema = super(RvrPlugin, self).create_package_schema()
@@ -76,6 +77,7 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         # registers itself as the default (above).
         return []
     
+    #IFacets
     def dataset_facets(self, facets_dict, package_type):
         '''
         Override core search fasets for datasets
