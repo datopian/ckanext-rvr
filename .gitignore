@@ -1,5 +1,14 @@
 syntax: glob
+env/
+build/
+develop-eggs/
+dist/
+sdist/
+*.egg-info/
+.installed.cfg
+*.egg
 *.egg-info
+*.egg-info/
 *.pyc
 *.swp
 *.swo

@@ -3,6 +3,14 @@ main_css:
   contents:
     - css/rvr.css
 
+main_js:
+  output: rvr/rvr.js
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - js/collapseArrow.js
+
 daterange_css:
   output: rvr/%(version)s_daterange.css
   contents:

@@ -1,7 +1,13 @@
 {% ckan_extends %}
 
 {% block secondary_content %}
-{% snippet "spatial/spatial_query.html", map_extent="{\"type\":\"Polygon\",\"coordinates\":[[[6.48468017578125,50.890906622229174],[7.355346679687499,50.890906622229174],[7.355346679687499,51.472829664858644],[6.48468017578125,51.472829664858644],[6.48468017578125,50.890906622229174]]]}" %}
+  {% block filter_title %}
+    <div class="filter-title">
+      <h3>{{ _('Filterbereich') }}</h3>
+    </div>  
+  {% endblock %}
+
+  {% snippet "spatial/spatial_query.html", map_extent="{\"type\":\"Polygon\",\"coordinates\":[[[6.48468017578125,50.890906622229174],[7.355346679687499,50.890906622229174],[7.355346679687499,51.472829664858644],[6.48468017578125,51.472829664858644],[6.48468017578125,50.890906622229174]]]}" %}
     <div class="filters">
         <div>
             {% for facet in facet_titles %}

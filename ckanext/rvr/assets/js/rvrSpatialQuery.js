@@ -1,7 +1,6 @@
 /* Module for handling the spatial querying
  */
 this.ckan.module('rvr-spatial-query', function ($, _) {
-
     return {
       options: {
         i18n: {
@@ -16,12 +15,7 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
         }
       },
       template: {
-        buttons: [
-          '<div id="dataset-map-edit-buttons">',
-          '<a href="javascript:;" class="btn cancel">Cancel</a> ',
-          '<a href="javascript:;" class="btn apply disabled">Apply</a>',
-          '</div>'
-        ].join('')
+
       },
   
       initialize: function () {
@@ -122,9 +116,14 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
             is_exanded = true;
           }
         });
-  
+        var buttonsHtml = [
+          '<div id="dataset-map-edit-buttons">',
+          '<a href="javascript:;" class="btn cancel">'+ this._('Cancel')+ '</a> ',
+          '<a href="javascript:;" class="btn apply disabled">'+ this._('Apply')+ '</a>',
+          '</div>'
+        ].join('')
         // Setup the expanded buttons
-        buttons = $(module.template.buttons).insertBefore('#dataset-map-attribution');
+        buttons = $(buttonsHtml).insertBefore('#dataset-map-attribution');
   
         // Handle the cancel expanded action
         $('.cancel', buttons).on('click', function() {

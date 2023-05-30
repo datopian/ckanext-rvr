@@ -49,6 +49,17 @@ h1,h2,h3,h4{
     background-color: white;
     border-radius: 3px;
 }
+
+.collapse-arrow {
+    float: right;
+    transition: transform 0.3s ease;
+}
+
+.collapsed-arrow {
+    float: right;
+    transform: rotate(182deg);
+    transition: transform 0.3s ease;
+}
     
 ul.dataset-list.list-unstyled li.dataset-item div.dataset-content div{
     font-family: "Montserrat-Regular" !important;
@@ -531,6 +542,27 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
 }
 
 
+
+.filter-title h3 {
+    padding: 12px 0 12px 12px;
+    margin: 0;
+}
+
+
+.module-heading[data-toggle="collapse"]  {
+    cursor: pointer;
+}
+
+.module-heading .action {
+    padding-right: 12px;
+}
+
+.module-subheading {
+    font-size: 13px;
+    padding: 6px 0px;
+    margin: 0;
+}
+
 .module-content.box.box1{
     /* margin-right: 0;
     margin-left: 5%;
@@ -698,6 +730,11 @@ div#dataset-map-attribution div a{
     font-size: 12px;
 }
 
+
+.dataset-map-expanded #dataset-map {
+    height: 412px !important;
+    top: -412px !important;
+  }
 
 /* Footer Bereich Start */
 
