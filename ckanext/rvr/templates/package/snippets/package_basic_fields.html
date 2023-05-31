@@ -90,7 +90,7 @@
       </label>
       <div class="controls">
         {% set not_selected = [] %}
-        <select id="field-groups__1__id" onChange="groupChange()" data-module="autocomplete" multiple>
+        <select id="field-groups__1__id" class="multi-arrow" onChange="groupChange()" data-module="autocomplete" multiple>
           {% for group in groups_available %}
             <option value="{{ group.id }}">{{ group.display_name }}</option>
             {% for selected_group in selected_groups %}
