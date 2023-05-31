@@ -121,6 +121,9 @@ section.module div.module-content table.table.table-striped.table-bordered.table
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
 }
+.form-control .select2-choice {
+    border: none !important;;
+}
 
 div#content.container div.row.wrapper{
     -webkit-box-shadow:none;
