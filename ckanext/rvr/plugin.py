@@ -38,7 +38,8 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
             'build_nav_main': rvrHelpers.build_pages_nav_main,
             'get_specific_page': rvrHelpers.get_specific_page,
             'get_faq_page': rvrHelpers.get_faq_page,
-            'get_facet_description': rvrHelpers.get_facet_description
+            'get_facet_description': rvrHelpers.get_facet_description,
+            'get_cookie_control_config': rvrHelpers.get_cookie_control_config
         }
     
     # IBlueprint

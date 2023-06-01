@@ -139,6 +139,7 @@ box-shadow:none;
 }
 
 
+
 .masthead .navigation .nav-pills li a:hover,
 .masthead .navigation .nav-pills li.active a{
     background-color: #00847d;
@@ -868,3 +869,26 @@ div.social-media a i{
 #dataset-map-edit-buttons {
     padding: 5px 10px !important;
 }
+
+.ccc-tabbable .checkbox-toggle-label::after {
+    content: "" !important;
+    display: none !important;
+}
+
+.ccc-content--dark {
+    background-color: #2f2c2c;
+}
+
+#ccc-icon.ccc-icon--dark {
+    fill: #1f1f1f;
+}
+
+#ccc .checkbox-toggle--dark .checkbox-toggle-toggle {
+    background-color: #979797 ;
+}
+
+#ccc .checkbox-toggle--slider.checkbox-toggle--dark {
+    background-color: #232323;
+    border-color: #4a4747;
+}
+
