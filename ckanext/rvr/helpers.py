@@ -140,7 +140,7 @@ def get_cookie_control_config():
         cookie_control_config = {}
 
         api_key = tk.config.get(
-            'ckanext.rvr.cc.api_key', '')
+            'ckanext.rvr.cc.api_key', '5c9bb7216ff941a6b11e5cf182f35bd1be52e00f')
         cookie_control_config['api_key'] = api_key 
 
         license_type = tk.config.get(
