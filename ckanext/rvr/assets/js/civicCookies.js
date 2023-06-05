@@ -15,10 +15,16 @@ ckan.module('civic_cookies', function (jQuery) {
             notifyOnce: true,
             rejectButton: true,
             text: {
-              title: 'This site uses cookies.',
-              intro: 'Some of these cookies are essential, while others help us to improve your experience by providing insights into how the site is being used.',
-              necessaryTitle: 'Necessary cookies',
-              necessaryDescription: 'Necessary cookies enable core functionality such as security, network management, and accessibility. You may disable these by changing your browser settings, but this may affect how the website functions.',
+              on: "ein",
+              off: "aus",
+              title: 'Diese Website verwendet Cookies.',
+              intro: 'Einige dieser Cookies sind notwendig, während andere uns helfen, Ihre Erfahrung zu verbessern, indem sie uns Einblicke in Ihre Nutzung der Website geben.',
+              necessaryTitle: 'Notwendige Cookies',
+              accept: "Alle Cookies akzeptieren",
+              reject: "Nicht notwendige Cookies ablehnen",
+              acceptSettings: "Alle Cookies akzeptieren",
+              rejectSettings: "Nicht notwendige Cookies ablehnen",
+              necessaryDescription: 'Notwendige Cookies ermöglichen Kernfunktionen wie Sicherheit, Netzwerkmanagement und Zugänglichkeit. Sie können diese deaktivieren, indem Sie die Einstellungen Ihres Browsers ändern, was jedoch die Funktionsweise der Website beeinträchtigen kann.              ',
             },
             accessibility:{
               accessKey: '',
@@ -27,8 +33,8 @@ ckan.module('civic_cookies', function (jQuery) {
             optionalCookies: [
               {
                   name : 'analytics',
-                  label: 'Analytical Cookies',
-                  description: "Analytics cookies help us to improve our website by collecting and reporting information on how you use it. The cookies collect information in a way that does not directly identify anyone.",
+                  label: 'Analytische Cookies',
+                  description: "Analyse-Cookies helfen uns, unsere Website zu verbessern, indem sie Informationen über die Nutzung der Website sammeln und melden. Die Cookies sammeln Informationen in einer Weise, die niemanden direkt identifiziert.                  ",
                   cookies: ['_pk_cvar.*', '_pk_id.*', '_pk_ses.*'],
                   onAccept : function(){
                     ckan_sandbox.publish('analytics_enabled', true);
