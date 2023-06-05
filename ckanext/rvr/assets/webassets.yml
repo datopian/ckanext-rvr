@@ -11,6 +11,7 @@ main_js:
   contents:
     - js/collapseArrow.js
     - js/rvr.js
+    - js/civicCookies.js
 
 daterange_css:
   output: rvr/%(version)s_daterange.css
