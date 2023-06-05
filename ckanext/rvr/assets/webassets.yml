@@ -10,6 +10,8 @@ main_js:
       - vendor/jquery
   contents:
     - js/collapseArrow.js
+    - js/rvr.js
+    - js/civicCookies.js
 
 daterange_css:
   output: rvr/%(version)s_daterange.css

@@ -90,7 +90,7 @@
       </label>
       <div class="controls">
         {% set not_selected = [] %}
-        <select id="field-groups__1__id" onChange="groupChange()" data-module="autocomplete" multiple>
+        <select id="field-groups__1__id" class="multi-arrow" onChange="groupChange()" data-module="autocomplete" multiple>
           {% for group in groups_available %}
             <option value="{{ group.id }}">{{ group.display_name }}</option>
             {% for selected_group in selected_groups %}
@@ -114,7 +114,7 @@
     <div class="form-group control-medium">
       <label for="field-private" class="control-label">{{ _('Visibility') }}</label>
       <div class="controls">
-        <select id="field-private" name="private" class="form-control">
+        <select id="field-private" name="private" class="form-control" data-module="arrow-dropdown">
           {% for option in [('True', _('Private')), ('False', _('Public'))] %}
           <option value="{{ option[0] }}" {% if option[0] == data.private|trim %}selected="selected"{% endif %}>{{ option[1] }}</option>
           {% endfor %}

@@ -77,6 +77,54 @@ section.module div.module-content table.table.table-striped.table-bordered.table
     font-size:14px;
 }
 
+.select2-search-choice-close,
+.select2-container-multi .select2-search-choice-close {
+  top: 4px;
+  left: 5px;
+}
+
+.multi-arrow::before { 
+	content: '';
+    width: 18px;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+	z-index:1;
+    top: 0px;
+    right: 0px;
+	background: #ccc;
+	border: 1px solid #aaa;
+    border-radius: 0 4px 4px 0;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #ccc), color-stop(0.6, #eee));
+    background-image: -webkit-linear-gradient(center bottom, #ccc 0%, #eee 60%);
+    background-image: -moz-linear-gradient(center bottom, #ccc 0%, #eee 60%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#eeeeee', endColorstr = '#cccccc', GradientType = 0);
+    background-image: linear-gradient(to top, #ccc 0%, #eee 60%);
+}
+
+.multi-arrow::after {
+    content: '';
+    z-index:1;
+	border-left: 3.6px solid transparent;
+	border-right: 3.6px solid transparent;
+	border-top: 6px solid #888;
+    position: absolute;
+    top: calc(145% - 100%);
+    right: 5px;
+}
+.select2-container {
+    padding: 0;
+    height: fit-content;
+}
+
+.select2-chosen {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+.form-control .select2-choice {
+    border: none !important;;
+}
+
 div#content.container div.row.wrapper{
     -webkit-box-shadow:none;
 box-shadow:none;
@@ -89,6 +137,7 @@ box-shadow:none;
     color: #00847d!important;
     font-size: 17px;
 }
+
 
 
 .masthead .navigation .nav-pills li a:hover,
@@ -820,3 +869,26 @@ div.social-media a i{
 #dataset-map-edit-buttons {
     padding: 5px 10px !important;
 }
+
+.ccc-tabbable .checkbox-toggle-label::after {
+    content: "" !important;
+    display: none !important;
+}
+
+.ccc-content--dark {
+    background-color: #2f2c2c;
+}
+
+#ccc-icon.ccc-icon--dark {
+    fill: #1f1f1f;
+}
+
+#ccc .checkbox-toggle--dark .checkbox-toggle-toggle {
+    background-color: #979797 ;
+}
+
+#ccc .checkbox-toggle--slider.checkbox-toggle--dark {
+    background-color: #232323;
+    border-color: #4a4747;
+}
+

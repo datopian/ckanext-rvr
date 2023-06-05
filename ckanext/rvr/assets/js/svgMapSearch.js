@@ -169,3 +169,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 });
 
+
+$(document).on('DOMNodeInserted', function (e) {
+  var target = $(e.target);
+  if (target.hasClass('multi-arrow')) {
+    target.click(function () {
+      try {
+        target.find("input").click();
+      } catch (error) {
+        if (error instanceof RangeError) {
+        }
+      }
+    });
+  }
+});
