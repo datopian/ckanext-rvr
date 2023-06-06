@@ -130,7 +130,7 @@ def get_facet_description(facet_name):
         'groups': tk._('Nach CKAN standardisierte Datenkategorien'),
         'tags': tk._('Selbstgewählte Schlagworte'),
         'res_format': tk._('Zur Auswahl stehende Dateiformate'),
-        'license_id': tk._('rechtliche Vorgaben zur Nutzung der Daten'), 
+        'license_id': tk._('Rechtliche Vorgaben zur Nutzung der Daten'), 
         'date_filters': tk._('Filter nach Erstellungsdatum der Daten')
         }
     return facet_description[facet_name]
