@@ -780,6 +780,30 @@ div#dataset-map-attribution div a{
 }
 
 
+[data-module="facet-search"] .input-group {
+    padding: 10px;
+    width: 100%;
+}
+
+[data-module="facet-search"]  button {
+    outline: none !important;
+}
+
+[data-module="facet-search"]  nav {
+    height: auto;
+    max-height: 50vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+}
+
+
+[data-module="facet-search"] ul li.search {
+    border-left: 1px solid #00847d;
+    background-color: #c8e9e842;
+}
+
+
 .dataset-map-expanded #dataset-map {
     height: 412px !important;
     top: -412px !important;
@@ -787,12 +811,9 @@ div#dataset-map-attribution div a{
 
 /* Footer Bereich Start */
 
-
-
 .site-footer {
     background-color: black;
 }
-
 
 /* .site-footer div.grid {
     display: -webkit-flex;

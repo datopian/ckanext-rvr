@@ -26,7 +26,15 @@
                             {% with items = items or h.get_facet_items_dict(name, limit=1000) %}
                                 {% set transports = items|selectattr('name','equalto','verkehrsdaten-metropole-ruhr')%}
                                 {% if items %}
-                                    <div id="collapse-{{name}}" aria-expanded="false" class="collapse">
+                                    <div id="collapse-{{name}}" aria-expanded="true" class="collapse" data-module="facet-search" data-module-facet="{{name}}">
+                                        <div class="input-group rounded"x>
+                                            <input type="text" class="form-control rounded facet-search-{{name}}" placeholder="Search">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-default" type="submit">
+                                                <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                         <nav>
                                             <ul class="{{ nav_class or 'list-unstyled nav nav-simple nav-facet' }}">
                                                 {#
@@ -48,8 +56,6 @@
                                                 </li>
                                                 {% endfor %}
                                                 {% for item in items|rejectattr('name','equalto','verkehrsdaten-metropole-ruhr') %}
-                                                
-                                                    {% if loop.index < 10  or  h.get_param_int('_%s_limit' % name) == 0  %}
                                                     {% set href = h.remove_url_param(name, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={name: item.name}, extras=extras, alternative_url=alternative_url) %}
                                                     {% set label = label_function(item) if label_function else item.display_name %}
                                                     {% set label_truncated = h.truncate(label, 22) if not label_function else label %}
@@ -61,22 +67,9 @@
                                                             <span class="item-count badge">{{ count }}</span>
                                                         </a>
                                                     </li>
-                                                    {% endif %}
                                                 {% endfor %}
                                             </ul>
                                         </nav>
-
-                                        <p class="module-footer">
-                                            {% if h.get_param_int('_%s_limit' % name) %}
-                                                {% if h.has_more_facets(name,search_facets or c.search_facets) %}
-                                                    <a href="{{ h.remove_url_param('_%s_limit' % name, replace=0, extras=extras, alternative_url=alternative_url) }}"
-                                                        class="read-more">{{ _('Show More {facet_type}').format(facet_type=title) }}</a>
-                                                {% endif %}
-                                            {% else %}
-                                            <a href="{{ h.remove_url_param('_%s_limit' % name, extras=extras, alternative_url=alternative_url) }}"
-                                                class="read-more">{{ _('Show Only Popular {facet_type}').format(facet_type=title) }}</a>
-                                            {% endif %}
-                                        </p>
                                         {% else %}
                                         <p class="module-content empty">{{ _('There are no {facet_type} that match this search').format(facet_type=title) }}</p>
                                     <div>
@@ -86,7 +79,6 @@
                     {% else %}
                         {{ h.snippet('snippets/daterange_facet.html', name=name,  active=active_range, options=daterange_options, dateranges=dateranges) }}
                     {% endif %}
-
                 </section>
             {% endblock %}
         {% endif %}

@@ -305,7 +305,6 @@ def search(package_type):
         ),
         u'dateranges': dateranges
     }
-
     try:
         query = get_action(u'package_search')(context, data_dict)
 
@@ -346,12 +345,7 @@ def search(package_type):
     g.search_facets_limits = {}
     for facet in extra_vars[u'search_facets'].keys():
         try:
-            limit = int(
-                request.args.get(
-                    u'_%s_limit' % facet,
-                    int(config.get(u'search.facets.default', 10))
-                )
-            )
+            limit = 0
         except ValueError:
             base.abort(
                 400,
@@ -359,7 +353,7 @@ def search(package_type):
                   u'an integer').format(parameter_name=u'_%s_limit' % facet)
             )
 
-        g.search_facets_limits[facet] = limit
+        g.search_facets_limits[facet] = 0
 
     _setup_template_variables(context, {}, package_type=package_type)
 
