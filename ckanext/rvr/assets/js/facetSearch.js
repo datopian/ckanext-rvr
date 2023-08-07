@@ -14,7 +14,7 @@ this.ckan.module('facet-search', function (jQuery, _) {
 			var listItems = this.el.find('nav ul li');
 			this.options[facet] = listItems;
 
-			input.bind('change paste keyup', this._onChange);
+			input.bind('keyup', this._onChange);
 
 		},
 		_onChange: function (event) {
@@ -25,24 +25,31 @@ this.ckan.module('facet-search', function (jQuery, _) {
 			var queryText = event.target.value.toLowerCase();
 
 			var listItems = options[options.facet];
-			var targetItems = listItems.filter(function () {
-				return $(this).find("span.item-label").text().trim().toLowerCase().indexOf(queryText.toLowerCase()) > -1;
-			});
 
-			targetItems.each(function () {
+			listItems.removeClass("search");
+
+			var searchedItems = listItems.filter(function () {
+				var itemLabel = $(this).find("span.item-label").text().trim().toLowerCase();
+				return (
+					itemLabel.startsWith(queryText.toLowerCase()) ||
+					(queryText.length >= 3 && itemLabel.indexOf(queryText) !== -1)
+				);
+			})
+
+			searchedItems.each(function () {
 				$(this).toggleClass("search", queryText !== "");
 			});
 
 			var listEl = this.el.find('nav ul');
-			if (targetItems.length === 0 && queryText !== "") {
+			if (searchedItems.length === 0 && queryText !== "") {
 				listEl.replaceWith("<ul><span class='item-label no-results'>No results found</span> </ul> ");
-			} else if (targetItems.length === 0 && queryText === "") {
-				var newItems = options[options.facet].clone();
+			} else if (searchedItems.length === 0 && queryText === "") {
+				var resetItems = options[options.facet].clone();
 				listEl.find("span.no-results").remove();
-				listEl.empty().append(newItems);
+				listEl.empty().append(resetItems);
 			} else {
 				listEl.find("span.no-results").remove();
-				listEl.prepend(targetItems).addClass('list-unstyled nav nav-simple nav-facet');
+				listEl.prepend(searchedItems).addClass('list-unstyled nav nav-simple nav-facet');
 			}
 		}
 	}
