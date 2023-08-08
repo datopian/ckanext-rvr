@@ -42,7 +42,7 @@ this.ckan.module('facet-search', function (jQuery, _) {
 
 			var listEl = this.el.find('nav ul');
 			if (searchedItems.length === 0 && queryText !== "") {
-				listEl.replaceWith("<ul><span class='item-label no-results'>Keine ergebnisse gefunden/span> </ul> ");
+				listEl.replaceWith("<ul><span class='item-label no-results'>Keine ergebnisse gefunden</span> </ul> ");
 			} else if (searchedItems.length === 0 && queryText === "") {
 				var resetItems = options[options.facet].clone();
 				listEl.find("span.no-results").remove();
