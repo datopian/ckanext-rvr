@@ -19,15 +19,19 @@
   {%- block content %}
     {% block maintag %}<div class="main">{% endblock %}
       <div id="content" class="container">
-        {% block main_content %}
+        {% block main_content %} 
           {% block flash %}
             <div class="flash-messages">
               {% block flash_inner %}
-                {% for message in h.flash.pop_messages() | list %}
-                  <div class="alert fade in {{ message.category }}">
-                    {{ h.literal(message) }}
-                  </div>
-                {% endfor %}
+                {% with messages = h.get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert fade in {{ message.category }}">
+                        {{ h.literal(message) }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
               {% endblock %}
             </div>
           {% endblock %}
