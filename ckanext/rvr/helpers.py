@@ -25,6 +25,7 @@ def get_specific_page(name=""):
         None, {
                'page_type': 'page'}
     )
+    
     new_list = []
     for page in page_list:
         if page['name'] == name:
@@ -103,10 +104,8 @@ def build_pages_nav_main(*args):
     pages_list = tk.get_action('ckanext_pages_list')(None, {'order': True, 'private': False})
 
     page_name = ''
-
-    if (tk.c.action in ('pages_show', 'blog_show')
-       and tk.c.controller == 'ckanext.pages.controller:PagesController'):
-        page_name = tk.c.environ['routes.url'].current().split('/')[-1]
+    if tk.get_endpoint() in (('pages', 'pages_show'), ('pages', 'blog_show')):
+        page_name = tk.request.path.split('/')[-1]
     output = output + get_nav_transport()
     for page in pages_list:
         type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
