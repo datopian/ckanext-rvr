@@ -20,7 +20,6 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
     p.implements(p.IFacets, inherit=True)
     p.implements(p.IBlueprint)
     p.implements(p.IActions)
-    p.implements(p.IRoutes, inherit=True)
     
     # IConfigurer
     def update_config(self, config_):
