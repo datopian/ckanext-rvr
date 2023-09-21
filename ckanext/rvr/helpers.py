@@ -106,7 +106,7 @@ def build_pages_nav_main(*args):
     page_name = ''
     if tk.get_endpoint() in (('pages', 'pages_show'), ('pages', 'blog_show')):
         page_name = tk.request.path.split('/')[-1]
-    output = output + get_nav_transport()
+    #Meiran output = output + get_nav_transport()
     for page in pages_list:
         type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
         name = urllib.parse.quote(page['name'].encode('utf-8')) #.decode('utf-8')
@@ -130,7 +130,9 @@ def get_facet_description(facet_name):
         'tags': tk._('Selbstgewählte Schlagworte'),
         'res_format': tk._('Zur Auswahl stehende Dateiformate'),
         'license_id': tk._('Rechtliche Vorgaben zur Nutzung der Daten'), 
-        'date_filters': tk._('Filter nach Erstellungsdatum der Daten')
+        'date_filters': tk._('Filter nach Erstellungsdatum der Daten'),
+        'frequency': tk._('Frequenz'),
+        'source_type': tk._('Quelle Typ')
         }
     return facet_description[facet_name]
 
