@@ -106,7 +106,7 @@ def build_pages_nav_main(*args):
     page_name = ''
     if tk.get_endpoint() in (('pages', 'pages_show'), ('pages', 'blog_show')):
         page_name = tk.request.path.split('/')[-1]
-    #Meiran output = output + get_nav_transport()
+    output = output + get_nav_transport()
     for page in pages_list:
         type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
         name = urllib.parse.quote(page['name'].encode('utf-8')) #.decode('utf-8')

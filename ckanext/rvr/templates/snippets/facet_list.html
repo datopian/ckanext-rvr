@@ -1,81 +1,76 @@
 {% ckan_extends %}
-
 {% block facet_list %}
     {% set hide_empty = hide_empty or false %}
-    {% with items = items or h.get_facet_items_dict(name, search_facets or c.search_facets) %}
-        {% if items or not hide_empty %}
-            {% block facet_list_item %}
-                <section class="{{ 'module module-narrow module-shallow' }}">
-                    {% block facet_list_heading %}
-                    <h2 class="module-heading" data-toggle="collapse" data-module="collapse-arrow"  href="#collapse-{{name}}" aria-expanded="false" aria-controls="collapse-{{name}}">
+    {% with items = items or h.get_facet_items_dict(name, search_facets) %}
+      	{% if items or not hide_empty %}
+      	    {% block facet_list_item %}
+            		<section class="module module-narrow module-shallow">
+            		    {% block facet_list_heading %}
+                    <h2 class="module-heading" data-toggle="collapse" data-module="collapse-arrow"  data-target="#collapse-{{name}}" aria-expanded="false" aria-controls="collapse-{{name}}">
                         <span class="fa fa-chevron-down collapse-arrow"></span>
                         <i class="fa fa-filter"></i>
                         {% set title = title or h.get_facet_title(name) %}
                         {{ title }}
                         <p class="module-subheading">{{ h.get_facet_description(name) }} </p>
                     </h2>
-                    {% endblock %}
-
+            		    {% endblock %}
                     {% if name != "date_filters" %}
-                        {% block facet_list_items %}
-                            {% with items = items or h.get_facet_items_dict(name, limit=1000) %}
-                                {% set transports = items|selectattr('name','equalto','verkehrsdaten-metropole-ruhr')%}
-                                {% if items %}
+                		    {% block facet_list_items %}
+                      			{% with items = items or h.get_facet_items_dict(name, search_facets, limit=1000) %}
+                              {% set transports = items|selectattr('name','equalto','verkehrsdaten-metropole-ruhr')%}
+                      			    {% if items %}
                                     <div id="collapse-{{name}}" aria-expanded="true" class="collapse" data-module="facet-search" data-module-facet="{{name}}">
-                                        <div class="input-group rounded">
-                                            <input type="text" class="form-control rounded facet-search-{{name}}" placeholder="Filter durchsuchen">
-                                            <div class="input-group-btn">
-                                                <button class="btn btn-default" type="submit">
-                                                <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <nav>
-                                            <ul class="{{ 'list-unstyled nav nav-simple nav-facet' }}">
-                                                {#
-                                                    Transport und Verkehrsdaten Seperat über alle anderen Gruppen in Fett anzeigen auf url /verkehrsdaten
-                                                    
-                                                    #}
-                                                    
-                                                {% for transport in transports %}
-                                                {% set href = h.remove_url_param(name, transport.name, extras=extras, alternative_url=alternative_url) if transport.active else h.add_url_param(new_params={name: transport.name}, extras=extras, alternative_url=alternative_url) %}
-                                                {% set label = label_function(transport) if label_function else transport.display_name %}
-                                                {% set label_truncated = h.truncate(label, 22) if not label_function else label %}
-                                                {% set count = count_label(transport['count']) if count_label else ('%d' % transport['count']) %}
-                                                <li class="{{ 'nav-item' }}{% if transport.active %} active{% endif %}">
+                                      <div class="input-group rounded">
+                                          <input type="text" class="form-control rounded facet-search-{{name}}" placeholder="Filter durchsuchen">
+                                          <div class="input-group-append">
+                                              <button class="btn btn-primary" type="submit">
+                                              <i class="fa fa-search"></i>
+                                              </button>
+                                          </div>
+                                      </div>
+                              				<nav aria-label="{{ title }}">
+                              				    <ul class="list-unstyled nav nav-simple nav-facet">
+                                            {% for transport in transports %}
+                                            {% set href = h.remove_url_param(name, transport.name, extras=extras, alternative_url=alternative_url) if transport.active else h.add_url_param(new_params={name: transport.name}, extras=extras, alternative_url=alternative_url) %}
+                                            {% set label = label_function(transport) if label_function else transport.display_name %}
+                                            {% set label_truncated = label|truncate(22) if not label_function else label %}
+                                            {% set count = count_label(transport['count']) if count_label else ('%d' % transport['count']) %}
+                                            <li class="{{ 'nav-item' }}{% if transport.active %} active{% endif %}">
+                                                <a href="{{ href }}" title="{{ label if label != label_truncated else '' }}">
+                                                    <span class="item-label"><b>{{ label_truncated }}</b></span>
+                                                    <span class="hidden separator"> - </span>
+                                                    <span class="item-count badge">{{ count }}</span>
+                                                  {% if transport.active %}<span class="facet-close">x</span>{% endif %}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                            {% for item in items|rejectattr('name','equalto','verkehrsdaten-metropole-ruhr') %}
+                                                {% set href = h.remove_url_param(name, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={name: item.name}, extras=extras, alternative_url=alternative_url) %}
+                                                {% set label = label_function(item) if label_function else item.display_name %}
+                                                {% set label_truncated = label|truncate(22) if not label_function else label %}
+                                                {% set count = count_label(item['count']) if count_label else ('%d' % item['count']) %}
+                                                <li class="{{ nav_item_class or 'nav-item' }}{% if item.active %} active{% endif %}">
                                                     <a href="{{ href }}" title="{{ label if label != label_truncated else '' }}">
-                                                        <span class="item-label"><b>{{ label_truncated }}</b></span>
+                                                        <span class="item-label">{{ label_truncated }}</span>
                                                         <span class="hidden separator"> - </span>
                                                         <span class="item-count badge">{{ count }}</span>
+                                                      {% if item.active %}<span class="facet-close">x</span>{% endif %}
                                                     </a>
                                                 </li>
-                                                {% endfor %}
-                                                {% for item in items|rejectattr('name','equalto','verkehrsdaten-metropole-ruhr') %}
-                                                    {% set href = h.remove_url_param(name, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={name: item.name}, extras=extras, alternative_url=alternative_url) %}
-                                                    {% set label = label_function(item) if label_function else item.display_name %}
-                                                    {% set label_truncated = h.truncate(label, 22) if not label_function else label %}
-                                                    {% set count = count_label(item['count']) if count_label else ('%d' % item['count']) %}
-                                                    <li class="{{ nav_item_class or 'nav-item' }}{% if item.active %} active{% endif %}">
-                                                        <a href="{{ href }}" title="{{ label if label != label_truncated else '' }}">
-                                                            <span class="item-label">{{ label_truncated }}</span>
-                                                            <span class="hidden separator"> - </span>
-                                                            <span class="item-count badge">{{ count }}</span>
-                                                        </a>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </nav>
-                                        {% else %}
-                                        <p class="module-content empty">{{ _('There are no {facet_type} that match this search').format(facet_type=title) }}</p>
-                                    <div>
+                                            {% endfor %}
+                              				    </ul>
+                              				</nav>
+                              			  {% else %}
+                              				<p class="module-content empty">{{ _('There are no {facet_type} that match this search').format(facet_type=title) }}</p>
+                          			    </div>
                                 {% endif %}
-                            {% endwith %}
-                        {% endblock %}
+                      			{% endwith %}
+                		    {% endblock %}
                     {% else %}
                         {{ h.snippet('snippets/daterange_facet.html', name=name,  active=active_range, options=daterange_options, dateranges=dateranges) }}
                     {% endif %}
-                </section>
-            {% endblock %}
-        {% endif %}
+            		</section>
+      	    {% endblock %}
+      	{% endif %}
     {% endwith %}
 {% endblock %}

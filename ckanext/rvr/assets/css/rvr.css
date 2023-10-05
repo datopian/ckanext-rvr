@@ -913,3 +913,7 @@ div.social-media a i{
     border-color: #4a4747;
 }
 
+.collapse:not(.show) {
+  display: block;
+}
+
