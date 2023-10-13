@@ -598,7 +598,7 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
 }
 
 
-.module-heading[data-toggle="collapse"]  {
+.module-heading[data-bs-toggle="collapse"]  {
     cursor: pointer;
 }
 

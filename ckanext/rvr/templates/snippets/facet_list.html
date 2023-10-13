@@ -7,7 +7,7 @@
       	    {% block facet_list_item %}
           		<section class="module module-narrow module-shallow">
           		    {% block facet_list_heading %}
-                  <h2 class="module-heading" data-bs-toggle="collapse" data-bs-module="collapse-arrow"  data-bs-target="#collapse-{{name}}" aria-expanded="false" aria-controls="collapse-{{name}}">
+                  <h2 class="module-heading" data-bs-toggle="collapse" data-module="collapse-arrow"  data-bs-target="#collapse-{{name}}" aria-expanded="false" aria-controls="collapse-{{name}}">
                       <span class="fas fa-chevron-down collapse-arrow"></span>
                       <i class="fa fa-filter"></i>
                       {% set title = title or h.get_facet_title(name) %}
