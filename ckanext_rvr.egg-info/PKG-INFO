@@ -1,10 +1,10 @@
 Metadata-Version: 1.1
 Name: ckanext-rvr
-Version: 0.0.1
+Version: 1.0.1
 Summary: CKAN Plugin & Theme for RVR
 Home-page: https://github.com//ckanext-rvr
-Author: Regionalverband Ruhr
-Author-email: geosystem@rvr.ruhr
+Author: UNKNOWN
+Author-email: UNKNOWN
 License: AGPL
 Description: .. You should enable this project on travis-ci.org and coveralls.io to make
            these badges work. The necessary Travis and Coverage config files have been

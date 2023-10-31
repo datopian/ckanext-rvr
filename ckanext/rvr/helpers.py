@@ -25,6 +25,7 @@ def get_specific_page(name=""):
         None, {
                'page_type': 'page'}
     )
+    
     new_list = []
     for page in page_list:
         if page['name'] == name:
@@ -86,7 +87,7 @@ def build_pages_nav_main(*args):
     # Different CKAN versions use different route names - gotta catch em all!
     about_menu_routes = ['about', 'home.about']
     group_menu_routes = ['group_index', 'home.group_index']
-    org_menu_routes = ['organizations_index', 'home.organizations_index']
+    org_menu_routes = ['organizations.index', 'home.organizations.index']
 
     new_args = []
     for arg in args:
@@ -103,11 +104,9 @@ def build_pages_nav_main(*args):
     pages_list = tk.get_action('ckanext_pages_list')(None, {'order': True, 'private': False})
 
     page_name = ''
-
-    if (tk.c.action in ('pages_show', 'blog_show')
-       and tk.c.controller == 'ckanext.pages.controller:PagesController'):
-        page_name = tk.c.environ['routes.url'].current().split('/')[-1]
-    output = output + get_nav_transport()
+    if tk.get_endpoint() in (('pages', 'pages_show'), ('pages', 'blog_show')):
+        page_name = tk.request.path.split('/')[-1]
+    #output = output + get_nav_transport()
     for page in pages_list:
         type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
         name = urllib.parse.quote(page['name'].encode('utf-8')) #.decode('utf-8')
@@ -131,7 +130,9 @@ def get_facet_description(facet_name):
         'tags': tk._('Selbstgewählte Schlagworte'),
         'res_format': tk._('Zur Auswahl stehende Dateiformate'),
         'license_id': tk._('Rechtliche Vorgaben zur Nutzung der Daten'), 
-        'date_filters': tk._('Filter nach Erstellungsdatum der Daten')
+        'date_filters': tk._('Filter nach Erstellungsdatum der Daten'),
+        'frequency': tk._('Frequenz'),
+        'source_type': tk._('Quelle Typ')
         }
     return facet_description[facet_name]
 
