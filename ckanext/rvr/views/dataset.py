@@ -19,7 +19,7 @@ import ckan.plugins as plugins
 from ckan.common import _, config, g, request
 from ckan.lib.plugins import lookup_package_plugin
 from ckan.lib.search import SearchError, SearchQueryError, SearchIndexError
-from ckan.views.dataset import CreateView, EditView, _get_package_type, _tag_string_to_list, _form_save_redirect, text_type, CACHE_PARAMETERS
+from ckan.views.dataset import CreateView, EditView, _get_package_type, _tag_string_to_list, _form_save_redirect, CACHE_PARAMETERS
 import ckan.lib.navl.dictization_functions as dict_fns
 from ckanext.rvr.helpers import is_valid_spatial, get_org_spatial
 
@@ -455,9 +455,9 @@ class RvrCreateView(CreateView):
             return base.abort(404, _(u'Dataset not found'))
         except SearchIndexError as e:
             try:
-                exc_str = text_type(repr(e.args))
+                exc_str = str(repr(e.args))
             except Exception:  # We don't like bare excepts
-                exc_str = text_type(str(e))
+                exc_str = str(str(e))
             return base.abort(
                 500,
                 _(u'Unable to add package to search index.') + exc_str
@@ -481,7 +481,7 @@ class RvrCreateView(CreateView):
             return self.get(package_type, data_dict, errors, error_summary)
 
     def get(self, package_type, data=None, errors=None, error_summary=None):
-        context = self._prepare(data)
+        context = self._prepare()
         if data and u'type' in data:
             package_type = data[u'type']
 
@@ -549,7 +549,7 @@ class RvrCreateView(CreateView):
 
 class RvrEditView(EditView):
     def post(self, package_type, id):
-        context = self._prepare(id)
+        context = self._prepare()
         package_type = _get_package_type(id) or package_type
         log.debug(u'Package save request name: %s POST: %r', id, request.form)
         try:
@@ -588,9 +588,9 @@ class RvrEditView(EditView):
             return base.abort(404, _(u'Dataset not found'))
         except SearchIndexError as e:
             try:
-                exc_str = text_type(repr(e.args))
+                exc_str = str(repr(e.args))
             except Exception:  # We don't like bare excepts
-                exc_str = text_type(str(e))
+                exc_str = str(str(e))
             return base.abort(
                 500,
                 _(u'Unable to update search index.') + exc_str
@@ -603,7 +603,7 @@ class RvrEditView(EditView):
     def get(
         self, package_type, id, data=None, errors=None, error_summary=None
     ):
-        context = self._prepare(id, data)
+        context = self._prepare()
         package_type = _get_package_type(id) or package_type
         try:
             pkg_dict = get_action(u'package_show')(
