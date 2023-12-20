@@ -371,6 +371,18 @@ def search(package_type):
         _get_pkg_template(u'search_template', package_type), extra_vars
     )
 
+def _group_string_to_list(group_string):
+    """This is used to change groups from a string to a list of dicts.
+    """
+    out = []
+    for group in group_string.split(u'___'):
+     group = group.strip()
+     if group:
+         # Get the group from the database
+         group_item = {"id": group}
+         out.append(group_item)
+    return out
+
 class RvrCreateView(CreateView):
     def post(self, package_type):
         # The staged add dataset used the new functionality when the dataset is
@@ -435,7 +447,10 @@ class RvrCreateView(CreateView):
                     org_spatial = get_org_spatial(data_dict['owner_org'])
                     if org_spatial:
                         data_dict['spatial'] = org_spatial
-
+            if u'group_string' in data_dict:
+                data_dict[u'groups'] = _group_string_to_list(
+                data_dict[u'group_string']
+                )            
             pkg_dict = get_action(u'package_create')(context, data_dict)
 
             if ckan_phase:
@@ -445,7 +460,6 @@ class RvrCreateView(CreateView):
                     id=pkg_dict[u'name']
                 )
                 return h.redirect_to(url)
-
             return _form_save_redirect(
                 pkg_dict[u'name'], u'new', package_type=package_type
             )
@@ -576,6 +590,11 @@ class RvrEditView(EditView):
             dataset_spatial = data_dict.get('dataset_spatial', '')
             if is_valid_spatial(dataset_spatial) and spatial != dataset_spatial:
                 data_dict['spatial'] = dataset_spatial
+            
+            if u'group_string' in data_dict:
+                data_dict[u'groups'] = _group_string_to_list(
+                data_dict[u'group_string']
+                )
 
             pkg_dict = get_action(u'package_update')(context, data_dict)
 
