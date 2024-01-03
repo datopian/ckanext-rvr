@@ -89,7 +89,7 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
             drawControlTooltips: false,
             maxBounds: this.options.default_extent,
             maxBoundsViscosity: 0.8,
-            minZoom: 7.2
+            minZoom: 7.5
           }
         );
   
