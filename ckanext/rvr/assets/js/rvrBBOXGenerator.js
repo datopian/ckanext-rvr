@@ -70,7 +70,7 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
                 drawControlTooltips: true,
                 maxBounds: module.options.default_extent,
                 maxBoundsViscosity: 1,
-                minZoom: 7.2
+                minZoom: 7.5
             }
             map = ckan.rvrWebMap(
                 'dataset-map-container',
