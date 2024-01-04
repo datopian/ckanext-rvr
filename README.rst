@@ -44,6 +44,8 @@ Requirements
 For example, you might want to mention here which versions of CKAN this
 extension works with.
 
+> Requires ckan 2.9 or later
+
 
 ------------
 Installation
@@ -63,13 +65,21 @@ To install ckanext-rvr:
 
      pip install ckanext-rvr
 
-3. Add ``rvr`` to the ``ckan.plugins`` setting in your CKAN
+3. Add ``rvr rvr_spatial_query`` to the ``ckan.plugins`` setting in your CKAN
    config file (by default the config file is located at
    ``/etc/ckan/default/production.ini``).
 
 4. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
 
      sudo service apache2 reload
+
+-------------------------------
+Extension Plugins Documentation
+-------------------------------
+The extension contains 2 ckan plugins:
+
+* [`rvr`](docs/PLUGINS.md#rvr)
+* [`rvr_spatial_query`](docs/PLUGINS.md#rvr-spatial-query)
 
 
 ---------------
