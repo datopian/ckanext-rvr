@@ -632,6 +632,11 @@ div.module-content.box.box1::before{
     width: 0; height: 0; border-top: 60px solid black; border-left: 60px solid transparent;
 }
 
+.module-content.box.box1 a {
+  color: #1C5E73;
+  text-decoration: none;
+}
+
 .module-content.box.box2{
     /* margin-right:0;
     margin-left: 5%;*/
@@ -664,6 +669,11 @@ div.module-content.box.box2::before{
 
 form.module-content.search-form h2.heading{
     color:white;
+}
+
+form.module-content.search-form a {
+    color: #FAFAFA;
+    text-decoration: none;
 }
 
 form.module-content{
@@ -930,7 +940,7 @@ div.social-media a i{
 }
 
 .badge[data-format=geojson] {
-    background-color: #7526CA;
+    background-color: #7526CA !important;
 }
 
 
