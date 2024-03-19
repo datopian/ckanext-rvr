@@ -496,6 +496,7 @@ ul, ol {
 }
 .a {
     background-color: transparent;
+    
 }
 
 h4 {
@@ -640,6 +641,11 @@ div.module-content.box.box1::before{
     position: relative;
 }
 
+.module-content.box.box2 a {
+  color: #00615B;
+  text-decoration: none;
+}
+
 
 div.module-content.box.box2::before{
     content: "";
@@ -656,7 +662,7 @@ div.module-content.box.box2::before{
     border:none;
 }
 
-form.module-content.search-form h3.heading{
+form.module-content.search-form h2.heading{
     color:white;
 }
 
@@ -704,6 +710,12 @@ div.module-content.box.dataset::before{
     box-shadow: none;
     position: relative;
 }
+
+.module-content.box.statistic a {
+  color: #1C5F73;
+  text-decoration: none;
+}
+
 
 
 div.module-content.box.statistic::before{
@@ -912,4 +924,14 @@ div.social-media a i{
     background-color: #232323;
     border-color: #4a4747;
 }
+
+.badge[data-format*=csv] {
+  background-color: #6B5600;
+}
+
+.badge[data-format=geojson] {
+    background-color: #7526CA;
+}
+
+
 
