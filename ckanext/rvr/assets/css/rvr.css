@@ -130,11 +130,11 @@ div#content.container div.row.wrapper{
 box-shadow:none;
 }
     .account-masthead{
-     background-color: #00847d;
+     background-color: #00615B;
     }
 /*####################################### Header Bereich Start ###################################################*/
 .navbar.navbar-static-top.masthead a {
-    color: #00847d!important;
+    color: #00615B!important;
     font-size: 17px;
 }
 
@@ -142,7 +142,7 @@ box-shadow:none;
 
 .masthead .navigation .nav-pills li a:hover,
 .masthead .navigation .nav-pills li.active a{
-    background-color: #00847d;
+    background-color: #00615B;
     color: white !important;
 }
 
@@ -170,7 +170,7 @@ box-shadow:none;
 }
 
 .navbar-toggle , .navbar-toggle.collapsed{
-    color: #00847d;
+    color: #00615B;
 }
 
 @media (max-width:1201px) and (min-width:1200px){
@@ -264,7 +264,7 @@ div.field input#field-sitewide-search.form-control{
     
     font-size: 1rem;
     line-height: 1.6;
-    color: #00847d!important;
+    color: #00615B!important;
 }
 
 .social-icons{
@@ -483,7 +483,7 @@ ul, ol {
     text-decoration: none;
 }
 .link {
-    color: #00847d;
+    color: #00615B;
     position: relative;
     font-family: "Montserrat-Regular,Verdana,Arial,sans-serif";
 }
@@ -512,7 +512,7 @@ h4 {
 
 /* #################################################### Main Content ############################################## */
 body{
-    background: #00847d url("../../../base/images/bg.png");
+    background: #00615B url("../../../base/images/bg.png");
     max-width: 100%;
 }
 div.hero{
@@ -661,7 +661,7 @@ form.module-content.search-form h3.heading{
 }
 
 form.module-content{
-    background-color: #00847d;
+    background-color: #00615B;
     position: relative;
 }
 
@@ -799,7 +799,7 @@ div#dataset-map-attribution div a{
 
 
 [data-module="facet-search"] ul li.search {
-    border-left: 1px solid #00847d;
+    border-left: 1px solid #00615B;
     background-color: #c8e9e842;
 }
 
