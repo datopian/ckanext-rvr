@@ -134,11 +134,14 @@ box-shadow:none;
     }
 /*####################################### Header Bereich Start ###################################################*/
 .navbar.navbar-static-top.masthead a {
-    color: #00615B!important;
+    color: #00615B;
     font-size: 17px;
 }
 
-
+.navbar.navbar-static-top.masthead a:hover {
+    color: white;
+    font-size: 17px;
+}
 
 .masthead .navigation .nav-pills li a:hover,
 .masthead .navigation .nav-pills li.active a{
