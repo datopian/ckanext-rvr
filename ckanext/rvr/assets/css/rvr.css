@@ -272,6 +272,11 @@ div.field input#field-sitewide-search.form-control{
 
 .social-icons{
     padding-top: 2px;
+    padding-left: 2px;
+}
+
+.social-icons a {
+    font-size: 24px;
 }
 
 div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i{
