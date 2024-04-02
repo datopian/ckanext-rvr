@@ -114,13 +114,13 @@
           <form class="d-flex site-search" action="{% url_for dataset_type ~ '.search' %}" method="get">
               <label class="d-none" for="field-sitewide-search">{% block header_site_search_label %}{{ h.humanize_entity_type('package', dataset_type, 'search_placeholder') or _('Search Datasets...') }}{% endblock %}</label>
               <input id="field-sitewide-search" class="form-control me-2"  type="text" name="q" placeholder="{{ _('Search') }}" aria-label="{{ h.humanize_entity_type('package', dataset_type, 'search_placeholder') or _('Search datasets...') }}"/>
-              <button class="btn" type="submit" aria-label="{{ _('Submit') }}"><i class="fa fa-search"></i></button>
+              <button class="btn" type="submit" aria-label="{{ _('Submit') }}"><i class="fa fa-search" aria-hidden="true"></i></button>
           </form>
           <div class="social-icons">
-          <a href="https://www.facebook.com/RVR.Ruhr" target="blank"><i class="fa-brands fa-facebook"></i></a>
-          <a href="https://twitter.com/metropole_ruhr" target="blank"><i class="fa-brands fa-twitter"></i></a>
-          <a href="https://www.instagram.com/rvr.ruhr/" target="blank"><i class="fa-brands fa-instagram"></i></a>
-          <a href="https://www.youtube.com/channel/UCCJDPVQdYd_TRVqT_sutt7g" target="blank"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://www.facebook.com/RVR.Ruhr" aria-label="Facebook" target="blank"><i class="fa-brands fa-facebook"></i></a>
+          <a href="https://twitter.com/metropole_ruhr" aria-label="Twitter"target="blank"><i class="fa-brands fa-twitter"></i></a>
+          <a href="https://www.instagram.com/rvr.ruhr/" aria-label="Instagram" target="blank"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.youtube.com/channel/UCCJDPVQdYd_TRVqT_sutt7g" aria-label="Youtube" target="blank"><i class="fa-brands fa-youtube"></i></a>
         </div>
       {% endblock %}
       </div>

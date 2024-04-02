@@ -42,7 +42,7 @@
                   autocomplete="off" placeholder="Bürgermeisterwahl">
                 <button type="submit">
                   <i class="fa fa-search"></i>
-                  <span class="sr-only">Search</span>
+                  <span class="button-text">Search</span>
                 </button>
               </div>
             </form>
@@ -51,7 +51,7 @@
         <div id="minimized" class="searchbox-desktop" style="padding-bottom:30px;display:block;">
           <div class="module module-search module-narrow module-shallow box">
             <form class="module-content search-form">
-              <h3 class="heading">Kartensuche</h3>
+              <h2 class="heading">Kartensuche</h2>
               <button type="button" onclick="maximizeMap()">
                 <img src="/small.png" alt="Ruhr Metropole" width="100%">Klicken Sie hier, um die Kartensuche zu maximieren</img>
               </button>
@@ -59,7 +59,7 @@
           </form>
         </div>
         <div class="module-content box box1">
-          <header>
+          <div>
             <h1 class="page-heading">NEWS</h1>
             {% block newest_news %}
             {% set posts = h.get_recent_blog_posts(number=1)%}
@@ -76,13 +76,13 @@
             {{post.content|safe}}
             {% endfor %}
             {% endblock %}
-          </header>
+          </div>
           <a href="/blog">MEHR NEWS ANZEIGEN</a>
         </div>
         <div class="module-content box box2">
           <div class="textbox">
             <div class="textbox content">
-              <header>
+              <div>
                 {% if intro %}
                 {{ h.render_markdown(intro) }}
                 {% else %}
@@ -93,7 +93,7 @@
                   {% endtrans %}
                 </p>
                 {% endif %}
-              </header>
+              </div>
             </div>
           </div>
           <a href="/pages/uber-uns">ÜBER UNS</a>
@@ -101,7 +101,7 @@
         <div class="module-content box box2">
           <div class="textbox">
             <div class="textbox content">
-              <header>
+              <div>
                 {% block verkehrsdaten_page %}
                 {% set posts = h.get_specific_page(name="verkehrsdaten")%}
                 {% for post in posts %}
@@ -110,7 +110,7 @@
                 {{post.content|safe}}
                 {% endfor %}
                 {% endblock %}
-              </header>
+              </div>
             </div>
           </div>
         </div>
@@ -118,13 +118,13 @@
           <div class="textbox">
 
             <div class="textbox content">
-              <header>
+              <div>
                 <h1 class="page-heading">Vereinbarung der Metropole Ruhr</h1>
                 <p>
                   In interkommunalen Arbeitsgruppen wurde eine Vereinbarung erarbeitet, die u.a. Fragen zu rechtlichen
                   und technischen Rahmenbedingungen klärt.
                 </p>
-              </header>
+              </div>
             </div>
           </div>
           <a target="_blank" href="/files/OpenData MR_Leitfaden.pdf">Leitfaden Open Data Metropole Ruhr</a>
@@ -134,13 +134,13 @@
         <div class="searchbox-desktop">
           <div class="module module-search module-narrow module-shallow box">
             <form class="module-content search-form" method="get" action="/dataset">
-              <h3 class="heading">Suche</h3>
+              <h2 class="heading">Suche</h2>
               <div class="search-input form-group search-giant">
                 <input aria-label="Search datasets" id="field-main-search" type="text" class="form-control" name="q"
                   autocomplete="off" placeholder="Bürgermeisterwahl">
                 <button type="submit">
                   <i class="fa fa-search"></i>
-                  <span class="sr-only">Search</span>
+                  <span class="button-text">Search</span>
                 </button>
               </div>
               <a href="/verkehrsdaten">
@@ -151,7 +151,7 @@
         </div>
 
         <div class="module-content box dataset">
-          <header>
+          <div>
 
             <h1 class="page-heading">NEUESTE DATENSÄTZE</h1>
             <ul>
@@ -162,7 +162,7 @@
 
             </ul>
 
-          </header>
+          </div>
 
         </div>
 

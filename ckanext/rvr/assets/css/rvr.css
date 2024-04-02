@@ -130,19 +130,22 @@ div#content.container div.row.wrapper{
 box-shadow:none;
 }
     .account-masthead{
-     background-color: #00847d;
+     background-color: #00615B;
     }
 /*####################################### Header Bereich Start ###################################################*/
 .navbar.navbar-static-top.masthead a {
-    color: #00847d!important;
+    color: #00615B;
     font-size: 17px;
 }
 
-
+.navbar.navbar-static-top.masthead a:hover {
+    color: white;
+    font-size: 17px;
+}
 
 .masthead .navigation .nav-pills li a:hover,
 .masthead .navigation .nav-pills li.active a{
-    background-color: #00847d;
+    background-color: #00615B;
     color: white !important;
 }
 
@@ -170,7 +173,7 @@ box-shadow:none;
 }
 
 .navbar-toggle , .navbar-toggle.collapsed{
-    color: #00847d;
+    color: #00615B;
 }
 
 @media (max-width:1201px) and (min-width:1200px){
@@ -264,11 +267,16 @@ div.field input#field-sitewide-search.form-control{
     
     font-size: 1rem;
     line-height: 1.6;
-    color: #00847d!important;
+    color: #00615B!important;
 }
 
 .social-icons{
     padding-top: 2px;
+    padding-left: 2px;
+}
+
+.social-icons a {
+    font-size: 24px;
 }
 
 div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i{
@@ -483,7 +491,7 @@ ul, ol {
     text-decoration: none;
 }
 .link {
-    color: #00847d;
+    color: #00615B;
     position: relative;
     font-family: "Montserrat-Regular,Verdana,Arial,sans-serif";
 }
@@ -496,6 +504,7 @@ ul, ol {
 }
 .a {
     background-color: transparent;
+    
 }
 
 h4 {
@@ -512,7 +521,7 @@ h4 {
 
 /* #################################################### Main Content ############################################## */
 body{
-    background: #00847d url("../../../base/images/bg.png");
+    background: #00615B url("../../../base/images/bg.png");
     max-width: 100%;
 }
 div.hero{
@@ -631,6 +640,11 @@ div.module-content.box.box1::before{
     width: 0; height: 0; border-top: 60px solid black; border-left: 60px solid transparent;
 }
 
+.module-content.box.box1 a {
+  color: #1C5E73;
+  text-decoration: none;
+}
+
 .module-content.box.box2{
     /* margin-right:0;
     margin-left: 5%;*/
@@ -638,6 +652,11 @@ div.module-content.box.box1::before{
     
     box-shadow: none;
     position: relative;
+}
+
+.module-content.box.box2 a {
+  color: #00615B;
+  text-decoration: none;
 }
 
 
@@ -656,12 +675,17 @@ div.module-content.box.box2::before{
     border:none;
 }
 
-form.module-content.search-form h3.heading{
+form.module-content.search-form h2.heading{
     color:white;
 }
 
+form.module-content.search-form a {
+    color: #FAFAFA;
+    text-decoration: none;
+}
+
 form.module-content{
-    background-color: #00847d;
+    background-color: #00615B;
     position: relative;
 }
 
@@ -704,6 +728,12 @@ div.module-content.box.dataset::before{
     box-shadow: none;
     position: relative;
 }
+
+.module-content.box.statistic a {
+  color: #1C5F73;
+  text-decoration: none;
+}
+
 
 
 div.module-content.box.statistic::before{
@@ -799,7 +829,7 @@ div#dataset-map-attribution div a{
 
 
 [data-module="facet-search"] ul li.search {
-    border-left: 1px solid #00847d;
+    border-left: 1px solid #00615B;
     background-color: #c8e9e842;
 }
 
@@ -924,6 +954,17 @@ div#dataset-map-container.map-draw-field {
     border-color: #4a4747;
 }
 
+
+.badge[data-format*=csv] {
+  background-color: #6B5600;
+}
+
+.badge[data-format=geojson] {
+    background-color: #7526CA !important;
+}
+
+
+
 .dataset-map-expanded #dataset-map {
   position: absolute;
   width: 940px;
@@ -967,3 +1008,4 @@ div#dataset-map-container.map-draw-field {
 .dataset-map-expanded .wrapper {
   margin-top: 383px;
 }
+
