@@ -10,12 +10,15 @@ from ckan.common import config, asbool
 import ckan.authz as authz
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.search as search
+import ckan.model as model
+from ckan.logic.action.get import package_show as ckan_package_show
 
 log = logging.getLogger(__name__)
 toolkit = plugins.toolkit
 _validate = dictization_functions.validate
 ValidationError = logic.ValidationError
 _check_access = logic.check_access
+get_action = logic.get_action
 
 def get_package_field(field, package):
     '''
@@ -260,7 +263,7 @@ def package_search(context, data_dict):
     dateranges = data_dict.pop('dateranges', {})
     data_dict.pop('date_filters', {})
     items_per_page = int(data_dict.pop('rows', 20))
-    start = data_dict.pop('start', 0)
+    start = int(data_dict.pop('start', 0))
     data_dict['rows'] = 1000
     data_dict['start'] = 0
 
@@ -487,3 +490,157 @@ def package_search(context, data_dict):
             key=lambda facet: facet['display_name'], reverse=True)
 
     return search_results
+
+@toolkit.side_effect_free
+def package_show(context, data_dict):
+    """
+    Extends the default ckan package_show to move the `spatial` and \
+    `dataset_spatial` fields from the extras to the main dict object.
+
+    This is necessary to fix bugs with the package dict getting updated with \
+    both fields in the extras and the main package schema.
+    """
+    context['api_version'] = 3
+    context['use_cache'] = False
+    dataset = ckan_package_show(context, data_dict)
+    
+    spatial_dict = {}
+    dataset_spatial_dict = {}
+    for extra in dataset.get('extras', []):
+        if extra.get('key', '') == 'spatial':
+            spatial_dict = extra
+        if extra.get('key', '')== 'dataset_spatial':
+            dataset_spatial_dict = extra
+    try:
+        dataset['extras'].remove(spatial_dict)
+    except KeyError:
+        pass
+    except ValueError:
+        pass
+    try:
+        dataset['extras'].remove(dataset_spatial_dict)
+    except KeyError:
+        pass
+    except ValueError:
+        pass
+    dataset['spatial'] = spatial_dict.get('value', '')
+    dataset['dataset_spatial'] = dataset_spatial_dict.get('value', '')
+
+    return dataset
+
+def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:
+    """
+    Gets the bbox coordinates from the organization if it has one and adds \
+    it to the dataset dictionary for indexing.
+
+    Note: This should only be called before indexing, the aim is to index the \
+    spatial data with the dataset, if the organization has spatial daata, \
+    but not to add the data to the dataset in the database.
+
+    Args:
+        pkg_dict (dict): The package dictionary object gotten from the ckan \
+        plugin `before_index` method
+        org_id (str): The organization id of the dataset's organization
+    
+    Returns:
+        (dict) Updated dictionary with the `extras_spatial` field if the \
+        organization had coordinates, if not, just returns back the `pkg_dict`
+    """
+    context = { u'model': model, u'session': model.Session }
+    data_dict = { u'id': org_id, u'include_datasets': False }
+    try:
+        group_dict = get_action(u'organization_show')(context, data_dict)
+        extras = group_dict.get('extras', [])
+        org_spatial = None
+        for extra in extras:
+            if extra['key'] == 'org_spatial':
+                org_spatial = extra['value']
+        if org_spatial and org_spatial.startswith('[['):
+            coordinates = json.loads(org_spatial)
+            pkg_geojson = {
+                "type": "Polygon",
+                "coordinates": coordinates
+            }
+            spatial = json.dumps(pkg_geojson)
+            pkg_dict['extras_spatial'] = spatial
+
+            # Add spatial to data_dict
+            if pkg_dict.get('data_dict', None):
+                data = json.loads(pkg_dict['data_dict'])
+                data['extras'].append({'key': 'spatial', 'value': spatial})
+                pkg_dict['data_dict'] = json.dumps(data)
+
+            # Add spatial to validated_data_dict
+            if pkg_dict.get('validated_data_dict', None):
+                validated_data = json.loads(pkg_dict['validated_data_dict'])
+                validated_data['extras'].append({'key': 'spatial', 'value': spatial})
+                pkg_dict['validated_data_dict'] = json.dumps(validated_data)
+
+            return pkg_dict
+        else:
+            return pkg_dict
+    except (logic.NotFound, logic.NotAuthorized) as e:
+        log.error(e)
+        return pkg_dict
+
+def generate_spatial_from_bbox(bbox: str) -> str:
+    """
+    Takes a bbox string and adds it to the spatial polygon
+    """
+    bbox_json = json.loads(bbox)
+    spatial_json = {
+        "type": "Polygon",
+        "coordinates": bbox_json
+    }
+    return json.dumps(spatial_json)
+
+def update_dataset_spatial(data: dict) -> None:
+    """
+    This should be called when the organization bbox string has changed.
+
+    This function updates all the datasets of that organization that don't \
+    have a bbox string, and leaves those that do. The datasets are then \
+    reindexed.
+
+    Args:
+        data (dict): The organization dictionary object
+    """
+    from ckan.views.group import _force_reindex
+
+    for extra in data.get('extras', []):
+        if extra.get('key', None) == 'org_spatial':
+            org_spatial = extra['value']
+
+    context = { u'model': model, u'session': model.Session }
+
+    for pkg in data.get('packages', []):
+        dataset = get_action('package_show')(context, {'id': pkg['id']})
+        has_bbox = False
+
+        # Before the addition of the features to allows datasets inherit spatial
+        # coordinates from the organization, some fields already had their
+        # 'spatial' fields but not the 'dataset_spatial' fields.
+        # In the event that the fields are not updated before using the
+        # feature, we don't want to lose the coordinates for those datasets,
+        # hence we would also not override datasets that have any of these extras
+        # TODO: This is temporary and when it is certain that the data has been 
+        # normalized, this should be set to use only the 'dataset_spatial' field
+        required = ['bbox-east-long', 'bbox-north-lat', 'bbox-south-lat', 'bbox-west-long']
+        # Check if the dataset has a bbox value
+        if dataset.get('dataset_spatial', None):
+            has_bbox = True
+        else:
+            for extra in dataset.get('extras', []):
+                if extra['key'] in required and len(extra['value']) > 0:
+                    has_bbox = True
+                    break
+        if not has_bbox:
+            try:
+                # Update the package spatial field to the org bbox value
+                dataset['spatial'] = org_spatial
+                get_action('package_update')(context, dataset)
+            except Exception as e:
+                log.warn("""Failed to update dataset: {} with spatial data from \
+                    organization: {}""".format(dataset['name'], data['name']))
+                log.warn(e)
+    _force_reindex(data)

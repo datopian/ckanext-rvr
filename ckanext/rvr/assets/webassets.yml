@@ -46,3 +46,13 @@ svg_map_search_js:
   contents:
     - js/svgMapSearch.js
 
+bbox_generator_js:
+  output: rvr/%(version)s_bbox_generator.js
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - js/vendors/leaflet/leaflet.js
+    - js/vendors/leaflet.draw/leaflet.draw.js
+    - js/rvrMap.js
+    - js/rvrBBOXGenerator.js

@@ -1,0 +1,11 @@
+{% ckan_extends %}
+
+{% block scripts %}
+  {{ super() }}
+  {% asset 'rvr/bbox_generator_js' %}
+{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  {% asset 'ckanext-spatial/spatial_query_css' %}
+{% endblock %}

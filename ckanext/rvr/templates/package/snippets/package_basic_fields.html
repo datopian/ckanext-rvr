@@ -141,5 +141,81 @@
   </div>
   {% endif %}
 
-  {% endblock %}
+  {% set spatial_value = data.get('spatial', '') %}
+  {% set pkg_spatial = data.get('dataset_spatial', '') %}
+  {% set org_spatial = data.get('org_spatial', '') %}
+  {% set valid_pkg_spatial = h.is_valid_spatial(pkg_spatial) %}
+  {% set valid_org_spatial = h.is_valid_spatial(org_spatial) %}
+  {% set valid_spatial = h.is_valid_spatial(spatial_value) %}
+  {% if spatial_value == org_spatial and valid_org_spatial and not valid_pkg_spatial %}
+    {# The current spatial is set to the organization spatial #}
+    {% set org_default = 'True' %}
+  {% elif valid_pkg_spatial and spatial_value == pkg_spatial %}
+    {# The current spatial is the dataset spatial #}
+    {% set org_default = 'False' %}
+  {% elif valid_spatial and not valid_org_spatial and not valid_pkg_spatial %}
+    {# In this case, it appears that the dataset hasn't been updated to use the dataset_spatial and org_spatial fields to track the spatial inheritance, we are going to prevent the user from updating the spatial fields #}
+    {% set org_default = 'Unmigrated' %}
+  {% elif not valid_spatial and not valid_org_spatial and not valid_pkg_spatial %}
+    {# This is the expected case in a new dataset form page, there might be an organization spatial, but we will not be checking until the user actually tries to create the dataset #}
+    {% set org_default = 'New' %}
+  {% elif not valid_org_spatial %}
+    {# The organization spatial value is empty #}
+    {% set org_default = 'Empty' %}
+  {% else %}
+    {# At this point we are assuming there is no organization spatial and no dataset spatial or some other unexpected scenario #}
+    {% set org_default = 'Unknown' %}
+  {% endif %}
+
+  <div class="form-group control-medium">
+
+  </div>
+
+  <div class="form-group control-full">
+    <label class="control-label" for="field-org-bbox">Dataset Coordinates</label>
+
+    {% if org_default == 'Unmigrated' %}
+      <div class="alert alert-warning" role="alert">Editing spatial fields for this dataset has been disabled. Please contact the admin to enable spatial inheritance for this dataset.</div>
+    {% else %}
+      <div class="controls ">
+        <input id="field-dataset-bbox" type="hidden" name="dataset_spatial" value="{{ pkg_spatial }}" placeholder="Map Data" class="form-control">
+      </div>
+
+      <div class="map-draw-form-group">
+          <div class="dataset-map"
+              data-module="rvr-bbox-generator"
+              data-currentspatial="{{ spatial_value }}"
+              data-spatialfield="field-dataset-bbox"
+              data-parentspatial="{{ org_spatial }}"
+          >
+              <div id="dataset-map-container" class="map-draw-field"></div>
+          </div>
+          <div id="dataset-map-attribution">
+              Click the pen icon to start drawing. {% if org_default != 'False' %}<em>Changes made would override the organization default</em>{% endif %}
+              {% snippet "spatial/snippets/rvr_map_attribution.html" %}
+          </div>
+          <div class="btn-toolbar" role="toolbar" aria-label="controls">
+              <div class="btn-group btn-group-sm" role="group" aria-label="cancel">
+                <button type="button" id="cancel-map-draw-modal" class="btn disabled" data-dismiss="modal">Cancel Changes</button>
+              </div>
+              <div class="btn-group btn-group-sm" role="group" aria-label="default">
+                {% if org_default == 'True' %}
+                  <button type="button" class="btn disabled" data-dismiss="modal">Already Using Organization Default</button>
+                {% elif org_default == 'False' %}
+                  <button type="button" id="use-org-spatial" class="btn btn-info" data-dismiss="modal">Use Organization Default</button>
+                {% elif org_default in ['New', 'Empty'] %}
+                  <button type="button" class="btn disabled" data-dismiss="modal">Organization default unavailable</button>
+                {% endif %}
+              </div>
+              <div class="btn-group btn-group-sm" role="group" aria-label="apply">
+                <button type="button" id="apply-map-draw-modal" class="btn disabled">Apply</button>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <input id="field-spatial" type="hidden" name="spatial" value="{{ spatial_value }}" placeholder="Spatial Data" class="form-control">
+  {% endif %}
+
+{% endblock %}
 
