@@ -38,7 +38,7 @@
         <div class="module-content box dataset">
               <h1 class="page-heading">NEUESTE DATENSÄTZE</h1>
               {% block packages_list %}
-                  {{ h.snippet('snippets/package_list.html', packages=h.get_newest_datasets()) }}
+                  {{ h.snippet('snippets/package_list.html', packages=h.get_latest_created_datasets()) }}
               {% endblock %}
         </div>  
         <div class="module-content box statistic">

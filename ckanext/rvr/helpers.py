@@ -85,9 +85,12 @@ def all_package_list(include_private: bool = True):
     return [r[0] for r in query.execute()]
 
 
-def get_newest_datasets():
-    results = tk.get_action("current_package_list_with_resources")({}, {"limit": 5})
-    return results
+def get_latest_created_datasets():
+    results = tk.get_action("package_search")(
+        context,
+        {"rows": 5, "sort": "metadata_created desc", "fq": "type:dataset", "q": ""},
+    )
+    return results['results']
 
 
 def get_nav_transport():

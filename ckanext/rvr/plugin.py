@@ -55,7 +55,7 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         Register template helper functions.
         """
         return {
-            "get_newest_datasets": rvrHelpers.get_newest_datasets,
+            "get_latest_created_datasets": rvrHelpers.get_latest_created_datasets,
             "build_nav_main": rvrHelpers.build_pages_nav_main,
             "get_specific_page": rvrHelpers.get_specific_page,
             "get_faq_page": rvrHelpers.get_faq_page,
