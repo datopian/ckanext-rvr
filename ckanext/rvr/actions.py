@@ -20,25 +20,27 @@ ValidationError = logic.ValidationError
 _check_access = logic.check_access
 get_action = logic.get_action
 
+
 def get_package_field(field, package):
-    '''
+    """
     Check package and package extras and get the value of the field if \
     it exists
-    '''
+    """
     value = None
-    if package.get(field, ''):
+    if package.get(field, ""):
         value = package[field]
     else:
-        for item in package['extras']:
-            if item.get('key', '') == field:
-                value = item['value']
+        for item in package["extras"]:
+            if item.get("key", "") == field:
+                value = item["value"]
     return value
 
+
 def filter_daterange(facet, dates, package):
-    '''
+    """
     Checks if the date of a field in a dataset is within a defined date \
     range.
-    '''
+    """
 
     # Check that there is at least a start or end date
     # No dates specified, packages passes
@@ -55,7 +57,7 @@ def filter_daterange(facet, dates, package):
             end_date = parser.parse(dates[1]).date()
     except ValueError as e:
         # Incorrect date format from parameter, package passes
-        log.error('Date parsing failed with error: {}'.format(e))
+        log.error("Date parsing failed with error: {}".format(e))
         return True
 
     is_in_range = True
@@ -66,7 +68,7 @@ def filter_daterange(facet, dates, package):
             facet_date = parser.parse(facet_date_str).date()
         except ValueError as e:
             # Package is storing incorrect date type, don't show package
-            log.error('Date parsing failed with error: {}'.format(e))
+            log.error("Date parsing failed with error: {}".format(e))
             return False
 
         # Check if datetime object is in range
@@ -81,34 +83,35 @@ def filter_daterange(facet, dates, package):
 
     return is_in_range
 
+
 def update_facets(facets, package):
-    '''
+    """
     After filtering, update the facets being sent from solr to reflect the \
     changes.
-    '''
+    """
     for facet in facets:
-        if facet in ['tags', 'groups', 'organization']:
+        if facet in ["tags", "groups", "organization"]:
             pop_items = []
             for facet_item in facets[facet]:
-                if facet in ['organization']:
+                if facet in ["organization"]:
                     item = package[facet]
-                    if item['name'] == facet_item:
+                    if item["name"] == facet_item:
                         facets[facet][facet_item] -= 1
                         if facets[facet][facet_item] == 0:
                             pop_items.append(facet_item)
-                if facet in ['tags', 'groups']:
+                if facet in ["tags", "groups"]:
                     for item in package[facet]:
-                        if item['name'] == facet_item:
+                        if item["name"] == facet_item:
                             facets[facet][facet_item] -= 1
                             if facets[facet][facet_item] == 0:
                                 pop_items.append(facet_item)
             for i in pop_items:
                 facets[facet].pop(i)
-        elif facet == 'res_format':
+        elif facet == "res_format":
             pop_items = []
             for facet_item in facets[facet]:
-                for item in package['resources']:
-                    if item['format'] == facet_item:
+                for item in package["resources"]:
+                    if item["format"] == facet_item:
                         facets[facet][facet_item] -= 1
                         if facets[facet][facet_item] == 0:
                             pop_items.append(facet_item)
@@ -117,12 +120,14 @@ def update_facets(facets, package):
         else:
             pop_items = []
             value = get_package_field(facet, package)
-            if facet in ['metadata_created', 'metadata_modified']:
-                value = parser.parse(value).date().strftime('%m-%d-%Y')
+            if facet in ["metadata_created", "metadata_modified"]:
+                value = parser.parse(value).date().strftime("%m-%d-%Y")
             for item in facets[facet]:
-                if value == item or \
-                facet in ['metadata_created', 'metadata_modified'] and \
-                value == parser.parse(item).date().strftime('%m-%d-%Y'):
+                if (
+                    value == item
+                    or facet in ["metadata_created", "metadata_modified"]
+                    and value == parser.parse(item).date().strftime("%m-%d-%Y")
+                ):
                     facets[facet][item] -= 1
                     if facets[facet][item] == 0:
                         pop_items.append(item)
@@ -130,9 +135,10 @@ def update_facets(facets, package):
                 facets[facet].pop(i)
     return facets
 
+
 @toolkit.side_effect_free
 def package_search(context, data_dict):
-    '''
+    """
     RVR implementation for ckan's package_search
     Searches for packages satisfying a given search criteria.
 
@@ -258,40 +264,39 @@ def package_search(context, data_dict):
         query.
         fl can be  None or a list of result fields, such as ['id', 'extras_custom_field'].
         if fl = None, datasets are returned as a list of full dictionary.
-    '''
+    """
     # Get dateranges
-    dateranges = data_dict.pop('dateranges', {})
-    data_dict.pop('date_filters', {})
-    items_per_page = int(data_dict.pop('rows', 20))
-    start = int(data_dict.pop('start', 0))
-    data_dict['rows'] = 1000
-    data_dict['start'] = 0
+    dateranges = data_dict.pop("dateranges", {})
+    data_dict.pop("date_filters", {})
+    items_per_page = int(data_dict.pop("rows", 20))
+    start = int(data_dict.pop("start", 0))
+    data_dict["rows"] = 1000
+    data_dict["start"] = 0
 
     # sometimes context['schema'] is None
-    schema = (context.get('schema') or
-              logic.schema.default_package_search_schema())
+    schema = context.get("schema") or logic.schema.default_package_search_schema()
     data_dict, errors = _validate(data_dict, schema, context)
     # put the extras back into the data_dict so that the search can
     # report needless parameters
-    data_dict.update(data_dict.get('__extras', {}))
-    data_dict.pop('__extras', None)
+    data_dict.update(data_dict.get("__extras", {}))
+    data_dict.pop("__extras", None)
     if errors:
         raise ValidationError(errors)
 
-    model = context['model']
-    session = context['session']
-    user = context.get('user')
+    model = context["model"]
+    session = context["session"]
+    user = context.get("user")
 
-    _check_access('package_search', context, data_dict)
+    _check_access("package_search", context, data_dict)
 
     # Move ext_ params to extras and remove them from the root of the search
     # params, so they don't cause and error
-    data_dict['extras'] = data_dict.get('extras', {})
-    for key in [key for key in data_dict.keys() if key.startswith('ext_')]:
-        data_dict['extras'][key] = data_dict.pop(key)
+    data_dict["extras"] = data_dict.get("extras", {})
+    for key in [key for key in data_dict.keys() if key.startswith("ext_")]:
+        data_dict["extras"][key] = data_dict.pop(key)
 
     # set default search field
-    data_dict['df'] = 'text'
+    data_dict["df"] = "text"
 
     # check if some extension needs to modify the search params
     for item in plugins.PluginImplementations(plugins.IPackageController):
@@ -299,43 +304,47 @@ def package_search(context, data_dict):
 
     # the extension may have decided that it is not necessary to perform
     # the query
-    abort = data_dict.get('abort_search', False)
+    abort = data_dict.get("abort_search", False)
 
-    if data_dict.get('sort') in (None, 'rank'):
-        data_dict['sort'] = config.get('ckan.search.default_package_sort') or 'score desc, metadata_modified desc'
+    if data_dict.get("sort") in (None, "rank"):
+        data_dict["sort"] = (
+            config.get("ckan.search.default_package_sort")
+            or "score desc, metadata_modified desc"
+        )
 
     results = []
     if not abort:
-        if asbool(data_dict.get('use_default_schema')):
-            data_source = 'data_dict'
+        if asbool(data_dict.get("use_default_schema")):
+            data_source = "data_dict"
         else:
-            data_source = 'validated_data_dict'
-        data_dict.pop('use_default_schema', None)
+            data_source = "validated_data_dict"
+        data_dict.pop("use_default_schema", None)
 
-        result_fl = data_dict.get('fl')
+        result_fl = data_dict.get("fl")
         if not result_fl:
-            data_dict['fl'] = 'id {0}'.format(data_source)
+            data_dict["fl"] = "id {0}".format(data_source)
         else:
-            data_dict['fl'] = ' '.join(result_fl)
+            data_dict["fl"] = " ".join(result_fl)
 
         # Remove before these hit solr FIXME: whitelist instead
-        include_private = asbool(data_dict.pop('include_private', False))
-        include_drafts = asbool(data_dict.pop('include_drafts', False))
-        data_dict.setdefault('fq', '')
+        include_private = asbool(data_dict.pop("include_private", False))
+        include_drafts = asbool(data_dict.pop("include_drafts", False))
+        data_dict.setdefault("fq", "")
         if not include_private:
-            data_dict['fq'] = '+capacity:public ' + data_dict['fq']
+            data_dict["fq"] = "+capacity:public " + data_dict["fq"]
         if include_drafts:
-            data_dict['fq'] += ' +state:(active OR draft)'
+            data_dict["fq"] += " +state:(active OR draft)"
 
         # Pop these ones as Solr does not need them
-        extras = data_dict.pop('extras', None)
+        extras = data_dict.pop("extras", None)
 
         # enforce permission filter based on user
-        if context.get('ignore_auth') or (user and authz.is_sysadmin(user)):
+        if context.get("ignore_auth") or (user and authz.is_sysadmin(user)):
             labels = None
         else:
-            labels = lib_plugins.get_permission_labels(
-                ).get_user_dataset_labels(context['auth_user_obj'])
+            labels = lib_plugins.get_permission_labels().get_user_dataset_labels(
+                context["auth_user_obj"]
+            )
 
         query = search.query_for(model.Package)
         # Save a copy of the original data_dict
@@ -344,13 +353,13 @@ def package_search(context, data_dict):
         def get_filtered_packages(
             scanned_package_count=0, removed_packages_count=0, facets={}, extras=extras
         ):
-            '''
+            """
             Make query to solr and also filter results by dateranges if available
-            '''
+            """
             # Pass the original data_dict as it changes after each iteration
             data_dict = permanent_data_dict.copy()
             if scanned_package_count:
-                data_dict['start'] = scanned_package_count
+                data_dict["start"] = scanned_package_count
             query.run(data_dict, permission_labels=labels)
             if not facets:
                 current_facets = query.facets
@@ -358,20 +367,20 @@ def package_search(context, data_dict):
                 current_facets = facets
 
             # Add them back so extensions can use them on after_search
-            data_dict['extras'] = extras
+            data_dict["extras"] = extras
 
             if result_fl:
                 for package in query.results:
                     scanned_package_count += 1
                     if isinstance(package, text_type):
                         package = {result_fl[0]: package}
-                    extras = package.pop('extras', {})
+                    extras = package.pop("extras", {})
                     package.update(extras)
 
                     # Check daterange
                     is_in_range = True
                     for k in dateranges:
-                        if not filter_daterange(k, dateranges[k]['params'], package):
+                        if not filter_daterange(k, dateranges[k]["params"], package):
                             is_in_range = False
                             break
                     if not is_in_range:
@@ -389,14 +398,17 @@ def package_search(context, data_dict):
                     if package_dict:
                         # the package_dict still needs translating when being viewed
                         package_dict = json.loads(package_dict)
-                        if context.get('for_view'):
+                        if context.get("for_view"):
                             for item in plugins.PluginImplementations(
-                                    plugins.IPackageController):
+                                plugins.IPackageController
+                            ):
                                 package_dict = item.before_dataset_view(package_dict)
                         # Check daterange
                         is_in_range = True
                         for k in dateranges:
-                            if not filter_daterange(k, dateranges[k]['params'], package_dict):
+                            if not filter_daterange(
+                                k, dateranges[k]["params"], package_dict
+                            ):
                                 is_in_range = False
                                 break
                         if not is_in_range:
@@ -406,8 +418,10 @@ def package_search(context, data_dict):
                             continue
                         results.append(package_dict)
                     else:
-                        log.error('No package_dict is coming from solr for package '
-                                'id %s', package['id'])
+                        log.error(
+                            "No package_dict is coming from solr for package " "id %s",
+                            package["id"],
+                        )
             return scanned_package_count, removed_packages_count, current_facets
 
         scanned_packages_count = 0
@@ -417,10 +431,12 @@ def package_search(context, data_dict):
         # and keep running searches till all the packages from the original
         # search have been filtered
         while True:
-            scanned_packages_count, removed_packages_count, facets = get_filtered_packages(
-                scanned_package_count=scanned_packages_count,
-                removed_packages_count=removed_packages_count,
-                facets=facets
+            scanned_packages_count, removed_packages_count, facets = (
+                get_filtered_packages(
+                    scanned_package_count=scanned_packages_count,
+                    removed_packages_count=removed_packages_count,
+                    facets=facets,
+                )
             )
             # Break loop once all query results have been searched through
             if int(query.count) <= scanned_packages_count:
@@ -431,52 +447,54 @@ def package_search(context, data_dict):
         facets = {}
         results = []
 
-    paginated_results = results[start:start+items_per_page]
+    paginated_results = results[start : start + items_per_page]
 
     search_results = {
-        'count': count,
-        'facets': facets,
-        'results': paginated_results,
-        'sort': data_dict['sort']
+        "count": count,
+        "facets": facets,
+        "results": paginated_results,
+        "sort": data_dict["sort"],
     }
 
     # create a lookup table of group name to title for all the groups and
     # organizations in the current search's facets.
     group_names = []
-    for field_name in ('groups', 'organization'):
+    for field_name in ("groups", "organization"):
         group_names.extend(facets.get(field_name, {}).keys())
 
-    groups = (session.query(model.Group.name, model.Group.title)
-                    .filter(model.Group.name.in_(group_names))
-                    .all()
-              if group_names else [])
+    groups = (
+        session.query(model.Group.name, model.Group.title)
+        .filter(model.Group.name.in_(group_names))
+        .all()
+        if group_names
+        else []
+    )
     group_titles_by_name = dict(groups)
 
     # Transform facets into a more useful data structure.
     restructured_facets = {}
     for key, value in facets.items():
-        restructured_facets[key] = {
-            'title': key,
-            'items': []
-        }
+        restructured_facets[key] = {"title": key, "items": []}
         for key_, value_ in value.items():
             new_facet_dict = {}
-            new_facet_dict['name'] = key_
-            if key in ('groups', 'organization'):
+            new_facet_dict["name"] = key_
+            if key in ("groups", "organization"):
                 display_name = group_titles_by_name.get(key_, key_)
-                display_name = display_name if display_name and display_name.strip() else key_
-                new_facet_dict['display_name'] = display_name
-            elif key == 'license_id':
+                display_name = (
+                    display_name if display_name and display_name.strip() else key_
+                )
+                new_facet_dict["display_name"] = display_name
+            elif key == "license_id":
                 license = model.Package.get_license_register().get(key_)
                 if license:
-                    new_facet_dict['display_name'] = license.title
+                    new_facet_dict["display_name"] = license.title
                 else:
-                    new_facet_dict['display_name'] = key_
+                    new_facet_dict["display_name"] = key_
             else:
-                new_facet_dict['display_name'] = key_
-            new_facet_dict['count'] = value_
-            restructured_facets[key]['items'].append(new_facet_dict)
-    search_results['search_facets'] = restructured_facets
+                new_facet_dict["display_name"] = key_
+            new_facet_dict["count"] = value_
+            restructured_facets[key]["items"].append(new_facet_dict)
+    search_results["search_facets"] = restructured_facets
 
     # check if some extension needs to modify the search results
     for item in plugins.PluginImplementations(plugins.IPackageController):
@@ -484,12 +502,15 @@ def package_search(context, data_dict):
 
     # After extensions have had a chance to modify the facets, sort them by
     # display name.
-    for facet in search_results['search_facets']:
-        search_results['search_facets'][facet]['items'] = sorted(
-            search_results['search_facets'][facet]['items'],
-            key=lambda facet: facet['display_name'], reverse=True)
+    for facet in search_results["search_facets"]:
+        search_results["search_facets"][facet]["items"] = sorted(
+            search_results["search_facets"][facet]["items"],
+            key=lambda facet: facet["display_name"],
+            reverse=True,
+        )
 
     return search_results
+
 
 @toolkit.side_effect_free
 def package_show(context, data_dict):
@@ -500,33 +521,34 @@ def package_show(context, data_dict):
     This is necessary to fix bugs with the package dict getting updated with \
     both fields in the extras and the main package schema.
     """
-    context['api_version'] = 3
-    context['use_cache'] = False
+    context["api_version"] = 3
+    context["use_cache"] = False
     dataset = ckan_package_show(context, data_dict)
-    
+
     spatial_dict = {}
     dataset_spatial_dict = {}
-    for extra in dataset.get('extras', []):
-        if extra.get('key', '') == 'spatial':
+    for extra in dataset.get("extras", []):
+        if extra.get("key", "") == "spatial":
             spatial_dict = extra
-        if extra.get('key', '')== 'dataset_spatial':
+        if extra.get("key", "") == "dataset_spatial":
             dataset_spatial_dict = extra
     try:
-        dataset['extras'].remove(spatial_dict)
+        dataset["extras"].remove(spatial_dict)
     except KeyError:
         pass
     except ValueError:
         pass
     try:
-        dataset['extras'].remove(dataset_spatial_dict)
+        dataset["extras"].remove(dataset_spatial_dict)
     except KeyError:
         pass
     except ValueError:
         pass
-    dataset['spatial'] = spatial_dict.get('value', '')
-    dataset['dataset_spatial'] = dataset_spatial_dict.get('value', '')
+    dataset["spatial"] = spatial_dict.get("value", "")
+    dataset["dataset_spatial"] = dataset_spatial_dict.get("value", "")
 
     return dataset
+
 
 def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:
     """
@@ -546,35 +568,32 @@ def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:
         (dict) Updated dictionary with the `extras_spatial` field if the \
         organization had coordinates, if not, just returns back the `pkg_dict`
     """
-    context = { u'model': model, u'session': model.Session }
-    data_dict = { u'id': org_id, u'include_datasets': False }
+    context = {"model": model, "session": model.Session}
+    data_dict = {"id": org_id, "include_datasets": False}
     try:
-        group_dict = get_action(u'organization_show')(context, data_dict)
-        extras = group_dict.get('extras', [])
+        group_dict = get_action("organization_show")(context, data_dict)
+        extras = group_dict.get("extras", [])
         org_spatial = None
         for extra in extras:
-            if extra['key'] == 'org_spatial':
-                org_spatial = extra['value']
-        if org_spatial and org_spatial.startswith('[['):
+            if extra["key"] == "org_spatial":
+                org_spatial = extra["value"]
+        if org_spatial and org_spatial.startswith("[["):
             coordinates = json.loads(org_spatial)
-            pkg_geojson = {
-                "type": "Polygon",
-                "coordinates": coordinates
-            }
+            pkg_geojson = {"type": "Polygon", "coordinates": coordinates}
             spatial = json.dumps(pkg_geojson)
-            pkg_dict['extras_spatial'] = spatial
+            pkg_dict["extras_spatial"] = spatial
 
             # Add spatial to data_dict
-            if pkg_dict.get('data_dict', None):
-                data = json.loads(pkg_dict['data_dict'])
-                data['extras'].append({'key': 'spatial', 'value': spatial})
-                pkg_dict['data_dict'] = json.dumps(data)
+            if pkg_dict.get("data_dict", None):
+                data = json.loads(pkg_dict["data_dict"])
+                data["extras"].append({"key": "spatial", "value": spatial})
+                pkg_dict["data_dict"] = json.dumps(data)
 
             # Add spatial to validated_data_dict
-            if pkg_dict.get('validated_data_dict', None):
-                validated_data = json.loads(pkg_dict['validated_data_dict'])
-                validated_data['extras'].append({'key': 'spatial', 'value': spatial})
-                pkg_dict['validated_data_dict'] = json.dumps(validated_data)
+            if pkg_dict.get("validated_data_dict", None):
+                validated_data = json.loads(pkg_dict["validated_data_dict"])
+                validated_data["extras"].append({"key": "spatial", "value": spatial})
+                pkg_dict["validated_data_dict"] = json.dumps(validated_data)
 
             return pkg_dict
         else:
@@ -583,16 +602,15 @@ def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:
         log.error(e)
         return pkg_dict
 
+
 def generate_spatial_from_bbox(bbox: str) -> str:
     """
     Takes a bbox string and adds it to the spatial polygon
     """
     bbox_json = json.loads(bbox)
-    spatial_json = {
-        "type": "Polygon",
-        "coordinates": bbox_json
-    }
+    spatial_json = {"type": "Polygon", "coordinates": bbox_json}
     return json.dumps(spatial_json)
+
 
 def update_dataset_spatial(data: dict) -> None:
     """
@@ -607,14 +625,14 @@ def update_dataset_spatial(data: dict) -> None:
     """
     from ckan.views.group import _force_reindex
 
-    for extra in data.get('extras', []):
-        if extra.get('key', None) == 'org_spatial':
-            org_spatial = extra['value']
+    for extra in data.get("extras", []):
+        if extra.get("key", None) == "org_spatial":
+            org_spatial = extra["value"]
 
-    context = { u'model': model, u'session': model.Session }
+    context = {"model": model, "session": model.Session}
 
-    for pkg in data.get('packages', []):
-        dataset = get_action('package_show')(context, {'id': pkg['id']})
+    for pkg in data.get("packages", []):
+        dataset = get_action("package_show")(context, {"id": pkg["id"]})
         has_bbox = False
 
         # Before the addition of the features to allows datasets inherit spatial
@@ -623,24 +641,33 @@ def update_dataset_spatial(data: dict) -> None:
         # In the event that the fields are not updated before using the
         # feature, we don't want to lose the coordinates for those datasets,
         # hence we would also not override datasets that have any of these extras
-        # TODO: This is temporary and when it is certain that the data has been 
+        # TODO: This is temporary and when it is certain that the data has been
         # normalized, this should be set to use only the 'dataset_spatial' field
-        required = ['bbox-east-long', 'bbox-north-lat', 'bbox-south-lat', 'bbox-west-long']
+        required = [
+            "bbox-east-long",
+            "bbox-north-lat",
+            "bbox-south-lat",
+            "bbox-west-long",
+        ]
         # Check if the dataset has a bbox value
-        if dataset.get('dataset_spatial', None):
+        if dataset.get("dataset_spatial", None):
             has_bbox = True
         else:
-            for extra in dataset.get('extras', []):
-                if extra['key'] in required and len(extra['value']) > 0:
+            for extra in dataset.get("extras", []):
+                if extra["key"] in required and len(extra["value"]) > 0:
                     has_bbox = True
                     break
         if not has_bbox:
             try:
                 # Update the package spatial field to the org bbox value
-                dataset['spatial'] = org_spatial
-                get_action('package_update')(context, dataset)
+                dataset["spatial"] = org_spatial
+                get_action("package_update")(context, dataset)
             except Exception as e:
-                log.warn("""Failed to update dataset: {} with spatial data from \
-                    organization: {}""".format(dataset['name'], data['name']))
+                log.warn(
+                    """Failed to update dataset: {} with spatial data from \
+                    organization: {}""".format(
+                        dataset["name"], data["name"]
+                    )
+                )
                 log.warn(e)
     _force_reindex(data)
