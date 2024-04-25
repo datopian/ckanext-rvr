@@ -7,11 +7,7 @@ from ckan.logic import get_action
 from ckanext.rvr.helpers import is_valid_spatial, all_package_list
 
 echo = click.echo
-context = {
-    'model': model,
-    'session': model.Session,
-    'ignore_auth': True
-}
+context = {"model": model, "session": model.Session, "ignore_auth": True}
 
 short_help = "Migrates spatial fields for datasets, to prepare them for the spatial inheritance feature of the ckanext-rvr extension"
 help = """Migrate spatial fields for datasets and organizations\n
@@ -49,17 +45,18 @@ that would be affected by the migrate command when run without actually \
 migrating them.
 """
 
+
 @click.command(
-    name='migrate',
+    name="migrate",
     # There's a bug with ckan 2.9.4 that has been fixed in 2.9.5 where the
     # --help flag doesn't work as expected: https://github.com/ckan/ckan/issues/5755
     # For now the short_help will display the full help
     short_help=help,
     help=help,
     epilog=epilog,
-    add_help_option=True
+    add_help_option=True,
 )
-@click.option('--dry-run', 'dry_run', is_flag=True, help=dry_run_help)
+@click.option("--dry-run", "dry_run", is_flag=True, help=dry_run_help)
 def migrate_spatial(dry_run) -> None:
     """
     Function handling the `ckan rvr-spatial migrate` command
@@ -68,23 +65,24 @@ def migrate_spatial(dry_run) -> None:
     echo("Getting datasets to migrate...")
     mig_dict = get_datasets_to_migrate()
 
-    if mig_dict['pkg_count'] < 1:
-        echo('There are no datasets that need to be migrated.')
+    if mig_dict["pkg_count"] < 1:
+        echo("There are no datasets that need to be migrated.")
         return
 
     found_message = "Found {} datasets across {} organizations whose spatial fields need to be migrated.".format(
-        mig_dict['pkg_count'], mig_dict['org_count'])
+        mig_dict["pkg_count"], mig_dict["org_count"]
+    )
     if dry_run:
         message = """DATASETS TO BE MIGRATED BY ORGANIZATION\n\n"""
-        for org_id in mig_dict['migration_dict']:
-            title = mig_dict['migration_dict'][org_id]['title']
-            name = mig_dict['migration_dict'][org_id]['name']
+        for org_id in mig_dict["migration_dict"]:
+            title = mig_dict["migration_dict"][org_id]["title"]
+            name = mig_dict["migration_dict"][org_id]["name"]
             message += '<ORGANIZATION title="{}" name={}>\n'.format(title, name)
-            for data in mig_dict['migration_dict'][org_id]['datasets']:
-                echo('DATASETS DATA')
+            for data in mig_dict["migration_dict"][org_id]["datasets"]:
+                echo("DATASETS DATA")
                 echo(data)
-                title = data['title']
-                name = data['name']
+                title = data["title"]
+                name = data["name"]
                 message += '\t<DATASET title="{}" name={}>\n'.format(title, name)
         echo(message)
 
@@ -93,21 +91,31 @@ def migrate_spatial(dry_run) -> None:
 
     echo(found_message)
     ctx = context.copy()
-    ctx['allow_partial_update'] = True
-    ctx['user'] = get_action('get_site_user')(context, {})['name']
-    for org_id in mig_dict['migration_dict']:
-        for data in mig_dict['migration_dict'][org_id]['datasets']:
+    ctx["allow_partial_update"] = True
+    ctx["user"] = get_action("get_site_user")(context, {})["name"]
+    for org_id in mig_dict["migration_dict"]:
+        for data in mig_dict["migration_dict"][org_id]["datasets"]:
             try:
-                echo('\n\nATTEMPTING TO MIGRATE: <DATASET title="{}" name={}>'.format(
-                    data['title'], data['name']))
+                echo(
+                    '\n\nATTEMPTING TO MIGRATE: <DATASET title="{}" name={}>'.format(
+                        data["title"], data["name"]
+                    )
+                )
                 migrate_dataset(data, ctx)
             except Exception as e:
                 echo(e)
-                echo("UNABLE TO MIGRATE: <DATASET title={} name={}>".format(
-                    data['title'], data['name']))
-            echo('SUCCESSFULLY MIGRATED <DATASET title="{}" name={}>'.format(
-                    data['title'], data['name']))
+                echo(
+                    "UNABLE TO MIGRATE: <DATASET title={} name={}>".format(
+                        data["title"], data["name"]
+                    )
+                )
+            echo(
+                'SUCCESSFULLY MIGRATED <DATASET title="{}" name={}>'.format(
+                    data["title"], data["name"]
+                )
+            )
     return
+
 
 def get_org_spatials() -> dict:
     """Get all organizations and their spatial data
@@ -122,31 +130,35 @@ def get_org_spatials() -> dict:
             } 
     """
     # Get all organizations
-    org_ids = get_action('organization_list')(context, {})
+    org_ids = get_action("organization_list")(context, {})
     org_spatials = {}
 
     # For each organization, get the org spatial from that organization.
     for org_id in org_ids:
-        org_dict = get_action('organization_show')(context, {
-            "id": org_id,
-            "include_datasets": False,
-            "include_users": False,
-            "include_groups": False,
-            "include_tags": False,
-            "include_followers": False
-        })
-        org_spatial = ''
-        for extra in org_dict.get('extras', []):
-            if extra['key'] == 'org_spatial':
-                org_spatial = extra['value']
-        org_spatials[org_dict['id']] = {
-            'title': org_dict['title'],
-            'name': org_dict['name'],
-            'org_spatial': org_spatial
+        org_dict = get_action("organization_show")(
+            context,
+            {
+                "id": org_id,
+                "include_datasets": False,
+                "include_users": False,
+                "include_groups": False,
+                "include_tags": False,
+                "include_followers": False,
+            },
+        )
+        org_spatial = ""
+        for extra in org_dict.get("extras", []):
+            if extra["key"] == "org_spatial":
+                org_spatial = extra["value"]
+        org_spatials[org_dict["id"]] = {
+            "title": org_dict["title"],
+            "name": org_dict["name"],
+            "org_spatial": org_spatial,
         }
         del org_dict
-    
+
     return org_spatials
+
 
 def needs_migration(pkg_dict: dict, org_spatials: dict):
     """Checks if a dataset needs to be migrated
@@ -165,15 +177,19 @@ def needs_migration(pkg_dict: dict, org_spatials: dict):
         (bool | str) : `False` if the dataset doesn't need to be migrated or \
             the spatial value if it does
     """
-    dataset_spatial = pkg_dict['dataset_spatial']
-    spatial = pkg_dict['spatial']
-    
+    dataset_spatial = pkg_dict["dataset_spatial"]
+    spatial = pkg_dict["spatial"]
+
     if is_valid_spatial(dataset_spatial):
         return False
-    elif is_valid_spatial(spatial) and spatial != org_spatials[pkg_dict['owner_org']]['org_spatial']:
+    elif (
+        is_valid_spatial(spatial)
+        and spatial != org_spatials[pkg_dict["owner_org"]]["org_spatial"]
+    ):
         return spatial
 
     return False
+
 
 def get_datasets_to_migrate() -> dict:
     """Gets the datasets that need to be migrated grouped by their organizations
@@ -202,32 +218,35 @@ def get_datasets_to_migrate() -> dict:
     pkg_count = 0
     org_count = 0
     org_spatials = get_org_spatials()
-    
+
     pkg_ids = all_package_list()
-    echo('Found a total of {} datasets on the portal. Checking which ones need to be migrated'.format(len(pkg_ids)))
+    echo(
+        "Found a total of {} datasets on the portal. Checking which ones need to be migrated".format(
+            len(pkg_ids)
+        )
+    )
     for pkg_id in pkg_ids:
-        data = get_action('package_show')(context, {
-            "id": pkg_id
-        })
+        data = get_action("package_show")(context, {"id": pkg_id})
         dataset_spatial = needs_migration(data, org_spatials)
         if dataset_spatial:
-            data['dataset_spatial'] = dataset_spatial
-            if migration_dict.get(data['owner_org'], None):
-                migration_dict[data['owner_org']]['datasets'].append(data)
-                migration_dict[data['owner_org']]['count'] += 1
+            data["dataset_spatial"] = dataset_spatial
+            if migration_dict.get(data["owner_org"], None):
+                migration_dict[data["owner_org"]]["datasets"].append(data)
+                migration_dict[data["owner_org"]]["count"] += 1
                 pkg_count += 1
             else:
-                migration_dict[data['owner_org']] = org_spatials[data['owner_org']]
-                migration_dict[data['owner_org']]['datasets'] = [data]
-                migration_dict[data['owner_org']]['count'] = 1
+                migration_dict[data["owner_org"]] = org_spatials[data["owner_org"]]
+                migration_dict[data["owner_org"]]["datasets"] = [data]
+                migration_dict[data["owner_org"]]["count"] = 1
                 org_count += 1
                 pkg_count += 1
     del org_spatials
     return {
-        'migration_dict': migration_dict,
-        'org_count': org_count,
-        'pkg_count': pkg_count
+        "migration_dict": migration_dict,
+        "org_count": org_count,
+        "pkg_count": pkg_count,
     }
+
 
 def migrate_dataset(data: dict, context: dict = context):
     """Updates the dataset_spatial field of a dataset
@@ -237,4 +256,4 @@ def migrate_dataset(data: dict, context: dict = context):
             other required fields as per the schema
         context (dict, optional): context object. Defaults to script context.
     """
-    updated = get_action('package_update')(context, data)
+    updated = get_action("package_update")(context, data)

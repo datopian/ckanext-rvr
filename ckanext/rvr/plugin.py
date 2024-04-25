@@ -19,7 +19,8 @@ from ckanext.spatial.plugin import SpatialQuery
 log = logging.getLogger(__name__)
 
 config = tk.config
-ignore_missing = tk.get_validator('ignore_missing')
+ignore_missing = tk.get_validator("ignore_missing")
+
 
 class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
     p.implements(p.ITranslation)
@@ -30,45 +31,41 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
     p.implements(p.IBlueprint)
     p.implements(p.IActions)
 
-    schema_options = { 
-        'default': [
-            tk.get_validator('ignore_missing'),
-            tk.get_converter('convert_to_extras')
+    schema_options = {
+        "default": [
+            tk.get_validator("ignore_missing"),
+            tk.get_converter("convert_to_extras"),
         ],
-        'not_empty': [tk.get_validator('not_empty')]
+        "not_empty": [tk.get_validator("not_empty")],
     }
-
 
     # IBlueprint
     def get_blueprint(self):
-        return [
-            dataset_blueprint
-        ]
+        return [dataset_blueprint]
 
-    
     # IConfigurer
     def update_config(self, config_):
-        tk.add_template_directory(config_, 'templates')
-        tk.add_public_directory(config_, 'public')
-        tk.add_resource('assets', 'rvr')
+        tk.add_template_directory(config_, "templates")
+        tk.add_public_directory(config_, "public")
+        tk.add_resource("assets", "rvr")
 
     # ITemplateHelpers
     def get_helpers(self):
-        '''
+        """
         Register template helper functions.
-        '''
+        """
         return {
-            'get_newest_datasets': rvrHelpers.get_newest_datasets,
-            'build_nav_main': rvrHelpers.build_pages_nav_main,
-            'get_specific_page': rvrHelpers.get_specific_page,
-            'get_faq_page': rvrHelpers.get_faq_page,
-            'get_facet_description': rvrHelpers.get_facet_description,
-            'get_cookie_control_config': rvrHelpers.get_cookie_control_config
+            "get_latest_created_datasets": rvrHelpers.get_latest_created_datasets,
+            "build_nav_main": rvrHelpers.build_pages_nav_main,
+            "get_specific_page": rvrHelpers.get_specific_page,
+            "get_faq_page": rvrHelpers.get_faq_page,
+            "get_facet_description": rvrHelpers.get_facet_description,
+            "get_cookie_control_config": rvrHelpers.get_cookie_control_config,
         }
-    
+
     # IBlueprint
     def get_blueprint(self):
-        '''Return a Flask blueprint to be registered in the app.'''
+        """Return a Flask blueprint to be registered in the app."""
         return rvrViews.get_rvr_blueprint()
 
     # IDatasetForm
@@ -76,26 +73,30 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         # let's grab the default schema in our pluginWS
         schema = super(RvrPlugin, self).create_package_schema()
         # our custom field
-        schema.update({
-            'notes': self.schema_options['not_empty'],
-            'owner_org': self.schema_options['not_empty'],
-            'dataset_spatial': self.schema_options['default'],
-            'spatial': self.schema_options['default']
-        })
+        schema.update(
+            {
+                "notes": self.schema_options["not_empty"],
+                "owner_org": self.schema_options["not_empty"],
+                "dataset_spatial": self.schema_options["default"],
+                "spatial": self.schema_options["default"],
+            }
+        )
         return schema
 
     def update_package_schema(self):
         # let's grab the default schema in our plugin
         schema = super(RvrPlugin, self).update_package_schema()
         # our custom field
-        schema.update({
-            'notes': self.schema_options['not_empty'],
-            'owner_org': self.schema_options['not_empty'],
-            'dataset_spatial': self.schema_options['default'],
-            'spatial': self.schema_options['default']
-        })
+        schema.update(
+            {
+                "notes": self.schema_options["not_empty"],
+                "owner_org": self.schema_options["not_empty"],
+                "dataset_spatial": self.schema_options["default"],
+                "spatial": self.schema_options["default"],
+            }
+        )
         return schema
-        
+
     def is_fallback(self):
         # Return True to register this plugin as the default handler for
         # package types not handled by any other IDatasetForm plugin.
@@ -105,24 +106,24 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
         # This plugin doesn't handle any special package types, it just
         # registers itself as the default (above).
         return []
-    
-    #IFacets
+
+    # IFacets
     def dataset_facets(self, facets_dict, package_type):
-        '''
+        """
         Override core search fasets for datasets
-        '''
-        facets_dict['date_filters'] = "Datumsfilter"
+        """
+        facets_dict["date_filters"] = "Datumsfilter"
         return facets_dict
 
     # IActions
     def get_actions(self):
-        '''
+        """
         Define custom functions (or override existing ones).
         Available via API /api/action/{action-name}
-        '''
+        """
         return {
-            'package_search': rvrActions.package_search,
-            'package_show': rvrActions.package_show
+            "package_search": rvrActions.package_search,
+            "package_show": rvrActions.package_show,
         }
 
 
@@ -137,9 +138,7 @@ class RvrSpatialQueryPlugin(SpatialQuery, tk.DefaultOrganizationForm):
 
     # ITemplateHelpers
     def get_helpers(self):
-        return {
-            'is_valid_spatial': is_valid_spatial
-        }
+        return {"is_valid_spatial": is_valid_spatial}
 
     # IBlueprint
     def get_blueprint(self):
@@ -149,26 +148,41 @@ class RvrSpatialQueryPlugin(SpatialQuery, tk.DefaultOrganizationForm):
         return False
 
     def group_types(self):
-        return ('organization',)
+        return ("organization",)
 
     # IGroupForm
     def form_to_db_schema(self):
         schema = ckan_schema.group_form_schema()
-        schema.update({'org_spatial' : [tk.get_validator('ignore_missing'),
-                                        tk.get_converter('convert_to_extras')]})
+        schema.update(
+            {
+                "org_spatial": [
+                    tk.get_validator("ignore_missing"),
+                    tk.get_converter("convert_to_extras"),
+                ]
+            }
+        )
         return schema
 
     def db_to_form_schema(self):
         schema = ckan_schema.default_show_group_schema()
-        schema.update({'org_spatial' : [tk.get_validator('ignore_missing'),
-                                        tk.get_converter('convert_to_extras')]})
+        schema.update(
+            {
+                "org_spatial": [
+                    tk.get_validator("ignore_missing"),
+                    tk.get_converter("convert_to_extras"),
+                ]
+            }
+        )
         return schema
 
-    def group_form(self, group_type='organization'):
-        return 'organization/snippets/organization_form.html'
+    def group_form(self, group_type="organization"):
+        return "organization/snippets/organization_form.html"
+
     def configure(self, config):
-        self.search_backend = config.get('ckanext.spatial.search_backend', 'postgis')
-        if self.search_backend != 'postgis' and not tk.check_ckan_version('2.0.1'):
-            msg = 'The Solr backends for the spatial search require CKAN 2.0.1 or higher. ' + \
-                  'Please upgrade CKAN or select the \'postgis\' backend.'
+        self.search_backend = config.get("ckanext.spatial.search_backend", "postgis")
+        if self.search_backend != "postgis" and not tk.check_ckan_version("2.0.1"):
+            msg = (
+                "The Solr backends for the spatial search require CKAN 2.0.1 or higher. "
+                + "Please upgrade CKAN or select the 'postgis' backend."
+            )
             raise tk.CkanVersionException(msg)
