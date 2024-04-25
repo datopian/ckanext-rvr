@@ -109,7 +109,6 @@ def get_specific_page(name=""):
 
 
 def get_faq_page():
-
     page_list = tk.get_action("ckanext_pages_list")(
         None,
         {
@@ -119,7 +118,6 @@ def get_faq_page():
             "private": True,
         },
     )
-    print(f"OVO JE {page_list}")
     for page in page_list:
         if page["name"] == "faq":
             faq_page = page["content"]
@@ -127,7 +125,6 @@ def get_faq_page():
                 faq_page = faq_page.replace("\r\n", "")
             else:
                 log.warning("Page content is not a string type: {}".format(faq_page))
-    # print(faq_page)
     doc = html.fromstring(faq_page)
     faq_page_dict = []
 
@@ -144,14 +141,15 @@ def get_faq_page():
             tag_is_p = False
         elif tag == "p":
             if not tag_is_p:
-                value = [element.text]
+                value = [html.tostring(element).decode("utf-8")]
+                print(value)
                 tag = "div"
                 faq_page_dict.append({"tag": tag, "value": value})
                 idx += 1
                 tag_is_p = True
             else:
                 last_el = faq_page_dict[idx - 1]
-                last_el["value"].append(element.text)
+                last_el["value"].append(html.tostring(element).decode("utf-8"))
                 faq_page_dict[idx - 1] = last_el
                 tag_is_p = True
     return faq_page_dict
