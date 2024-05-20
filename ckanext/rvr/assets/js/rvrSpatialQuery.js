@@ -108,15 +108,23 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
   
         // OK add the expander
         $('a.leaflet-draw-draw-rectangle', module.el).on('click', function(e) {
+          e.preventDefault();
+        
           if (!is_exanded) {
             $('body').addClass('dataset-map-expanded');
-            if (should_zoom && !extentLayer) {
+        
+            if (should_zoom && !extentLayer && map) {
               map.zoomIn();
             }
-            resetMap();
+        
+            if (typeof resetMap === "function") {
+              resetMap();
+            }
+    
             is_exanded = true;
           }
         });
+
         var buttonsHtml = [
           '<div id="dataset-map-edit-buttons">',
           '<a href="javascript:;" class="btn cancel">'+ this._('Cancel')+ '</a> ',

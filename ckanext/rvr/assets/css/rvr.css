@@ -833,6 +833,17 @@ div#dataset-map-attribution div a{
     background-color: #c8e9e842;
 }
 
+.spatial-map-clear {
+    position: absolute;
+    z-index: 1;
+    right: 40px;
+    top: 4px;
+    color: #888888;
+    font-size: 12px;
+    line-height: 20px;
+    text-decoration: underline;
+}
+
 
 .dataset-map-expanded #dataset-map {
     height: 412px !important;
@@ -964,6 +975,9 @@ div#dataset-map-container.map-draw-field {
 }
 
 
+#dataset-map {
+    position: relative;
+}
 
 .dataset-map-expanded #dataset-map {
   position: absolute;

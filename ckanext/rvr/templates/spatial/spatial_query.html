@@ -12,11 +12,11 @@ e.g.
 
 #}
 <section id="dataset-map" class="module module-narrow module-shallow">
+    <a href="{{ h.remove_url_param(['ext_bbox']) }}" class="action spatial-map-clear">{{ _('Clear') }}</a>
     <h2 class="module-heading" data-bs-toggle="collapse" data-module="collapse-arrow" data-bs-target="#collapse-dataset-map" aria-expanded="true" aria-controls="collapse-dataset-map">
         <span class="fa fa-chevron-up collapse-arrow"></span>
         <i class="fa fa-globe"></i>
         {{ _('Filter this by location') }}
-        <a href="{{ h.remove_url_param(['ext_bbox']) }}" class="action">{{ _('Clear') }}</a>
         <p class="module-subheading">{{ _('Mit Klick auf den Stift Filterbereich festlegen.') }} </p>
     </h2>
     {% set map_config = h.get_common_map_config() %}
