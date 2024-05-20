@@ -85,6 +85,7 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
           'dataset-map-container',
           mapConfig,
           {
+            center: [51.53662006757711, 7.1741345200178], 
             attributionControl: false,
             drawControlTooltips: false,
             maxBounds: this.options.default_extent,
