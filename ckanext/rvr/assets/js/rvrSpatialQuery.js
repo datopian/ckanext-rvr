@@ -22,11 +22,12 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
         var module = this;
         $.proxyAll(this, /_on/);
   
-        var corner1 = L.latLng(52.58198281531925, 10.1568603515625)
-        var corner2 = L.latLng(49.8122251229721, 4.2132568359375)
+        var corner1 = L.latLng(52.58198281531925, 9.6568603515625);
+        var corner2 = L.latLng(49.9122251229721, 4.4132568359375);
         bounds = L.latLngBounds(corner1, corner2);
 
         this.options.default_extent = bounds;
+        this.options.default_view = [51.53662006757711, 7.9241345200178];
         this.el.ready(this._onReady);
       },
   
@@ -85,7 +86,6 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
           'dataset-map-container',
           mapConfig,
           {
-            center: [51.53662006757711, 7.1741345200178], 
             attributionControl: false,
             drawControlTooltips: false,
             maxBounds: this.options.default_extent,
@@ -105,6 +105,8 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
             rectangle: {shapeOptions: module.options.style}
           }
         }));
+
+        map.setView(this.options.default_view, 8);
   
         // OK add the expander
         $('a.leaflet-draw-draw-rectangle', module.el).on('click', function(e) {
@@ -204,9 +206,11 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
           if (previous_extent) {
             coords = previous_extent.split(',');
             map.fitBounds([[coords[1], coords[0]], [coords[3], coords[2]]]);
+            map.setView(module.options.default_view, 7.5);
           } else {
             if (!previous_bbox){
                 map.fitBounds(module.options.default_extent);
+                map.setView(module.options.default_view, 7.5);
             }
           }
         }
