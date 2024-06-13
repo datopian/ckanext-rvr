@@ -27,7 +27,7 @@ this.ckan.module('rvr-spatial-query', function ($, _) {
         bounds = L.latLngBounds(corner1, corner2);
 
         this.options.default_extent = bounds;
-        this.options.default_view = [51.53662006757711, 7.9241345200178];
+        this.options.default_view = [51.536580949569675, 7.17347947876029];
         this.el.ready(this._onReady);
       },
   
