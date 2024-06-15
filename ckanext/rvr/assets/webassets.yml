@@ -56,3 +56,12 @@ bbox_generator_js:
     - js/vendors/leaflet.draw/leaflet.draw.js
     - js/rvrMap.js
     - js/rvrBBOXGenerator.js
+
+rvr_dataset_map_generator_js:
+  output: rvr/%(version)s_rvr_dataset_map_generator.js
+  extra:
+    preload:
+      - vendor/jquery
+  contents:
+    - js/rvrMap.js
+    - js/rvrDatasetMapGenerator.js
