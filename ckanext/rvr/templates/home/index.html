@@ -100,22 +100,6 @@
         </div>
         <div class="module-content box box2">
           <div class="textbox">
-            <div class="textbox content">
-              <div>
-                {% block verkehrsdaten_page %}
-                {% set posts = h.get_specific_page(name="verkehrsdaten")%}
-                {% for post in posts %}
-                <h1 class="page-heading">{{ post.title or post.name }}</h1>
-
-                {{post.content|safe}}
-                {% endfor %}
-                {% endblock %}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="module-content box box2">
-          <div class="textbox">
 
             <div class="textbox content">
               <div>
@@ -143,9 +127,6 @@
                   <span class="button-text">Search</span>
                 </button>
               </div>
-              <a href="/verkehrsdaten">
-                <h3 class="heading">Zu den Verkehrsdaten Metropole Ruhr</h3>
-              </a>
             </form>
           </div>
         </div>
