@@ -89,17 +89,19 @@
       </label>
       <div class="controls">
         {% set not_selected = [] %}
-        <select id="field-groups__1__id" class="multi-arrow" onChange="groupChange()" data-module="autocomplete" multiple>
-          {% for group in groups_available %}
-            <option value="{{ group.id }}">{{ group.display_name }}</option>
-            {% for selected_group in selected_groups %}
-              {% if selected_group.id == group.id %}
-                <option value="{{ group.id }}", {% if selected_group %} selected="selected" {% endif %}>{{ group.display_name }}</option>
-              {% else %}
-              {% endif %}
+        <div data-module="auto-complete-arrow">
+          <select id="field-groups__1__id" class="" onChange="groupChange()" data-module="autocomplete" multiple>
+            {% for group in groups_available %}
+              <option value="{{ group.id }}">{{ group.display_name }}</option>
+              {% for selected_group in selected_groups %}
+                {% if selected_group.id == group.id %}
+                  <option value="{{ group.id }}", {% if selected_group %} selected="selected" {% endif %}>{{ group.display_name }}</option>
+                {% else %}
+                {% endif %}
+              {% endfor %}
             {% endfor %}
-          {% endfor %}
-        </select>
+          </select>
+       </div>
         {% if group_error %}
           <span id="group_error" class="error-block">{{ group_error }}</span>
         {% endif %}
