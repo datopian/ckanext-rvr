@@ -1,59 +1,64 @@
 // SVG Map Search helpers
 function maximizeMap() {
-    var mapMaximized = document.getElementById("maximized");
-    var mapMinimized = document.getElementById("minimized");
-    mapMaximized.style.display = "block";
-    mapMinimized.style.display = "none";
+  var mapMaximized = document.getElementById("maximized");
+  var mapMinimized = document.getElementById("minimized");
+  mapMaximized.style.display = "block";
+  mapMinimized.style.display = "none";
 }
 
 function minimizeMap() {
-    var mapMaximized = document.getElementById("maximized");
-    var mapMinimized = document.getElementById("minimized");
-    mapMaximized.style.display = "none";
-    mapMinimized.style.display = "block";
+  var mapMaximized = document.getElementById("maximized");
+  var mapMinimized = document.getElementById("minimized");
+  mapMaximized.style.display = "none";
+  mapMinimized.style.display = "block";
 }
 
 // Mandatory fields helpers
 function getSelectedOptions(sel) {
-    var opts = [],
-      opt;
-    var len = sel.options.length;
-    for (var i = 0; i < len; i++) {
-      opt = sel.options[i];
-  
-      if (opt.selected) {
-        opts.push(opt.value);
-      }
+  var opts = [],
+    opt;
+  var len = sel.options.length;
+  for (var i = 0; i < len; i++) {
+    opt = sel.options[i];
+
+    if (opt.selected) {
+      opts.push(opt.value);
     }
-    opts = opts.filter(function(item, pos) {
-        return opts.indexOf(item) == pos;
-    });
+  }
 
-    var group_string = document.getElementsByName("group_string")[0].value = opts.join("___");
+  opts = opts.filter(function (item, pos) {
+    return opts.indexOf(item) == pos;
+  });
 
-    return group_string;
+  var group_string = document.getElementsByName("group_string")[0].value = opts.join("___");
+
+  return group_string;
 }
 
 function checkTitle() {
-  if (document.getElementById("field-title").value == "") {
-      return false;
+  const titleElement = document.getElementById("field-title");
+  if (!titleElement || titleElement.value == "") {
+    return false;
   }
 }
 
 function checkGroups() {
-  if (document.getElementById("field-groups__1__id").value == "") {
+  const groupsElement = document.getElementById("field-groups__1__id");
+  if (!groupsElement || groupsElement.value == "") {
     return false;
   }
 }
 
 function checkOrg() {
-  if (document.getElementById("field-organizations").value == "") {
+  const orgElement = document.getElementById("field-organizations");
+  if (!orgElement || orgElement.value == "") {
     return false;
   }
 }
 
 function checkNotes() {
-  if (document.getElementById("field-notes").value == "") {
+  const notesElement = document.getElementById("field-notes");
+  if (!notesElement || notesElement.value == "") {
     return false;
   }
 }
@@ -73,16 +78,16 @@ function setButtonTooltip() {
   var error_org = "";
 
   if (checkTitle() == false) {
-    error_title =  "\tName: Fehlender Wert\n";
+    error_title = "\tName: Fehlender Wert\n";
   }
   if (checkNotes() == false) {
-    error_notes =  "\tBeschreibung: Fehlender Wert\n";
+    error_notes = "\tBeschreibung: Fehlender Wert\n";
   }
   if (checkGroups() == false) {
-    error_groups =  "\tGruppen: Fehlender Wert\n";
+    error_groups = "\tGruppen: Fehlender Wert\n";
   }
   if (checkOrg() == false) {
-    error_org =  "\tOrganisation: Fehlender Wert\n";
+    error_org = "\tOrganisation: Fehlender Wert\n";
   }
 
   var error_message = "Das Formular enthält unzulässige Einträge:\n" + error_title + error_notes + error_org + error_groups;
@@ -116,34 +121,44 @@ function orgChange() {
   }
 }
 
-document.getElementById("field-notes").addEventListener("change", function(event) {
-  if (checkAll() == false) {
-    // Set the button class="btn btn-primary" in div class="form-actions" to disabled
-    document.getElementsByClassName("btn btn-primary")[0].disabled = true;
-    // Set the tooltip of the button class="btn btn-primary" in div class="form-actions" to the error message
-    document.getElementsByClassName("btn btn-primary")[0].title = setButtonTooltip();
-  } else {
-    // Set the button class="btn btn-primary" in div class="form-actions" to enabled
-    document.getElementsByClassName("btn btn-primary")[0].disabled = false;
-    document.getElementsByClassName("btn btn-primary")[0].title = "";
-  }
-});
+const fieldNotesElement = document.getElementById("field-notes");
+if (fieldNotesElement) {
+  fieldNotesElement.addEventListener("change", function (event) {
+    if (checkAll() == false) {
+      // Set the button class="btn btn-primary" in div class="form-actions" to disabled
+      document.getElementsByClassName("btn btn-primary")[0].disabled = true;
+      // Set the tooltip of the button class="btn btn-primary" in div class="form-actions" to the error message
+      document.getElementsByClassName("btn btn-primary")[0].title = setButtonTooltip();
+    } else {
+      // Set the button class="btn btn-primary" in div class="form-actions" to enabled
+      document.getElementsByClassName("btn btn-primary")[0].disabled = false;
+      document.getElementsByClassName("btn btn-primary")[0].title = "";
+    }
+  });
+}
 
-document.getElementById("field-title").addEventListener("change", function(event) {
-  if (checkAll() == false) {
-    // Set the button class="btn btn-primary" in div class="form-actions" to disabled
-    document.getElementsByClassName("btn btn-primary")[0].disabled = true;
-    // Set the tooltip of the button class="btn btn-primary" in div class="form-actions" to the error message
-    document.getElementsByClassName("btn btn-primary")[0].title = setButtonTooltip();
-  } else {
-    // Set the button class="btn btn-primary" in div class="form-actions" to enabled
-    document.getElementsByClassName("btn btn-primary")[0].disabled = false;
-    document.getElementsByClassName("btn btn-primary")[0].title = "";
-  }
-});
+
+
+const fieldTitleElement = document.getElementById("field-notes");
+if (fieldTitleElement) {
+  fieldTitleElement.addEventListener("change", function (event) {
+    if (checkAll() == false) {
+      // Set the button class="btn btn-primary" in div class="form-actions" to disabled
+      document.getElementsByClassName("btn btn-primary")[0].disabled = true;
+      // Set the tooltip of the button class="btn btn-primary" in div class="form-actions" to the error message
+      document.getElementsByClassName("btn btn-primary")[0].title = setButtonTooltip();
+    } else {
+      // Set the button class="btn btn-primary" in div class="form-actions" to enabled
+      document.getElementsByClassName("btn btn-primary")[0].disabled = false;
+      document.getElementsByClassName("btn btn-primary")[0].title = "";
+    }
+  });
+}
 
 // On submit form event listener
-document.getElementById("dataset-edit").addEventListener("submit", function(event) {
+const DatasetEditElement = document.getElementById("dataset-edit");
+if (DatasetEditElement) {
+  DatasetEditElement.addEventListener("submit", function (event) {
     // Get selected options from the element with id="field-groups__0__id"
     var selectedOptions = getSelectedOptions(document.getElementById("field-groups__1__id"));
     var groups_dict = [];
@@ -151,15 +166,16 @@ document.getElementById("dataset-edit").addEventListener("submit", function(even
     var selectedOptionsArray = selectedOptions.split("___");
     // Loop through the selectedOptionsArray and add the group object to the groups_dict
     for (var i = 0; i < selectedOptionsArray.length; i++) {
-        groups_dict[i] = {"id":selectedOptionsArray[i]};
+      groups_dict[i] = { "id": selectedOptionsArray[i] };
     }
     // Set the value of the field with name="group_string" to the selectedOptions array
     document.getElementsByName("group_string")[0].value = selectedOptions;
-});
+  })
+};
 
 // On body change event listener
-document.addEventListener("DOMContentLoaded", function(event) {
-  if ( checkAll() == false) {
+document.addEventListener("DOMContentLoaded", function (event) {
+  if (checkAll() == false) {
     // Set the button class="btn btn-primary" in div class="form-actions" to enabled
     document.getElementsByClassName("btn btn-primary")[0].disabled = true;
     document.getElementsByClassName("btn btn-primary")[0].title = setButtonTooltip();
@@ -169,17 +185,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 });
 
+this.ckan.module('auto-complete-arrow', function ($, _) {
+  return {
+    initialize: function () {
+      this.el.addClass('multi-arrow');
+      this.el.css('position', 'relative');
 
-$(document).on('DOMNodeInserted', function (e) {
-  var target = $(e.target);
-  if (target.hasClass('multi-arrow')) {
-    target.click(function () {
-      try {
-        target.find("input").click();
-      } catch (error) {
-        if (error instanceof RangeError) {
-        }
-      }
-    });
-  }
+      this.el.on('click', function (event) {
+          const input = $(event.target).closest('.multi-arrow').find('input');
+          if (input.length) {
+            input.click();
+          }
+        });
+    }
+  };
 });
