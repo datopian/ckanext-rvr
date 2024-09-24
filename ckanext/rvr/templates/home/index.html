@@ -11,8 +11,8 @@
         <object data="/svg/ruhr-metropole.svg" alt="Ruhr Metropole" width="100%"></object/>
       </div>
       <div style="float: right;">
-        <button type="button" onclick="minimizeMap()" style="border:none;background-color:#EBE8E8;">
-          <p alt="Ruhr Metropole" width="100%" style="color:#019C95;"">Klicken Sie hier, um die Kartensuche zu minimieren</p>
+        <button type="button" data-module="home-svg-map-search" data-module-action="hide" style="border:none;background-color:#EBE8E8;">
+          <p alt="Ruhr Metropole" width="100%" style="color:#019C95;">Klicken Sie hier, um die Kartensuche zu minimieren</p>
         </button>
       </div>
     </div>
@@ -52,9 +52,9 @@
           <div class="module module-search module-narrow module-shallow box">
             <form class="module-content search-form">
               <h2 class="heading">Kartensuche</h2>
-              <button type="button" onclick="maximizeMap()">
+              <div data-module="home-svg-map-search" data-module-action="show" style="border:none;background-color:#EBE8E8;cursor:pointer;text-align:center;">
                 <img src="/small.png" alt="Ruhr Metropole" width="100%">Klicken Sie hier, um die Kartensuche zu maximieren</img>
-              </button>
+              </div>
             </div>
           </form>
         </div>

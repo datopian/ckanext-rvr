@@ -372,17 +372,6 @@ def search(package_type):
     return base.render(_get_pkg_template("search_template", package_type), extra_vars)
 
 
-def _group_string_to_list(group_string):
-    """This is used to change groups from a string to a list of dicts."""
-    out = []
-    for group in group_string.split("___"):
-        group = group.strip()
-        if group:
-            # Get the group from the database
-            group_item = {"id": group}
-            out.append(group_item)
-    return out
-
 
 class RvrCreateView(CreateView):
     def post(self, package_type):
@@ -441,8 +430,8 @@ class RvrCreateView(CreateView):
                     org_spatial = get_org_spatial(data_dict["owner_org"])
                     if org_spatial:
                         data_dict["spatial"] = org_spatial
-            if "group_string" in data_dict:
-                data_dict["groups"] = _group_string_to_list(data_dict["group_string"])
+            if "groups" in data_dict:
+                data_dict["groups"]  = [{"id": group} for group in data_dict["groups"] if group]
             pkg_dict = get_action("package_create")(context, data_dict)
 
             if ckan_phase:
@@ -572,8 +561,9 @@ class RvrEditView(EditView):
             if is_valid_spatial(dataset_spatial) and spatial != dataset_spatial:
                 data_dict["spatial"] = dataset_spatial
 
-            if "group_string" in data_dict:
-                data_dict["groups"] = _group_string_to_list(data_dict["group_string"])
+            if "groups" in data_dict:
+                data_dict["groups"] = [{"id": group} for group in data_dict["groups"] if group]
+            
 
             pkg_dict = get_action("package_update")(context, data_dict)
 
