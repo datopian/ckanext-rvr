@@ -2,27 +2,18 @@
 {% set intro = g.site_intro_text %}
 {% set stats = h.get_site_statistics() %}
 
+
 {% block content  %}
 
 <div role="main" class="hero">
   <div class="container content">
-    <div id="maximized" class="row" style="padding-top:10px;display:none;">
-      <div class="col-md-12" width="100%">
-        <object data="/svg/ruhr-metropole.svg" alt="Ruhr Metropole" width="100%"></object/>
-      </div>
-      <div style="float: right;">
-        <button type="button" onclick="minimizeMap()" style="border:none;background-color:#EBE8E8;">
-          <p alt="Ruhr Metropole" width="100%" style="color:#019C95;"">Klicken Sie hier, um die Kartensuche zu minimieren</p>
-        </button>
-      </div>
-    </div>
     <div class="row row1">
       <!-- <div class="searchbox-mobile">
             <div class="module module-search module-narrow module-shallow box">
                 <form class="module-content search-form" method="get" action="/dataset">
                   <h3 class="heading">Suche</h3>
                   <div class="search-input form-group search-giant">
-                    <input aria-label="Search datasets" id="field-giant-search" type="text" class="form-control" name="q" autocomplete="off" placeholder="Bürgermeisterwahl">
+                    <input aria-label="Search datasets" id="field-main-search" type="text" class="form-control" name="q" autocomplete="off" placeholder="Bürgermeisterwahl">
                     <button type="submit">
                       <i class="fa fa-search"></i>
                       <span class="sr-only">Search</span>
@@ -38,28 +29,18 @@
             <form class="module-content search-form" method="get" action="/dataset">
               <h3 class="heading">Suche</h3>
               <div class="search-input form-group search-giant">
-                <input aria-label="Search datasets" id="field-giant-search" type="text" class="form-control" name="q"
+                <input aria-label="Search datasets" id="field-main-search" type="text" class="form-control" name="q"
                   autocomplete="off" placeholder="Bürgermeisterwahl">
                 <button type="submit">
                   <i class="fa fa-search"></i>
-                  <span class="button-text">Search</span>
+                  <span class="sr-only">Search</span>
                 </button>
               </div>
             </form>
           </div>
         </div>
-        <div id="minimized" class="searchbox-desktop" style="padding-bottom:30px;display:block;">
-          <div class="module module-search module-narrow module-shallow box">
-            <form class="module-content search-form">
-              <h2 class="heading">Kartensuche</h2>
-              <button type="button" onclick="maximizeMap()">
-                <img src="/small.png" alt="Ruhr Metropole" width="100%">Klicken Sie hier, um die Kartensuche zu maximieren</img>
-              </button>
-            </div>
-          </form>
-        </div>
         <div class="module-content box box1">
-          <div>
+          <header>
             <h1 class="page-heading">NEWS</h1>
             {% block newest_news %}
             {% set posts = h.get_recent_blog_posts(number=1)%}
@@ -76,13 +57,13 @@
             {{post.content|safe}}
             {% endfor %}
             {% endblock %}
-          </div>
+          </header>
           <a href="/blog">MEHR NEWS ANZEIGEN</a>
         </div>
         <div class="module-content box box2">
           <div class="textbox">
             <div class="textbox content">
-              <div>
+              <header>
                 {% if intro %}
                 {{ h.render_markdown(intro) }}
                 {% else %}
@@ -93,38 +74,23 @@
                   {% endtrans %}
                 </p>
                 {% endif %}
-              </div>
+              </header>
             </div>
           </div>
-          <a href="/pages/uber-uns">Über mich</a>
-        </div>
-        <div class="module-content box box2">
-          <div class="textbox">
-
-            <div class="textbox content">
-              <div>
-                <h1 class="page-heading">Vereinbarung der Metropole Ruhr</h1>
-                <p>
-                  In interkommunalen Arbeitsgruppen wurde eine Vereinbarung erarbeitet, die u.a. Fragen zu rechtlichen
-                  und technischen Rahmenbedingungen klärt.
-                </p>
-              </div>
-            </div>
-          </div>
-          <a target="_blank" href="/files/OpenData MR_Leitfaden.pdf">Leitfaden Open Data Metropole Ruhr</a>
+          <a href="/pages/uber-uns">ÜBER UNS</a>
         </div>
       </div>
       <div class="col-md-6 col2 block2">
         <div class="searchbox-desktop">
           <div class="module module-search module-narrow module-shallow box">
             <form class="module-content search-form" method="get" action="/dataset">
-              <h2 class="heading">Suche</h2>
+              <h3 class="heading">Suche</h3>
               <div class="search-input form-group search-giant">
-                <input aria-label="Search datasets" id="field-giant-search" type="text" class="form-control" name="q"
+                <input aria-label="Search datasets" id="field-main-search" type="text" class="form-control" name="q"
                   autocomplete="off" placeholder="Bürgermeisterwahl">
                 <button type="submit">
                   <i class="fa fa-search"></i>
-                  <span class="button-text">Search</span>
+                  <span class="sr-only">Search</span>
                 </button>
               </div>
             </form>
@@ -132,7 +98,7 @@
         </div>
 
         <div class="module-content box dataset">
-          <div>
+          <header>
 
             <h1 class="page-heading">NEUESTE DATENSÄTZE</h1>
             <ul>
@@ -143,7 +109,7 @@
 
             </ul>
 
-          </div>
+          </header>
 
         </div>
 

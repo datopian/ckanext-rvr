@@ -9,11 +9,11 @@
             <div id="c85290" class="frame frame-default frame-type-textpic frame-layout-0">
                 <div class="media-element media-element--right ce-intext ce-nowrap"></div>
                 <div class="ce-bodytext">
-                    <div>
-                        <h2 class="">
+                    <header>
+                        <h4 class="">
                             INFOS
-                        </h2>
-                    </div>
+                        </h4>
+                    </header>
                     <p>
                         <a href="/pages/nutzungsbedingungen" title="Nutzungsbedingungen"
                             class="link">Nutzungsbedingungen</a>&nbsp;<br>
@@ -29,17 +29,17 @@
             <div id="c85291" class="frame frame-default frame-type-textpic frame-layout-0">
                 <div class="media-element media-element--right ce-intext ce-nowrap"></div>
                 <div class="ce-bodytext">
-                    <div>
-                        <h2 class="">
+                    <header>
+                        <h4 class="">
                             weiterführende Links
-                        </h2>
-                    </div>
+                        </h4>
+                    </header>
                     <p>
                         <a href="https://okfn.org/" title="Open Knowledge Foundation" target="_blank" class="link">Open
                             Knowledge Foundation</a><br>
                         {% block footer_links_ckan %}
-                        {% set api_url = 'http://docs.ckan.org/en/2.10/api/' %}
-                        <a href="{{ api_url }}" title="CKAN-API" target="blank" class="link">{{ _('CKAN API') }}</a><br>
+                        {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %}
+                        <a href="https://docs.ckan.org/en/2.10/api/index.html" title="CKAN-API" target="blank" class="link">{{ _('CKAN API') }}</a><br>
                         {% endblock %}
                     </p>
                 </div>
@@ -50,19 +50,20 @@
 
         <div class="col-md-4">
             <div id="c85293" class="frame frame-default frame-type-header frame-layout-0">
-                <div>
-                    <h2 class="">
+               <!-- <header>
+                    <h4 class="">
                         SOZIALE MEDIEN
-                    </h2>
-                </div>
+                    </h4>
+                </header> -->
             </div>
 
-            <div class="social-media">
-                <a href="https://www.facebook.com/RVR.Ruhr" aria-label="Facebook" target="_blank"><i class="fa-brands fa-facebook"></i></a>
-                <a href="https://twitter.com/rvr_ruhr" aria-label="Twitter" target="_blank"><i class="fa-brands fa-twitter"></i></a>
-                <a href="https://www.instagram.com/rvr.ruhr/" aria-label="Instagram" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.youtube.com/channel/UCCJDPVQdYd_TRVqT_sutt7g" aria-label="Youtube" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-            </div>
+<!--            <div class="social-media">
+                <a href="https://www.facebook.com/RVR.Ruhr" target="_blank"><i class="fa fa-facebook-f"></i></a>
+                <a href="https://twitter.com/rvr_ruhr" target="_blank"><i class="fa fa-twitter"></i></a>
+                <a href="https://www.instagram.com/rvr.ruhr/" target="_blank"><i class="fa fa-instagram"></i></a>
+                <a href="https://www.youtube.com/channel/UCCJDPVQdYd_TRVqT_sutt7g" target="_blank"><i
+                        class="fa fa-youtube-play"></i></a>
+            </div>-->
         </div>
     </div>
 </div>
