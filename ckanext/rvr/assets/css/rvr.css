@@ -50,6 +50,16 @@ h1,h2,h3,h4{
     border-radius: 3px;
 }
     
+.collapse-arrow {
+    float: right;
+    transition: transform 0.3s ease;
+}
+.collapsed-arrow {
+    float: right;
+    transform: rotate(182deg);
+    transition: transform 0.3s ease;
+}
+
 ul.dataset-list.list-unstyled li.dataset-item div.dataset-content div{
     font-family: "Montserrat-Regular" !important;
     font-size:16px;
@@ -64,6 +74,50 @@ section.additional-info table.table.table-striped.table-bordered.table-condensed
 section.module div.module-content table.table.table-striped.table-bordered.table-condensed.table-toggle-more,[data-module="table-toggle-more"]{
     font-family: "Montserrat-Regular" !important;
     font-size:14px;
+}
+.select2-search-choice-close,
+.select2-container-multi .select2-search-choice-close {
+  top: 4px;
+  left: 5px;
+}
+.multi-arrow::before { 
+	content: '';
+    width: 18px;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+	z-index:1;
+    top: 0px;
+    right: 0px;
+	background: #ccc;
+	border: 1px solid #aaa;
+    border-radius: 0 4px 4px 0;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #ccc), color-stop(0.6, #eee));
+    background-image: -webkit-linear-gradient(center bottom, #ccc 0%, #eee 60%);
+    background-image: -moz-linear-gradient(center bottom, #ccc 0%, #eee 60%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#eeeeee', endColorstr = '#cccccc', GradientType = 0);
+    background-image: linear-gradient(to top, #ccc 0%, #eee 60%);
+}
+.multi-arrow::after {
+    content: '';
+    z-index:1;
+	border-left: 3.6px solid transparent;
+	border-right: 3.6px solid transparent;
+	border-top: 6px solid #888;
+    position: absolute;
+    top: calc(145% - 100%);
+    right: 5px;
+}
+.select2-container {
+    padding: 0;
+    height: fit-content;
+}
+.select2-chosen {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+.form-control .select2-choice {
+    border: none !important;;
 }
 
 div#content.container div.row.wrapper{
@@ -548,6 +602,21 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
     margin-bottom: 10%; */
     box-shadow: none;
     position: relative;
+}
+.filter-title h3 {
+    padding: 12px 0 12px 12px;
+    margin: 0;
+}
+.module-heading[data-bs-toggle="collapse"]  {
+    cursor: pointer;
+}
+.module-heading .action {
+    padding-right: 12px;
+}
+.module-subheading {
+    font-size: 13px;
+    padding: 6px 0px;
+    margin: 0;
 }
 
 div.module-content.box.box1::before{

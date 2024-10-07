@@ -62,7 +62,7 @@
         {{ _('Organization') }}
       </label>
       <div class="controls">
-        <select id="field-organizations" name="owner_org" onChange="orgChange()" data-module="autocomplete">
+        <select id="field-organizations" name="owner_org" data-module="autocomplete">
           <option value="" {% if not selected_org and not data.id %} selected="selected" {% endif %}>{{ _('No Organization') }}</option>
           {% for organization in organizations_available %}
             {% set selected_org = (existing_org and existing_org == organization.id) %}
@@ -89,17 +89,19 @@
       </label>
       <div class="controls">
         {% set not_selected = [] %}
-        <select id="field-groups__1__id" class="multi-arrow" onChange="groupChange()" data-module="autocomplete" multiple>
-          {% for group in groups_available %}
-            <option value="{{ group.id }}">{{ group.display_name }}</option>
-            {% for selected_group in selected_groups %}
-              {% if selected_group.id == group.id %}
-                <option value="{{ group.id }}", {% if selected_group %} selected="selected" {% endif %}>{{ group.display_name }}</option>
-              {% else %}
-              {% endif %}
+        <div data-module="auto-complete-arrow">
+          <select id="field-groups" name="groups" class="" data-module="autocomplete" multiple>
+            {% for group in groups_available %}
+              <option value="{{ group.id }}">{{ group.display_name }}</option>
+              {% for selected_group in selected_groups %}
+                {% if selected_group.id == group.id %}
+                  <option value="{{ group.id }}", {% if selected_group %} selected="selected" {% endif %}>{{ group.display_name }}</option>
+                {% else %}
+                {% endif %}
+              {% endfor %}
             {% endfor %}
-          {% endfor %}
-        </select>
+          </select>
+       </div>
         {% if group_error %}
           <span id="group_error" class="error-block">{{ group_error }}</span>
         {% endif %}
