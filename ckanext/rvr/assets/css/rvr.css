@@ -779,14 +779,51 @@ div#dataset-map-attribution div a{
 }
 
 
+[data-module="facet-search"] .input-group {
+    padding: 10px;
+    width: 100%;
+}
+
+[data-module="facet-search"]  button {
+    outline: none !important;
+}
+
+[data-module="facet-search"]  nav {
+    height: auto;
+    max-height: 50vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+}
+
+
+[data-module="facet-search"] ul li.search {
+    border-left: 1px solid #00615B;
+    background-color: #c8e9e842;
+}
+
+.spatial-map-clear {
+    position: absolute;
+    z-index: 1;
+    right: 40px;
+    top: 4px;
+    color: #888888;
+    font-size: 12px;
+    line-height: 20px;
+    text-decoration: underline;
+}
+
+
+.dataset-map-expanded #dataset-map {
+    height: 412px !important;
+    top: -412px !important;
+  }
+
 /* Footer Bereich Start */
-
-
 
 .site-footer {
     background-color: #0072e3;
 }
-
 
 /* .site-footer div.grid {
     display: -webkit-flex;
@@ -830,4 +867,261 @@ div.social-media a i{
     padding-left: 15px;
     
 }
+
 /* Footer Bereich Ende */
+
+.daterange-picker {
+    background: #fff;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.daterange-picker input {
+    border: none;
+    width: 100%
+}
+
+.daterange-picker select {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+}
+
+.daterange-picker *:focus{
+    outline: none;
+}
+
+.btn.apply.btn-primary {
+    padding: 3px 12px;
+}
+
+#dataset-map-edit-buttons {
+    padding: 5px 10px !important;
+}
+
+.map-draw-form-group {
+    display: block;
+    height: 384px;
+    background-color: white;
+    margin: 0;
+}
+
+div#dataset-map-container.map-draw-field {
+    height: 340px;
+    position: relative;
+}
+.ccc-tabbable .checkbox-toggle-label::after {
+    content: "" !important;
+    display: none !important;
+}
+
+.ccc-content--dark {
+    background-color: #2f2c2c;
+}
+
+#ccc-icon.ccc-icon--dark {
+    fill: #1f1f1f;
+}
+
+#ccc .checkbox-toggle--dark .checkbox-toggle-toggle {
+    background-color: #979797 ;
+}
+
+#ccc .checkbox-toggle--slider.checkbox-toggle--dark {
+    background-color: #232323;
+    border-color: #4a4747;
+}
+
+
+.badge[data-format*=csv] {
+  background-color: #6B5600;
+}
+
+.badge[data-format=geojson] {
+    background-color: #7526CA !important;
+}
+
+
+#dataset-map {
+    position: relative;
+}
+
+.dataset-map-expanded #dataset-map {
+  position: absolute;
+  width: 940px;
+  height: 384px;
+  top: -384px;
+  left: -1px;
+  background-color: white;
+  border: 1px solid #CCC;
+  margin: 0;
+}
+.dataset-map-expanded #dataset-map #dataset-map-container {
+  height: 300px;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution {
+  *zoom: 1;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution:before,
+.dataset-map-expanded #dataset-map #dataset-map-attribution:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution:after {
+  clear: both;
+}
+.dataset-map-expanded #dataset-map #dataset-map-attribution div {
+  float: left;
+  margin-right: 10px;
+}
+.dataset-map-expanded #dataset-map #dataset-map-edit-buttons {
+  display: block;
+  float: right;
+  padding: 10px;
+}
+.dataset-map-expanded #dataset-map #dataset-map-edit {
+  display: none;
+}
+.dataset-map-expanded #dataset-map .module-heading {
+  border-top-color: #000;
+}
+.dataset-map-expanded .wrapper {
+  margin-top: 383px;
+}
+
+/* =======================FAQ PAGE STYLE=========================== */
+.faq {
+    background: inherit;
+}
+
+.faq h1 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.faq-title {
+    font-size: 22px !important;
+    text-decoration: underline;
+}
+
+.faq-question {
+    -webkit-text-size-adjust: 100%;
+    text-align: left;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    position: relative;
+    padding-left: 30px;
+    background: inherit;
+    color: none;
+    font: inherit;
+    overflow: visible;
+    text-transform: none;
+    font-family: inherit;
+    margin-bottom: 0;
+    font-weight: bold;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: none;
+    background-image: none;
+    padding: 5px 15px;
+    line-height: 1.6;
+    border-radius: 0;
+    user-select: none;
+    align-items: baseline;
+    outline: none;
+    white-space: normal;
+    text-align: left;
+    width: 100%;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    left: 10;
+}
+
+.faq-question span {
+    margin-left: 10px;
+}
+
+.collapse-indicator {
+    position: absolute;
+    top: 25%;
+    left: 0;
+    padding-right: -20px;
+    margin-right: 10px;
+    font-size: 12px !important; /* adjust as needed */
+    color: grey; /* adjust as needed */
+    transition: transform 0.1s !important;
+}
+
+.faq-question.collapsed .collapse-indicator {
+    position: absolute;
+    padding-right: -20px;
+    margin-right: 10px;
+    top: 25% !important;
+    left: 0 !important;
+    transform: rotate(180deg);
+}
+
+.faq .content {
+    padding-left: 26px;
+}
+
+.collapse {
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    width: 100%;
+}
+
+.collapse p {
+    font-family: inherit;
+    font-weight: 300 !important;
+    display: block;
+    text-align: left;
+    font-size: 16px;
+}
+
+.collapsed + .collapse {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    /* Adjust the styles for screens smaller than 768px wide */
+    .faq {
+        margin-left: 5px;
+        margin-right: 5px;
+        background-color: #eee;
+    }
+
+    .faq-question {
+        font-size: 20px !important;
+        margin-left: 5px;
+    }
+
+    .collapse-indicator {
+        font-size: 2px;
+        margin-right: 20px;
+    }
+
+    .collapse p {
+        display: block;
+        padding-top: 5px;
+        padding-bottom: 15px;
+        padding-right: 0px !important;
+        text-align: left;
+        font-size: 20px !important;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .faq-question.collapsed .collapse-indicator {
+        margin-right: 0px;
+    }
+}
+  /* =======================END FAQ PAGE STYLE=========================== */
