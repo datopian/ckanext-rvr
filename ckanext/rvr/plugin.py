@@ -15,6 +15,7 @@ from ckanext.rvr.commands import rvr_spatial
 from ckanext.rvr import helpers as rvrHelpers
 import ckanext.rvr.views as rvrViews
 from ckanext.spatial.plugin import SpatialQuery
+from ckanext.dcat.interfaces import IDCATRDFHarvester
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
     p.implements(p.IFacets, inherit=True)
     p.implements(p.IBlueprint)
     p.implements(p.IActions)
+    p.implements(IDCATRDFHarvester)
 
     schema_options = {
         "default": [
@@ -125,6 +127,57 @@ class RvrPlugin(p.SingletonPlugin, tk.DefaultDatasetForm, DefaultTranslation):
             "package_search": rvrActions.package_search,
             "package_show": rvrActions.package_show,
         }
+    
+    # IDCATRDFHarvester
+    def before_download(self, url, harvest_job):
+        return url, []
+    
+    def update_session(self, session):
+        return session
+
+    def after_download(self, content, harvest_job):
+        return content, []
+
+    def after_parsing(self, rdf_parser, harvest_job):
+        return rdf_parser, []
+
+    def before_create(self, harvest_object, dataset_dict, temp_dict):
+        extras = dataset_dict.get("extras", [])
+        print(f"+++++++++++++++++++++> Dtataset dict: {dataset_dict}")
+        for field in extras:
+            if field["key"] == "spatial":
+                dataset_dict["spatial"] = field["value"]
+                dataset_dict["dataset_spatial"] = field["value"]
+                # Remove the spatial field from the extras
+                extras.remove(field)
+                break
+        pass
+
+    def after_create(self, harvest_object, dataset_dict, temp_dict):
+        return None
+    
+    def before_update(self, harvest_object, dataset_dict, temp_dict):
+        extras = dataset_dict.get("extras", [])
+        print(f"====================> Dtataset dict: {dataset_dict}")
+        for field in extras:
+            if field["key"] == "spatial":
+                dataset_dict["spatial"] = field["value"]
+                dataset_dict["dataset_spatial"] = field["value"]
+                # Remove the spatial field from the extras
+                extras.remove(field)
+                break
+        pass
+
+    def after_update(self, harvest_object, dataset_dict, temp_dict):
+        return None
+    
+    def update_package_schema_for_create(self, package_schema):
+        # Ensure this method is properly defined
+        return package_schema
+
+    def update_package_schema_for_update(self, package_schema):
+        # Ensure this method is properly defined
+        return package_schema
 
 
 class RvrSpatialQueryPlugin(SpatialQuery, tk.DefaultOrganizationForm):
