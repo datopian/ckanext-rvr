@@ -169,7 +169,7 @@ this.ckan.module('rvr-bbox-generator', function ($, _) {
                     extentLayer = module._drawExtentFromGeoJSON(module.parentDefaultGeoJSON);
                     map.addLayer(extentLayer);
                     map.fitBounds(extentLayer.getBounds());
-                    $(`#${module.spatialFieldId}`).val('');
+                    $(`#${module.spatialFieldId}`).val(JSON.stringify(module.parentDefaultGeoJSON));                    
                 }
             }
         }
