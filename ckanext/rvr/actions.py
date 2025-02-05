@@ -11,7 +11,6 @@ import ckan.authz as authz
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.search as search
 import ckan.model as model
-from ckan.logic.action.get import package_show as ckan_package_show
 
 log = logging.getLogger(__name__)
 toolkit = plugins.toolkit
@@ -512,8 +511,9 @@ def package_search(context, data_dict):
     return search_results
 
 
+@toolkit.chained_action
 @toolkit.side_effect_free
-def package_show(context, data_dict):
+def package_show(up_func, context, data_dict):
     """
     Extends the default ckan package_show to move the `spatial` and \
     `dataset_spatial` fields from the extras to the main dict object.
@@ -521,33 +521,9 @@ def package_show(context, data_dict):
     This is necessary to fix bugs with the package dict getting updated with \
     both fields in the extras and the main package schema.
     """
-    context["api_version"] = 3
-    context["use_cache"] = False
-    dataset = ckan_package_show(context, data_dict)
-
-    spatial_dict = {}
-    dataset_spatial_dict = {}
-    for extra in dataset.get("extras", []):
-        if extra.get("key", "") == "spatial":
-            spatial_dict = extra
-        if extra.get("key", "") == "dataset_spatial":
-            dataset_spatial_dict = extra
-    try:
-        dataset["extras"].remove(spatial_dict)
-    except KeyError:
-        pass
-    except ValueError:
-        pass
-    try:
-        dataset["extras"].remove(dataset_spatial_dict)
-    except KeyError:
-        pass
-    except ValueError:
-        pass
-    dataset["spatial"] = spatial_dict.get("value", "")
-    dataset["dataset_spatial"] = dataset_spatial_dict.get("value", "")
-
-    return dataset
+    result  = up_func(context, data_dict)
+    result["spatial"] = result.get("dataset_spatial", "")
+    return result
 
 
 def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:

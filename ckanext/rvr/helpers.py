@@ -90,7 +90,7 @@ def get_latest_created_datasets():
         context,
         {"rows": 5, "sort": "metadata_created desc", "fq": "type:dataset", "q": ""},
     )
-    return results['results']
+    return results["results"]
 
 
 def get_nav_transport():
@@ -222,13 +222,11 @@ def get_cookie_control_config():
 
     cookie_control_config = {}
 
-    api_key = tk.config.get(
-        "ckanext.rvr.cc.api_key", False
-    )
-    
+    api_key = tk.config.get("ckanext.rvr.cc.api_key", False)
+
     if not api_key:
         return False
-    
+
     cookie_control_config["api_key"] = api_key
 
     license_type = tk.config.get("ckanext.rvr.cc.license_type", "COMMUNITY")

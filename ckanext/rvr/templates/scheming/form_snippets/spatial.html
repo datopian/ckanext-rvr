@@ -1,0 +1,97 @@
+{%- set spatial_value = data.get('spatial', '') %}
+{%- set org_owner = data.get('owner_org') %}
+{%- set org = h.get_organization(org_owner) %}
+
+{%- set pkg_spatial = data.get('dataset_spatial', '') %}
+{%- set org_spatial = org.get('org_spatial', '') %}
+
+{%- set valid_pkg_spatial = h.is_valid_spatial(pkg_spatial) %}
+{%- set valid_org_spatial = h.is_valid_spatial(org_spatial) %}
+{%- set valid_spatial = h.is_valid_spatial(spatial_value) %}
+
+{# Determine spatial relationship state #}
+
+{%- if spatial_value == org_spatial and valid_org_spatial and not valid_pkg_spatial %}
+    {%- set org_default = 'organization' %}
+{%- elif valid_pkg_spatial and spatial_value == pkg_spatial %}
+    {%- set org_default = 'dataset' %}
+{%- elif valid_spatial and not valid_org_spatial and not valid_pkg_spatial %}
+    {%- set org_default = 'unmigrated' %}
+{%- elif not valid_spatial and not valid_org_spatial and not valid_pkg_spatial %}
+    {%- set org_default = 'new' %}
+{%- elif not valid_org_spatial %}
+    {%- set org_default = 'empty' %}
+{%- else %}
+    {%- set org_default = 'unknown' %}
+{%- endif %}
+
+<div class="form-group control-full">
+    {%- if org_default == 'unmigrated' %}
+        <div class="alert alert-warning" role="alert">
+            Editing spatial fields for this dataset has been disabled. Please contact the admin.
+        </div>
+    {%- else %}
+        <label class="control-label" for="field-org-bbox">Koordinaten des Datensatzes</label>
+        
+        <div class="controls">
+            <input id="field-dataset-bbox" 
+                   type="hidden" 
+                   name="dataset_spatial" 
+                   value="{{ pkg_spatial }}" 
+                   class="form-control">
+        </div>
+
+        <div class="map-draw-form-group">
+            <div class="dataset-map"
+                 data-module="rvr-bbox-generator"
+                 data-currentspatial="{{ spatial_value }}"
+                 data-spatialfield="field-dataset-bbox"
+                 data-parentspatial="{{ org_spatial }}">
+                <div id="dataset-map-container" class="map-draw-field"></div>
+            </div>
+            
+            <div id="dataset-map-attribution">
+                Click the pen icon to start drawing. 
+                {%- if org_default != 'dataset' %}<em> Changes override organization default</em>{% endif %}
+                {% snippet "spatial/snippets/rvr_map_attribution.html" %}
+            </div>
+
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" 
+                            id="cancel-map-draw-modal" 
+                            class="btn disabled" 
+                            data-dismiss="modal">
+                        Cancel Changes
+                    </button>
+                </div>
+                
+                <div class="btn-group btn-group-sm" role="group">
+                    {%- if org_default == 'organization' %}
+                        <button type="button" class="btn disabled">
+                            Using Organization Default
+                        </button>
+                    {%- elif org_default == 'dataset' %}
+                        <button type="button" 
+                                id="use-org-spatial" 
+                                class="btn btn-info">
+                            Use Organization Default
+                        </button>
+                    {%- elif org_default in ['new', 'empty'] %}
+                        <button type="button" class="btn disabled">
+                            Organization Default Unavailable
+                        </button>
+                    {%- endif %}
+                </div>
+                
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" 
+                            id="apply-map-draw-modal" 
+                            class="btn disabled">
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    {%- endif %}
+</div>
