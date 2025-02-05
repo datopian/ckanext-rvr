@@ -512,18 +512,63 @@ def package_search(context, data_dict):
     return search_results
 
 
+def _set_spatial_field(data_dict):
+    """
+    Set the spatial field in the data_dict if it doesn't exist
+    """
+    spatial = data_dict.get("spatial", "")
+    dataset_spatial = data_dict.get("dataset_spatial", "")
+    if toolkit.h.is_valid_spatial(dataset_spatial) and spatial != dataset_spatial:
+        data_dict["spatial"] = data_dict.get("dataset_spatial", "")
+
+
+def _set_groups_list(context, data_dict):
+    """
+    Set the groupsfield in the data_dict from the groups_list
+    """
+    groups_list = data_dict.get("groups_list", False)
+    if groups_list:
+        groups = []
+        if not isinstance(groups_list, list):
+            groups_list = [groups_list]
+        
+        for group_id in groups_list:
+            group = get_action("group_show")(context, {"id": group_id})
+            groups.append({key: group.get(key) for key in ("id", "name", "title")})
+
+        data_dict.pop("groups_list")
+        data_dict["groups"] = groups
+
+
 @toolkit.chained_action
 @toolkit.side_effect_free
 def package_show(up_func, context, data_dict):
     """
     Extends the default ckan package_show to move the `spatial` and \
     `dataset_spatial` fields from the extras to the main dict object.
-    This is necessary to fix bugs with the package dict getting updated with \
-    both fields in the extras and the main package schema.
     """
-    result  = up_func(context, data_dict)
+    result = up_func(context, data_dict)
     result["spatial"] = result.get("dataset_spatial", "")
     return result
+
+
+@toolkit.chained_action
+def package_create(up_func, context, data_dict):
+    """
+    Extends the default ckan package_create to move the `spatial` and \
+    `dataset_spatial` fields from the extras to the main 
+    """
+    _set_spatial_field(data_dict)
+    _set_groups_list(context, data_dict)
+    return up_func(context, data_dict)
+
+
+@toolkit.chained_action
+def package_update(up_func, context, data_dict):
+    _set_spatial_field(data_dict)
+    _set_groups_list(context, data_dict)
+    return up_func(context, data_dict)
+
 
 def add_org_spatial_to_dataset_dict(pkg_dict: dict, org_id: str) -> dict:
     """

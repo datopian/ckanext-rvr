@@ -79,6 +79,8 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
         return {
             "package_search": rvrActions.package_search,
             "package_show": rvrActions.package_show,
+            "package_create": rvrActions.package_create,
+            "package_update": rvrActions.package_update,
         }
 
     # IValidators

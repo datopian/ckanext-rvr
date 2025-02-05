@@ -36,16 +36,18 @@ dataset_fields:
   label: Organization
   preset: dataset_organization
   validators: not_empty
+  form_include_blank_choice: true
 
-- field_name: groups
+- field_name: groups_list
   label: Groups
   preset: group_autocomplete
-  validators: ignore_missing
+  display_snippet: null
 
 - field_name: spatial
   label: Spatial
   validators: ignore_missing spatial_validator
   display_snippet: null
+  form_snippet: null
  
 - field_name: dataset_spatial
   label: Dataset Spatial
