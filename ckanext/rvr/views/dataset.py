@@ -563,7 +563,6 @@ class RvrEditView(EditView):
 
             if "groups" in data_dict:
                 data_dict["groups"] = [{"id": group} for group in data_dict["groups"] if group]
-            
 
             pkg_dict = get_action("package_update")(context, data_dict)
 

@@ -37,6 +37,11 @@ dataset_fields:
   preset: dataset_organization
   validators: not_empty
 
+- field_name: groups
+  label: Groups
+  preset: group_autocomplete
+  validators: ignore_missing
+
 - field_name: spatial
   label: Spatial
   validators: ignore_missing spatial_validator

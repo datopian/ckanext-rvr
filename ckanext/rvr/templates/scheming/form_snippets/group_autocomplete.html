@@ -1,0 +1,31 @@
+
+{% set groups_available = h.groups_available('create_dataset') %}
+{% set group_error = errors.group_id %}
+{% set selected_groups = data.groups %}
+    
+<div class="form-group control-medium">
+    <label for="field-groups" class="control-label">
+    <span title="this field is required" class="control-required">*</span>
+    {{ _('Groups') }}
+    </label>
+    <div class="controls">
+    {% set not_selected = [] %}
+    <div data-module="auto-complete-arrow">
+        <select id="field-groups" name="groups" class="" data-module="autocomplete" multiple>
+        {% for group in groups_available %}
+            <option value="{{ group.id }}">{{ group.display_name }}</option>
+            {% for selected_group in selected_groups %}
+            {% if selected_group.id == group.id %}
+                <option value="{{ group.id }}", {% if selected_group %} selected="selected" {% endif %}>{{ group.display_name }}</option>
+            {% else %}
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </select>
+    </div>
+    {% if group_error %}
+        <span id="group_error" class="error-block">{{ group_error }}</span>
+    {% endif %}
+    </div>
+</div>
+

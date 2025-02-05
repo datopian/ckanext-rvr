@@ -154,6 +154,13 @@
         }
       },
       {
+        "preset_name": "group_autocomplete",
+        "values": {
+          "validators": "ignore_missing",
+          "form_snippet": "group_autocomplete.html"
+        }
+      },
+      {
         "preset_name": "spatial",
         "values": {
           "form_snippet": "spatial.html"
