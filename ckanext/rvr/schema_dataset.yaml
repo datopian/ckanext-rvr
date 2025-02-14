@@ -85,6 +85,32 @@ dataset_fields:
   display_snippet: email.html
   display_email_name_field: maintainer
 
+# https://docs.dataportal.se/dcat/2.2.0/en/#dcat_DataService-dcatap_hvdCategory
+- field_name: hvd_category
+  label: HVD Category
+  form_include_blank_choice: true
+  preset: select
+  choices:
+    - label: Meteorologie
+      value: Meteorologie
+    - label: Unternehmen und Eigentümerschaft von Unternehmen
+      value: unternehmen-und-unternehmenseigentum
+    - label: Georaum
+      value: georaum
+    - label: Mobilität
+      value: mobilitaet
+    - label: Erdbeobachtung und Umwelt
+      value: erdbeobachtung-und-umwelt
+    - label: statistik
+      value: statistik
+    
+   
+# https://semiceu.github.io/DCAT-AP/releases/2.2.0-hvd/#LegalResource
+- field_name: applicable_legislation
+  label: Applicable Legislation
+  validators: ignore_missing url_validator 
+  help_text: The URL of the legal resource that describes the applicable legislation for the dataset.
+
 
 resource_fields:
 
