@@ -83,14 +83,12 @@ this.ckan.module('dataset-custom-validator', function ($, _) {
       // Mandatory fields validation error on tooltip
       const fieldTitle = el.querySelector('#field-title');
       const fieldGroupsId = el.querySelector('#field-groups');
-      const fieldOrganizations = el.querySelector('#field-organizations');
       const fieldNotes = el.querySelector('#field-notes');
-      const fieldsList = [fieldTitle, fieldGroupsId, fieldOrganizations, fieldNotes];
+      const fieldsList = [fieldTitle, fieldGroupsId, fieldNotes];
 
       const errors = {
         'field-title': 'Name: Fehlender Wert',
         'field-groups': 'Beschreibung: Fehlender Wert',
-        'field-organizations': 'Gruppen: Fehlender Wert',
         'field-notes': 'Organisation: Fehlender Wert'
       };
 

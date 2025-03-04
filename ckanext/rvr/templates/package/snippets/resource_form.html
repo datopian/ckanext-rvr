@@ -1,7 +1,0 @@
-{% ckan_extends %}
-{% block basic_fields %}
-    {% if stage is iterable and stage is not number  %}
-        {% set user = c.userobj %}
-    {% endif %}
-    {{ super() }}
-{% endblock %}
