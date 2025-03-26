@@ -1,14 +1,99 @@
 import logging
+import requests
+import json
 import ckan.plugins.toolkit as tk
 import ckan.plugins as p
 from ckan.lib.plugins import DefaultTranslation
 from ckanext.rvr import helpers, validators, actions, views
+from ckanext.dcat.interfaces import IDCATRDFHarvester
+import ckan.logic as logic
 
 log = logging.getLogger(__name__)
 
 config = tk.config
 ignore_missing = tk.get_validator("ignore_missing")
 
+licenses_url = tk.config.get("licenses_group_url")
+
+
+def load_licenses(license_url):
+    try:
+        if license_url.startswith('file://'):
+            with open(license_url.replace('file://', ''), 'r') as f:
+                license_data = json.load(f)
+            return license_data
+        else:
+            timeout = config.get('ckan.requests.timeout')
+            response = requests.get(license_url, timeout=timeout)
+            license_data = response.json()
+            return license_data
+    except requests.RequestException as e:
+        msg = "Couldn't get the licenses file {}: {}".format(license_url, e)
+        raise Exception(msg)
+    except ValueError as e:
+        msg = "Couldn't parse the licenses file {}: {}".format(license_url, e)
+        raise Exception(msg)
+
+
+licenses = load_licenses(licenses_url)
+default_license_url = tk.config.get("ckanext.dcatde.harvest.default_license")
+
+
+def _get_license_id(license_url):
+    for license_item in licenses:
+        if license_url == license_item["url"]:
+            return license_item["id"]
+    return None
+
+
+def _set_license(dataset_dict):
+    license_id = None
+    resources = dataset_dict.get("resources", [])
+    if len(resources) > 0:
+        for resource in resources:
+            if resource.get("license"):
+                license_url = resource.get("license")
+                break
+            else:
+                license_url = default_license_url
+
+        license_id = _get_license_id(license_url)
+
+        if license_id is not None:
+            dataset_dict["license_id"] = license_id
+
+        for resource in resources:
+            if resource.get("license"):
+                del resource["license"]
+    else:
+        license_url = default_license_url
+        license_id = _get_license_id(license_url)
+        if license_id is not None:
+            dataset_dict["license_id"] = license_id
+
+
+def _fix_spatial(dataset_dict):
+    extras = dataset_dict.get("extras", [])    
+    for field in extras:
+        if field["key"] == "spatial":
+            dataset_dict["spatial"] = field["value"]
+            dataset_dict["dataset_spatial"] = field["value"]
+            # Remove the spatial field from the extras
+            extras.remove(field)
+            break
+
+
+def _set_dataset_groups(dataset_dict):
+    if dataset_dict.get("groups"):
+        for group in dataset_dict["groups"]:
+            group_dict = logic.get_action('group_show')(
+                {'ignore_auth': True},  # Use ignore_auth to bypass authentication
+                {'id': group["id"]}  # Correctly structure the input
+            )
+            group_id = group_dict.get("id")
+            if group_id:
+                group["id"] = group_id
+    
 
 class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.ITranslation)
@@ -18,6 +103,8 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IBlueprint)
     p.implements(p.IActions)
     p.implements(p.IValidators)
+    p.implements(IDCATRDFHarvester)
+    p.implements(p.IPackageController, inherit=True)
 
     # IConfigurer
     def update_config(self, config_):
@@ -71,3 +158,40 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
         return {
             "spatial_validator": validators.spatial_validator,
         }
+
+    # IDCATRDFHarvester
+    def before_download(self, url, harvest_job):
+        return url, []
+    
+    def update_session(self, session):
+        return session
+
+    def after_download(self, content, harvest_job):
+        return content, []
+
+    def after_parsing(self, rdf_parser, harvest_job):
+        return rdf_parser, []
+
+    def before_create(self, harvest_object, dataset_dict, temp_dict):
+        _set_license(dataset_dict)
+        _fix_spatial(dataset_dict)
+        _set_dataset_groups(dataset_dict)
+
+    def after_create(self, harvest_object, dataset_dict, temp_dict):
+        return None
+    
+    def before_update(self, harvest_object, dataset_dict, temp_dict):
+        _set_license(dataset_dict)
+        _fix_spatial(dataset_dict)
+        _set_dataset_groups(dataset_dict)
+
+    def after_update(self, harvest_object, dataset_dict, temp_dict):
+        return None
+    
+    def update_package_schema_for_create(self, package_schema):
+        # Ensure this method is properly defined
+        return package_schema
+
+    def update_package_schema_for_update(self, package_schema):
+        # Ensure this method is properly defined
+        return package_schema
