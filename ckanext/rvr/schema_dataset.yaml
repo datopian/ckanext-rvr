@@ -101,7 +101,7 @@ dataset_fields:
       value: mobilitaet
     - label: Erdbeobachtung und Umwelt
       value: erdbeobachtung-und-umwelt
-    - label: statistik
+    - label: Statistik
       value: statistik
     
    
