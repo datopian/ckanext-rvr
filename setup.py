@@ -81,9 +81,8 @@ setup(
     entry_points='''
         [ckan.plugins]
         rvr=ckanext.rvr.plugin:RvrPlugin
-        rvr_spatial_query=ckanext.rvr.plugin:RvrSpatialQueryPlugin
 
-         [ckan.rdf.profiles]
+        [ckan.rdf.profiles]
         dcat_hvd = ckanext.rvr.profiles:DCATdeHVDProfile
 
         [babel.extractors]
