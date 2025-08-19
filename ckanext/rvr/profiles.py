@@ -4,7 +4,7 @@ import ckan.plugins.toolkit as tk
 from rdflib.namespace import Namespace
 from rdflib import URIRef, BNode, Literal
 from rdflib.namespace import Namespace, RDF, RDFS
-from ckanext.dcat.profiles import EuropeanDCATAP2Profile, URIRefOrLiteral, CleanedURIRef
+from ckanext.dcat.profiles import EuropeanDCATAP2Profile
 from ckanext.dcat.utils import resource_uri, dataset_uri
 from ckanext.dcatde.profiles import DCATdeProfile
 
@@ -73,6 +73,10 @@ class DCATdeHVDProfile(DCATdeProfile):
                     URIRef(HVD_CATEGORY_MAPPING[hvd_category]),
                 )
             )
+        # Remove any dcatap:hvdCategory triple with a literal value
+        for _, _, obj in list(g.triples((dataset_ref, DCATAP.hvdCategory, None))):
+            if isinstance(obj, Literal):
+                g.remove((dataset_ref, DCATAP.hvdCategory, obj))
 
-    def graph_from_catalog(self, catalog_dict):
-        super(DCATdeProfile, self).graph_from_catalog(catalog_dict)
+    def graph_from_catalog(self, catalog_dict, catalog_ref):
+        super(DCATdeProfile, self).graph_from_catalog(catalog_dict, catalog_ref)
