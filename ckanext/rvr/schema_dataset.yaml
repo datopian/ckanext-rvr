@@ -45,7 +45,7 @@ dataset_fields:
 
 - field_name: spatial
   label: Spatial
-  validators: ignore_missing spatial_validator
+  validators: ignore_missing
   display_snippet: null
   form_snippet: null
  
