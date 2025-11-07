@@ -92,7 +92,7 @@ dataset_fields:
   preset: select
   choices:
     - label: Meteorologie
-      value: Meteorologie
+      value: meteorologie
     - label: Unternehmen und Eigentümerschaft von Unternehmen
       value: unternehmen-und-unternehmenseigentum
     - label: Georaum

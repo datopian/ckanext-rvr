@@ -18,13 +18,13 @@ DCAT_THEME_PREFIX = "http://publications.europa.eu/resource/authority/data-theme
 
 HVD_CATEGORY_MAPPING = {
     "meteorological": "http://data.europa.eu/bna/c_164e0bf5",
-    "Meteorologie": "http://data.europa.eu/bna/c_164e0bf5",
+    "meteorologie": "http://data.europa.eu/bna/c_164e0bf5",
     "companies-and-company-ownership": "http://data.europa.eu/bna/c_a9135398",
     "unternehmen-und-unternehmenseigentum": "http://data.europa.eu/bna/c_a9135398",
     "geospatial": "http://data.europa.eu/bna/c_ac64a52d",
-    "Georaum": "http://data.europa.eu/bna/c_ac64a52d",
+    "georaum": "http://data.europa.eu/bna/c_ac64a52d",
     "mobility": "http://data.europa.eu/bna/c_b79e35eb",
-    "mobilität": "http://data.europa.eu/bna/c_b79e35eb",
+    "mobilitaet": "http://data.europa.eu/bna/c_b79e35eb",
     "earth-observation-and-environment": "http://data.europa.eu/bna/c_dd313021",
     "erdbeobachtung-und-umwelt": "http://data.europa.eu/bna/c_dd313021",
     "statistical": "http://data.europa.eu/bna/c_e1da4e07",
