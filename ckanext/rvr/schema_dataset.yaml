@@ -20,7 +20,6 @@ dataset_fields:
   label: Description
   form_snippet: markdown.html
   form_placeholder: eg. Some useful notes about the data
-  validators: not_empty
 
 - field_name: tag_string
   label: Tags
