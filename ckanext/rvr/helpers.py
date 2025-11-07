@@ -7,7 +7,7 @@ import ckan.model as model
 
 import logging
 from lxml import html
-import cgi
+from html import escape
 import urllib
 import ckan.plugins.toolkit as tk
 import ckan.lib.helpers as h
@@ -193,7 +193,7 @@ def build_pages_nav_main(*args):
     for page in pages_list:
         type_ = "blog" if page["page_type"] == "blog" else "pages"
         name = urllib.parse.quote(page["name"].encode("utf-8"))  # .decode('utf-8')
-        title = cgi.escape(page["title"])
+        title = escape(page["title"])
         link = h.literal('<a href="/{}/{}">{}</a>'.format(type_, name, title))
         if page["name"] == page_name:
             li = h.literal('<li class="active">') + link + h.literal("</li>")
