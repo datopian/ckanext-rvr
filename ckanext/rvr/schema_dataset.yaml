@@ -20,7 +20,6 @@ dataset_fields:
   label: Description
   form_snippet: markdown.html
   form_placeholder: eg. Some useful notes about the data
-  validators: not_empty
 
 - field_name: tag_string
   label: Tags
@@ -92,7 +91,7 @@ dataset_fields:
   preset: select
   choices:
     - label: Meteorologie
-      value: Meteorologie
+      value: meteorologie
     - label: Unternehmen und Eigentümerschaft von Unternehmen
       value: unternehmen-und-unternehmenseigentum
     - label: Georaum
