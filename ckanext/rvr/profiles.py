@@ -39,8 +39,7 @@ class DCATdeHVDProfile(DCATdeProfile):
 
     def parse_dataset(self, dataset_dict, dataset_ref):
         # call super method
-
-        super(DCATdeProfile, self).parse_dataset(dataset_dict, dataset_ref)
+        super(DCATdeHVDProfile, self).parse_dataset(dataset_dict, dataset_ref)
 
         return dataset_dict
 
@@ -52,10 +51,12 @@ class DCATdeHVDProfile(DCATdeProfile):
             dataset_dict (dict): The dataset dictionary.
             dataset_ref (URIRef): The dataset reference.
         """
-        super(DCATdeProfile, self).graph_from_dataset(dataset_dict, dataset_ref)
+        super(DCATdeHVDProfile, self).graph_from_dataset(dataset_dict, dataset_ref)
 
         g = self.g
         hvd_category = dataset_dict.get("hvd_category", "")
+        if isinstance(hvd_category, str):
+            hvd_category = hvd_category.strip().lower()
         applicable_legislation = dataset_dict.get("applicable_legislation", "")
         if applicable_legislation:
             g.add(
@@ -79,4 +80,4 @@ class DCATdeHVDProfile(DCATdeProfile):
                 g.remove((dataset_ref, DCATAP.hvdCategory, obj))
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
-        super(DCATdeProfile, self).graph_from_catalog(catalog_dict, catalog_ref)
+        super(DCATdeHVDProfile, self).graph_from_catalog(catalog_dict, catalog_ref)

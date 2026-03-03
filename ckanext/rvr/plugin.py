@@ -1,12 +1,28 @@
 import ckan.plugins as p
+import ckan.plugins.toolkit as tk
 from ckan.lib.plugins import DefaultTranslation
-from ckanext.rvr import validators
+from ckanext.rvr import actions, helpers, validators, views
+from ckanext.dcat.interfaces import IDCATRDFHarvester
 import ckan.logic as logic
 from ckanext.scheming.helpers import scheming_get_dataset_schema
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 
 class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
+    p.implements(p.ITranslation)
+    p.implements(p.IConfigurer)
+    p.implements(p.ITemplateHelpers)
+    p.implements(p.IFacets, inherit=True)
+    p.implements(p.IBlueprint)
+    p.implements(p.IActions)
+    p.implements(p.IValidators)
+    p.implements(IDCATRDFHarvester)
+    p.implements(p.IPackageController, inherit=True)
+
     @staticmethod
     def set_license(dataset_dict, licenses, default_license_url=None):
         """
@@ -81,12 +97,38 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
 
     @staticmethod
     def set_dataset_groups(dataset_dict):
-        if dataset_dict.get("groups"):
-            for group in dataset_dict["groups"]:
+        groups = dataset_dict.get("groups")
+        if not groups or not isinstance(groups, list):
+            return
+
+        for idx, group in enumerate(groups):
+            if isinstance(group, dict):
+                group_id = group.get("id") or group.get("name")
+            elif isinstance(group, str):
+                group_id = group
+                group = {"id": group_id}
+                groups[idx] = group
+            else:
+                continue
+
+            if not group_id:
+                continue
+
+            try:
                 group_dict = logic.get_action('group_show')(
-                    {'id': group.get('id') or group.get('name')}
+                    {'ignore_auth': True},
+                    {'id': group_id}
                 )
-                group['title'] = group_dict.get('title')
+            except logic.NotFound:
+                log.warning("Skipping unresolved group during harvest: %s", group_id)
+                continue
+            except Exception:
+                log.exception("Failed resolving group during harvest: %s", group_id)
+                continue
+
+            resolved_group_id = group_dict.get("id")
+            if resolved_group_id:
+                group["id"] = resolved_group_id
 
     @staticmethod
     def normalize_dataset_dict(dataset_dict):
@@ -135,10 +177,13 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
                     pass
             val = dataset_dict['applicable_legislation']
             if not (isinstance(val, str) and val.startswith('http')):
-                raise Exception(
-                    f"Skipping dataset: invalid applicable_legislation: {val}"
+                log.warning(
+                    "Dropping invalid applicable_legislation during harvest: %s",
+                    val,
                 )
-            dataset_dict['applicable_legislation'] = str(val)
+                dataset_dict.pop('applicable_legislation', None)
+            else:
+                dataset_dict['applicable_legislation'] = str(val)
 
         try:
             from ckanext.rvr.profiles import HVD_CATEGORY_MAPPING
@@ -165,10 +210,14 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
             elif val in allowed_hvd_labels:
                 dataset_dict['hvd_category'] = str(val)
             else:
-                raise Exception(
-                    f"Skipping dataset: invalid hvd_category: {val}"
+                log.warning(
+                    "Dropping invalid hvd_category during harvest: %s",
+                    val,
                 )
-            dataset_dict['hvd_category'] = str(dataset_dict['hvd_category'])
+                dataset_dict.pop('hvd_category', None)
+
+            if dataset_dict.get('hvd_category'):
+                dataset_dict['hvd_category'] = str(dataset_dict['hvd_category'])
         # --- END: Schema-compliant normalization ---
         return dataset_dict
 
@@ -176,6 +225,42 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
     def get_validators(self):
         return {
             "spatial_validator": validators.spatial_validator,
+        }
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {
+            "get_latest_created_datasets": helpers.get_latest_created_datasets,
+            "build_nav_main": helpers.build_pages_nav_main,
+            "get_specific_page": helpers.get_specific_page,
+            "get_faq_page": helpers.get_faq_page,
+            "get_facet_description": helpers.get_facet_description,
+            "get_cookie_control_config": helpers.get_cookie_control_config,
+            "is_valid_spatial": helpers.is_valid_spatial,
+        }
+
+    # IConfigurer
+    def update_config(self, config_):
+        tk.add_template_directory(config_, "templates")
+        tk.add_public_directory(config_, "public")
+        tk.add_resource("assets", "rvr")
+
+    # IBlueprint
+    def get_blueprint(self):
+        return views.get_rvr_blueprint()
+
+    # IFacets
+    def dataset_facets(self, facets_dict, package_type):
+        facets_dict["date_filters"] = "Datumsfilter"
+        return facets_dict
+
+    # IActions
+    def get_actions(self):
+        return {
+            "package_search": actions.package_search,
+            "package_show": actions.package_show,
+            "package_create": actions.package_create,
+            "package_update": actions.package_update,
         }
 
     # IDCATRDFHarvester

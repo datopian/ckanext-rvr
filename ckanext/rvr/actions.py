@@ -265,13 +265,21 @@ def package_search(context, data_dict):
         fl can be  None or a list of result fields, such as ['id', 'extras_custom_field'].
         if fl = None, datasets are returned as a list of full dictionary.
     """
-    # Get dateranges
+    # Get dateranges and requested pagination parameters
     dateranges = data_dict.pop("dateranges", {})
     data_dict.pop("date_filters", {})
     items_per_page = int(data_dict.pop("rows", 20))
     start = int(data_dict.pop("start", 0))
-    data_dict["rows"] = 1000
-    data_dict["start"] = 0
+
+    # OPTIMIZATION: If no dateranges specified, use default rows/start
+    # instead of forcing 1000 rows and pagination through entire dataset
+    if not dateranges:
+        data_dict["rows"] = items_per_page
+        data_dict["start"] = start
+    else:
+        # For daterange filtering, we need all results to filter them properly
+        data_dict["rows"] = 1000
+        data_dict["start"] = 0
 
     # sometimes context['schema'] is None
     schema = context.get("schema") or logic.schema.default_package_search_schema()
@@ -424,36 +432,70 @@ def package_search(context, data_dict):
                         )
             return scanned_package_count, removed_packages_count, current_facets
 
-        scanned_packages_count = 0
-        removed_packages_count = 0
-        facets = {}
-        # A 'do-while' loop implementation to run at least one solr search
-        # and keep running searches till all the packages from the original
-        # search have been filtered
-        while True:
-            scanned_packages_count, removed_packages_count, facets = (
-                get_filtered_packages(
-                    scanned_package_count=scanned_packages_count,
-                    removed_packages_count=removed_packages_count,
-                    facets=facets,
+        # OPTIMIZATION: Only run expensive daterange filtering if dateranges exist
+        if dateranges:
+            scanned_packages_count = 0
+            removed_packages_count = 0
+            facets = {}
+            # A 'do-while' loop implementation to run at least one solr search
+            # and keep running searches till all the packages from the original
+            # search have been filtered
+            while True:
+                scanned_packages_count, removed_packages_count, facets = (
+                    get_filtered_packages(
+                        scanned_package_count=scanned_packages_count,
+                        removed_packages_count=removed_packages_count,
+                        facets=facets,
+                    )
                 )
-            )
-            # Break loop once all query results have been searched through
-            if int(query.count) <= scanned_packages_count:
-                break
-        count = int(query.count) - removed_packages_count
+                # Break loop once all query results have been searched through
+                if int(query.count) <= scanned_packages_count:
+                    break
+            count = int(query.count) - removed_packages_count
+        else:
+            # Fast path: no daterange filtering needed, just run one query
+            query.run(permanent_data_dict, permission_labels=labels)
+            facets = query.facets
+            results = []
+            
+            if result_fl:
+                for package in query.results:
+                    if isinstance(package, text_type):
+                        package = {result_fl[0]: package}
+                    extras = package.pop("extras", {})
+                    package.update(extras)
+                    results.append(package)
+            else:
+                for package in query.results:
+                    package_dict = package.get(data_source)
+                    if package_dict:
+                        package_dict = json.loads(package_dict)
+                        if context.get("for_view"):
+                            for item in plugins.PluginImplementations(
+                                plugins.IPackageController
+                            ):
+                                package_dict = item.before_dataset_view(package_dict)
+                        results.append(package_dict)
+                    else:
+                        log.error(
+                            "No package_dict is coming from solr for package id %s",
+                            package["id"],
+                        )
+            
+            count = int(query.count)
+        
+        # Apply pagination to results
+        paginated_results = results[start : start + items_per_page]
     else:
         count = 0
         facets = {}
-        results = []
-
-    paginated_results = results[start : start + items_per_page]
+        paginated_results = []
 
     search_results = {
         "count": count,
         "facets": facets,
         "results": paginated_results,
-        "sort": data_dict["sort"],
+        "sort": data_dict.get("sort", "score desc, metadata_modified desc"),
     }
 
     # create a lookup table of group name to title for all the groups and
