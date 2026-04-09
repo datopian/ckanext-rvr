@@ -157,6 +157,7 @@
     border: 1px solid transparent;
     white-space: nowrap;
     cursor: pointer;
+    padding: 0 !important;
   }
   
   .daterangepicker .calendar-table {

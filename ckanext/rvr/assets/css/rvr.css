@@ -592,6 +592,11 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
     padding-left: 40px;
 }
 
+.daterangepicker th,
+.daterangepicker td {
+    padding: 0 !important;
+}
+
 .col2.block2{
     position: relative !important;
     display: flexbox;

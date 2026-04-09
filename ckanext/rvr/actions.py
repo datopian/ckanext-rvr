@@ -484,8 +484,13 @@ def package_search(context, data_dict):
             
             count = int(query.count)
         
-        # Apply pagination to results
-        paginated_results = results[start : start + items_per_page]
+        # For daterange filtering, results contains the full filtered set — paginate with Python slice.
+        # For the fast path (no dateranges), Solr already handled pagination via rows/start,
+        # so results already contains exactly the current page items.
+        if dateranges:
+            paginated_results = results[start : start + items_per_page]
+        else:
+            paginated_results = results
     else:
         count = 0
         facets = {}
