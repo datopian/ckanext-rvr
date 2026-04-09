@@ -244,3 +244,35 @@ def get_cookie_control_config():
     cookie_control_config["initial_state"] = initial_state
 
     return cookie_control_config
+
+
+def map_format(format_name):
+    """
+    Maps a resource format (potentially an EU URI) to a human-readable label
+    by extracting the last part of the URI.
+    """
+    if not format_name:
+        return ""
+    if "/" in format_name:
+        return format_name.split("/")[-1].replace("_", "-").upper()
+    return format_name.upper()
+
+
+def get_format_aliases(format_name):
+    """
+    Returns a list of aliased names/URIs for a given format name for search expansion.
+    """
+    from ckanext.rvr.profiles import EU_FILE_TYPE_PREFIX
+    aliases = [format_name]
+    
+    if format_name.startswith("http"):
+        # If it's a URI, add the short name (last part)
+        short_name = format_name.split("/")[-1].replace("_", "-").upper()
+        aliases.append(short_name)
+    else:
+        # If it's a short name, add the predicted EU URI version
+        # e.g. CSV -> http://.../CSV, JSON-LD -> http://.../JSON_LD
+        uri_val = format_name.replace("-", "_").upper()
+        aliases.append(EU_FILE_TYPE_PREFIX + uri_val)
+                
+    return list(set(aliases))
