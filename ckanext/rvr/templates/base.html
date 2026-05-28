@@ -5,15 +5,68 @@
         {% endblock %}
 {% block styles %}
   {% block cookie_control %}
-    <script src="https://cc.cdn.civiccomputing.com/9/cookieControl-9.x.min.js" type="text/javascript"></script>
     {% set cookie_control_config = h.get_cookie_control_config() %}
-    {% if cookie_control_config  %}
-      <div id="cookie-control" class="js-hide" data-module="civic_cookies" 
-            data-module-api_key="{{ cookie_control_config.get('api_key') }}"
-            data-module-licence_type="{{ cookie_control_config.get('license_type') }}"
-            data-module-popup_position="{{ cookie_control_config.get('popup_position') }}"
-            data-module-theme_color="{{ cookie_control_config.get('theme_color') }}"
-            data-module-initial_state="{{ cookie_control_config.get('initial_state') }}">
+    {% if cookie_control_config %}
+      <div id="cookie-banner" class="cookie-banner js-hide" data-module="cookie_banner">
+        <button class="cookie-banner__close" aria-label="Minimieren">&times;</button>
+        
+        <div class="cookie-banner__content">
+          <h3 class="cookie-banner__title">Diese Website verwendet Cookies.</h3>
+          <p class="cookie-banner__intro">
+            Einige dieser Cookies sind notwendig, während andere uns helfen, Ihre Erfahrung zu verbessern, 
+            indem sie uns Einblicke in Ihre Nutzung der Website geben.
+          </p>
+          
+          <div class="cookie-banner__details">
+            <div class="cookie-banner__section">
+              <h4 class="cookie-banner__section-title">Notwendige Cookies</h4>
+              <p class="cookie-banner__section-description">
+                Notwendige Cookies ermöglichen Kernfunktionen wie Sicherheit, Netzwerkmanagement und Zugänglichkeit. 
+                Sie können diese deaktivieren, indem Sie die Einstellungen Ihres Browsers ändern, was jedoch die 
+                Funktionsweise der Website beeinträchtigen kann.
+              </p>
+              <div class="cookie-banner__toggle-row">
+                <span class="cookie-banner__toggle-label">Immer aktiv</span>
+                <label class="cookie-banner__switch">
+                  <input type="checkbox" checked disabled>
+                  <span class="cookie-banner__slider"></span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="cookie-banner__section">
+              <h4 class="cookie-banner__section-title">Analytische Cookies</h4>
+              <p class="cookie-banner__section-description">
+                Analyse-Cookies helfen uns, unsere Website zu verbessern, indem sie Informationen über die Nutzung 
+                der Website sammeln und melden. Die Cookies sammeln Informationen in einer Weise, die niemanden 
+                direkt identifiziert.
+              </p>
+              <div class="cookie-banner__toggle-row">
+                <span class="cookie-banner__toggle-label">Aktivierung</span>
+                <label class="cookie-banner__switch">
+                  <input type="checkbox" class="cookie-banner__analytics-toggle">
+                  <span class="cookie-banner__slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="cookie-banner__actions">
+            <button type="button" class="cookie-banner__button cookie-banner__accept-all">
+              Alle Cookies akzeptieren
+            </button>
+            <button type="button" class="cookie-banner__button cookie-banner__reject">
+              Nicht notwendige Cookies ablehnen
+            </button>
+            <button type="button" class="cookie-banner__button cookie-banner__toggle-details">
+              Details anzeigen
+            </button>
+          </div>
+        </div>
+        
+        <div class="cookie-banner__minimized-content">
+          <span class="cookie-banner__minimized-text">🍪 Cookie-Einstellungen</span>
+        </div>
       </div>
     {% endif %}
   {% endblock %}

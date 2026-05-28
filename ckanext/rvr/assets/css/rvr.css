@@ -1154,4 +1154,254 @@ div#dataset-map-container.map-draw-field {
         margin-right: 0px;
     }
 }
+
+/* ========================================
+   Cookie Banner Styles - Self-hosted
+   ======================================== */
+
+.cookie-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    max-width: 450px;
+    background: #333;
+    color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    font-family: "Montserrat-Regular", Arial, sans-serif;
+    display: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cookie-banner--visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cookie-banner--hidden {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.cookie-banner--minimized {
+    display: block;
+    padding: 10px 15px;
+    max-width: 150px;
+    cursor: pointer;
+}
+
+.cookie-banner--minimized .cookie-banner__content,
+.cookie-banner--minimized .cookie-banner__actions {
+    display: none;
+}
+
+.cookie-banner__title {
+    font-family: "Montserrat-Bold", Arial, sans-serif;
+    font-size: 18px;
+    margin: 0 0 15px 0;
+    color: #fff;
+}
+
+.cookie-banner__intro {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    color: #e0e0e0;
+}
+
+.cookie-banner__details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.cookie-banner__details--visible {
+    max-height: 500px;
+}
+
+.cookie-banner__section {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+.cookie-banner__section-title {
+    font-family: "Montserrat-Bold", Arial, sans-serif;
+    font-size: 15px;
+    margin: 0 0 8px 0;
+    color: #fff;
+}
+
+.cookie-banner__section-description {
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 0 0 10px 0;
+    color: #e0e0e0;
+}
+
+.cookie-banner__toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cookie-banner__toggle-label {
+    font-size: 13px;
+    color: #fff;
+}
+
+.cookie-banner__switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.cookie-banner__switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.cookie-banner__slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.cookie-banner__slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .cookie-banner__slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .cookie-banner__slider:before {
+    transform: translateX(26px);
+}
+
+input:disabled + .cookie-banner__slider {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.cookie-banner__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.cookie-banner__button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-family: "Montserrat-Bold", Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.cookie-banner__accept-all {
+    background-color: #4CAF50;
+    color: white;
+    flex: 1;
+}
+
+.cookie-banner__accept-all:hover {
+    background-color: #45a049;
+}
+
+.cookie-banner__reject {
+    background-color: #666;
+    color: white;
+    flex: 1;
+}
+
+.cookie-banner__reject:hover {
+    background-color: #555;
+}
+
+.cookie-banner__toggle-details {
+    background-color: transparent;
+    color: #4CAF50;
+    text-decoration: underline;
+    padding: 5px 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.cookie-banner__toggle-details:hover {
+    color: #45a049;
+}
+
+.cookie-banner__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.cookie-banner__close:hover {
+    color: #ccc;
+}
+
+.cookie-banner__minimized-text {
+    font-size: 14px;
+    color: #fff;
+}
+
+.cookie-banner--minimized .cookie-banner__minimized-text {
+    display: block;
+}
+
+.cookie-banner__minimized-text {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cookie-banner {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: none;
+    }
+    
+    .cookie-banner__actions {
+        flex-direction: column;
+    }
+    
+    .cookie-banner__button {
+        width: 100%;
+    }
+}
   /* =======================END FAQ PAGE STYLE=========================== */
