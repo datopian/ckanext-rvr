@@ -14,5 +14,6 @@ Crawl-Delay: 10
 User-agent: meta-externalagent
 Disallow: /
 
-User-agent: meta-webindexerDisallow: /
+User-agent: meta-webindexer
+Disallow: /
 {%- endblock %}
