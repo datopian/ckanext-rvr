@@ -67,9 +67,10 @@ def get_package_field(field, package):
     if package.get(field, ""):
         value = package[field]
     else:
-        for item in package["extras"]:
-            if item.get("key", "") == field:
-                value = item["value"]
+        if "extras" in package:
+            for item in package["extras"]:
+                if item.get("key", "") == field:
+                    value = item["value"]
     return value
 
 
