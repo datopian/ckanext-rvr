@@ -305,13 +305,14 @@ def package_search(context, data_dict):
     """
     # Get dateranges and requested pagination parameters
     dateranges = data_dict.pop("dateranges", {})
+    dateranges_active = (dateranges and any(all(d['params']) for d in dateranges.values()))
     data_dict.pop("date_filters", {})
     items_per_page = int(data_dict.pop("rows", 20))
     start = int(data_dict.pop("start", 0))
 
     # OPTIMIZATION: If no dateranges specified, use default rows/start
     # instead of forcing 1000 rows and pagination through entire dataset
-    if not dateranges:
+    if not dateranges_active:
         data_dict["rows"] = items_per_page
         data_dict["start"] = start
     else:
@@ -482,7 +483,7 @@ def package_search(context, data_dict):
             return scanned_package_count, removed_packages_count, current_facets
 
         # OPTIMIZATION: Only run expensive daterange filtering if dateranges exist
-        if dateranges:
+        if dateranges_active:
             scanned_packages_count = 0
             removed_packages_count = 0
             facets = {}
@@ -530,7 +531,6 @@ def package_search(context, data_dict):
                             res["format"] = helpers.map_format(res["format"])
 
                         results.append(package_dict)
-                        results.append(package_dict)
                     else:
                         log.error(
                             "No package_dict is coming from solr for package id %s",
@@ -542,7 +542,7 @@ def package_search(context, data_dict):
         # For daterange filtering, results contains the full filtered set — paginate with Python slice.
         # For the fast path (no dateranges), Solr already handled pagination via rows/start,
         # so results already contains exactly the current page items.
-        if dateranges:
+        if dateranges_active:
             paginated_results = results[start : start + items_per_page]
         else:
             paginated_results = results
