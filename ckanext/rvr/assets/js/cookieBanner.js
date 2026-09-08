@@ -7,6 +7,7 @@ ckan.module('cookie_banner', function (jQuery) {
         initialize: function () {
             var self = this;
             this.sandbox_ref = this.sandbox;
+            this.el.removeClass('js-hide');
             
             // Check if user has already made a consent choice
             if (!this.hasConsent()) {
@@ -94,7 +95,7 @@ ckan.module('cookie_banner', function (jQuery) {
         },
         
         showBanner: function() {
-            this.el.removeClass('cookie-banner--minimized');
+            this.el.removeClass('js-hide cookie-banner--hidden cookie-banner--minimized');
             this.el.addClass('cookie-banner--visible');
             
             // Pre-populate checkbox if consent exists
@@ -117,7 +118,7 @@ ckan.module('cookie_banner', function (jQuery) {
         },
         
         minimizeBanner: function() {
-            this.el.removeClass('cookie-banner--visible');
+            this.el.removeClass('cookie-banner--visible cookie-banner--hidden');
             this.el.addClass('cookie-banner--minimized');
         },
         

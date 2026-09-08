@@ -7,7 +7,7 @@
   {% block cookie_control %}
     {% set cookie_control_config = h.get_cookie_control_config() %}
     {% if cookie_control_config %}
-      <div id="cookie-banner" class="cookie-banner js-hide" data-module="cookie_banner">
+      <div id="cookie-banner" class="cookie-banner" data-module="cookie_banner">
         <button class="cookie-banner__close" aria-label="Minimieren">&times;</button>
         
         <div class="cookie-banner__content">
@@ -64,7 +64,7 @@
           </div>
         </div>
         
-        <div class="cookie-banner__minimized-content">
+        <div class="cookie-banner__minimized-content cookie-banner__minimized">
           <span class="cookie-banner__minimized-text">🍪 Cookie-Einstellungen</span>
         </div>
       </div>

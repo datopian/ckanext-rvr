@@ -1193,8 +1193,19 @@ div#dataset-map-container.map-draw-field {
     cursor: pointer;
 }
 
+.cookie-banner__minimized-content {
+    display: none;
+    cursor: pointer;
+}
+
+.cookie-banner--minimized .cookie-banner__minimized-content {
+    display: block;
+}
+
 .cookie-banner--minimized .cookie-banner__content,
-.cookie-banner--minimized .cookie-banner__actions {
+.cookie-banner--minimized .cookie-banner__actions,
+.cookie-banner--minimized .cookie-banner__details,
+.cookie-banner--minimized .cookie-banner__close {
     display: none;
 }
 
