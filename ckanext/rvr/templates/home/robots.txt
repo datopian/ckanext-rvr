@@ -1,0 +1,19 @@
+{% ckan_extends %}
+
+{% block all_user_agents -%}
+Disallow: /dataset/rate/
+Disallow: /revision/
+Disallow: /dataset/*/history
+Disallow: /api/
+Disallow: /*?*
+Crawl-Delay: 10
+
+{%- endblock %}
+
+{% block additional_user_agents -%}
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: meta-webindexer
+Disallow: /
+{%- endblock %}

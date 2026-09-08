@@ -5,33 +5,32 @@
          url(/fonts/route/GothamBold.otf); 
     }  */
 
+/* font converted using font-converter.net. thank you! */
+@font-face {
+    font-family: "Montserrat-Regular";
+    src: url("/fonts/Montserrat-Regular.eot"); /* IE9 Compat Modes */
+    src: url("/fonts/Montserrat-Regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+        url("/fonts/Montserrat-Regular.otf") format("opentype"), /* Open Type Font */
+        url("/fonts/Montserrat-Regular.svg") format("svg"), /* Legacy iOS */
+        url("/fonts/Montserrat-Regular.ttf") format("truetype"), /* Safari, Android, iOS */
+        url("/fonts/Montserrat-Regular.woff") format("woff"), /* Modern Browsers */
+        url("/fonts/Montserrat-Regular.woff2") format("woff2"); /* Modern Browsers */
+    font-weight: normal;
+    font-style: normal;
+    }
 
-    /* font converted using font-converter.net. thank you! */
     @font-face {
-        font-family: "Montserrat-Regular";
-        src: url("/fonts/Montserrat-Regular.eot"); /* IE9 Compat Modes */
-        src: url("/fonts/Montserrat-Regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-          url("/fonts/Montserrat-Regular.otf") format("opentype"), /* Open Type Font */
-          url("/fonts/Montserrat-Regular.svg") format("svg"), /* Legacy iOS */
-          url("/fonts/Montserrat-Regular.ttf") format("truetype"), /* Safari, Android, iOS */
-          url("/fonts/Montserrat-Regular.woff") format("woff"), /* Modern Browsers */
-          url("/fonts/Montserrat-Regular.woff2") format("woff2"); /* Modern Browsers */
-        font-weight: normal;
-        font-style: normal;
-      }
-
-      @font-face {
-        font-family: "Montserrat-Bold";
-        src: url("/fonts/Montserrat-Bold.eot"); /* IE9 Compat Modes */
-        src: url("/fonts/Montserrat-Bold.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-          url("/fonts/Montserrat-Bold.otf") format("opentype"), /* Open Type Font */
-          url("/fonts/Montserrat-Bold.svg") format("svg"), /* Legacy iOS */
-          url("/fonts/Montserrat-Bold.ttf") format("truetype"), /* Safari, Android, iOS */
-          url("/fonts/Montserrat-Bold.woff") format("woff"), /* Modern Browsers */
-          url("/fonts/Montserrat-Bold.woff2") format("woff2"); /* Modern Browsers */
-        font-weight: normal;
-        font-style: normal;
-      }
+    font-family: "Montserrat-Bold";
+    src: url("/fonts/Montserrat-Bold.eot"); /* IE9 Compat Modes */
+    src: url("/fonts/Montserrat-Bold.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+        url("/fonts/Montserrat-Bold.otf") format("opentype"), /* Open Type Font */
+        url("/fonts/Montserrat-Bold.svg") format("svg"), /* Legacy iOS */
+        url("/fonts/Montserrat-Bold.ttf") format("truetype"), /* Safari, Android, iOS */
+        url("/fonts/Montserrat-Bold.woff") format("woff"), /* Modern Browsers */
+        url("/fonts/Montserrat-Bold.woff2") format("woff2"); /* Modern Browsers */
+    font-weight: normal;
+    font-style: normal;
+    }
 
 a, p{
     font-family: "Montserrat-Regular" !important;
@@ -64,7 +63,7 @@ h1,h2,h3,h4{
 ul.dataset-list.list-unstyled li.dataset-item div.dataset-content div{
     font-family: "Montserrat-Regular" !important;
     font-size:16px;
-   }
+}
 
 div.flash-messages,
 div.field input#field-sitewide-search.form-control,
@@ -129,34 +128,41 @@ div#content.container div.row.wrapper{
     -webkit-box-shadow:none;
 box-shadow:none;
 }
-    .account-masthead{
-     background-color: #00615B;
-    }
+
+.account-masthead{
+     background-color: #00847d;
+}
 /*####################################### Header Bereich Start ###################################################*/
-.navbar.navbar-static-top.masthead a {
-    color: #00615B;
+.masthead .main-navbar ul li a {
+    color: #00847d;
     font-size: 17px;
 }
 
-.navbar.navbar-static-top.masthead a:hover {
+.masthead .main-navbar ul li a:hover {
     color: white;
     font-size: 17px;
 }
 
 .masthead .navigation .nav-pills li a:hover,
 .masthead .navigation .nav-pills li.active a{
-    background-color: #00615B;
+    background-color: #00847d;
     color: white !important;
 }
 
-
 .navbar{
-    background-color: white !important;
+    background: white !important;
 }
 
-.masthead{
-    background:none;
+.navbar > .container,
+.navbar > .container-fluid,
+.navbar > .container-sm,
+.navbar > .container-md,
+.navbar > .container-lg,
+.navbar > .container-xl,
+.navbar > .container-xxl {
+    display: block;
 }
+
 .masthead .navbar-collapse {
     float: none;
 }
@@ -173,14 +179,13 @@ box-shadow:none;
 }
 
 .navbar-toggle , .navbar-toggle.collapsed{
-    color: #00615B;
+    color: #00847d;
 }
 
 @media (max-width:1201px) and (min-width:1200px){
     div#main-navigation-toggle.collapse.navbar-collapse{
         width: 82%;
     }
-
 }
 
 /* @media (max-width: 1060px) { */
@@ -202,9 +207,6 @@ box-shadow:none;
 		top: 0;
 		border-width: 0 0 1px;
 	}
-    .navbar-collapse.collapse {
-        display: none!important;
-    }
     .navbar-nav {
         float: none!important;
 		margin-top: 7.5px;
@@ -251,9 +253,6 @@ box-shadow:none;
     float:none !important;
 } */
 
-
-
-
 div.field input#field-sitewide-search.form-control{
     margin-top: 6px;
     margin-left:0px;
@@ -267,16 +266,12 @@ div.field input#field-sitewide-search.form-control{
     
     font-size: 1rem;
     line-height: 1.6;
-    color: #00615B!important;
+    color: #00847d!important;
 }
 
 .social-icons{
     padding-top: 2px;
-    padding-left: 2px;
-}
-
-.social-icons a {
-    font-size: 24px;
+    padding-left: 10px;
 }
 
 div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i{
@@ -284,7 +279,7 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
 }
 
 .jumbotron{
-    background-image: url("/img/halde_hoheward_rvr_helmut_adler.jpg");
+    background-image: url("/img/header.png");
 
     max-height: 100%;
     
@@ -300,12 +295,9 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
 
     margin-bottom: 0px;
     position: relative;
-    
 }
 
-
 .jumbotron h1{
-    
     text-align: end;
     color: #fff;
     font-weight: 500;
@@ -313,20 +305,38 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
     font-size: 50px;
     top: 78%;
     position: absolute;
-   }
+}
+
 @media (max-width: 864px) and (min-width:520px){
     .jumbotron h1{ 
         font-size: 30px;
-       }   
+    }
 }
 
 @media (max-width: 520px) and (min-width:334px){
     .jumbotron h1{ 
         font-size: 25px;
-       }   
+    }
 }
-   
 
+@media only screen and (max-width: 800px) {
+    .jumbotron {
+        height: 10vh;
+    }
+  
+    .jumbotron h1 {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1200px) {
+    .jumbotron {
+        height: 20vh;
+    }
+    .jumbotron h1 {
+        font-size: 2em;
+    }
+}
 
 /* .navbar-collapse.collapse{
     display: inline !important;
@@ -343,8 +353,6 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
   .navbar-right{
     float: right !important;
   } */
-
-
   @media (orientation: portrait) and (min-width:1200px) {
 
     .navbar-collapse.collapse{
@@ -397,15 +405,10 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
         float: right !important;
 
     }
-
-  
-    
 }
 
-
-
 @media (min-width: 991px) and (max-width: 1200px){
-        header.navbar.navbar-static-top.masthead div.container {
+        header.masthead div.container {
         width: 100%;
     }
 
@@ -421,13 +424,6 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
    } */
 }
 
-
-
-   
-
-
-
-
 @media(min-width: 767px) and (max-width: 992px){
     div#main-navigation-toggle.collapse.navbar-collapse{
         margin-left: 0px;
@@ -440,10 +436,7 @@ div.social-media.navbar-left.visible-md-inline-block.visible-lg-inline-block a i
     }
 }
 
-
-
 /* Header Bereich Ende */
-
 
 .section.section--black-background {
     background: #000;
@@ -491,20 +484,13 @@ ul, ol {
     text-decoration: none;
 }
 .link {
-    color: #00615B;
+    color: #00847d;
     position: relative;
     font-family: "Montserrat-Regular,Verdana,Arial,sans-serif";
 }
-.label {
-    white-space: normal!important;
-    padding-top: 0.3em;
-    padding-right: 0.6em;
-    padding-bottom: 0.3em;
-    padding-left: 0.6em;
-}
+
 .a {
     background-color: transparent;
-    
 }
 
 h4 {
@@ -518,17 +504,15 @@ h4 {
     hyphens: auto;  
 }
 
-
 /* #################################################### Main Content ############################################## */
 body{
-    background: #00615B url("../../../base/images/bg.png");
+    background: #00847d url("../../../base/images/bg.png");
     max-width: 100%;
 }
 div.hero{
     background: none;
     background-color: #e8e8eb;
 }
-
 
 @media (min-width: 992px){
     html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
@@ -558,12 +542,9 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
 
 @media(min-width:992px){
     .masthead .site-search {
-
         margin-left: 4px;
-    
     }
 }
-
 
 /* @media (min-width:1200px) {
     header.navbar.navbar-static-top.masthead div.container{
@@ -575,20 +556,17 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
      width: 100%;
  } */
 
-
- .block1{
+.block1{
     padding-left: 3%;
     padding-top: 1%;
- }
-
- .block2{
-    padding-left: 3%;
-    padding-top: 1%;
-
 }
 
+.block2{
+    padding-left: 3%;
+    padding-top: 1%;
+}
 
- th,td{
+th,td {
     padding-left: 40px;
 }
 
@@ -599,13 +577,10 @@ html.js body div.hero div.container.content div.row.row1 div.searchbox-mobile{
     margin-top: calc( 1px); 
 }
 
-
-
 .filter-title h3 {
     padding: 12px 0 12px 12px;
     margin: 0;
 }
-
 
 .module-heading[data-bs-toggle="collapse"]  {
     cursor: pointer;
@@ -655,10 +630,9 @@ div.module-content.box.box1::before{
 }
 
 .module-content.box.box2 a {
-  color: #00615B;
+  color: #00847d;
   text-decoration: none;
 }
-
 
 div.module-content.box.box2::before{
     content: "";
@@ -685,10 +659,9 @@ form.module-content.search-form a {
 }
 
 form.module-content{
-    background-color: #00615B;
+    background-color: #00847d;
     position: relative;
 }
-
 
 form.module-content::before{
     content: "";
@@ -703,7 +676,6 @@ form.module-content::before{
     transform: rotate(45deg); */
     width: 0; height: 0; border-top: 60px solid#e8e8eb; border-left: 60px solid transparent;
 }
-
 
 .module-content.box.dataset{
     margin-top: 6.66%;
@@ -730,11 +702,8 @@ div.module-content.box.dataset::before{
 }
 
 .module-content.box.statistic a {
-  color: #1C5F73;
-  text-decoration: none;
+    color: #00847d;
 }
-
-
 
 div.module-content.box.statistic::before{
     content: "";
@@ -760,7 +729,6 @@ div.module-content.box.statistic ul{
      display: inline-flex;
      text-align: center;
      padding-left: 1px;
-    
 }
 
 div.module-content.box.statistic ul::after {
@@ -803,12 +771,9 @@ div.module-content.box.statistic ul li a strong{
     font-size:16px;
 }
 
-
-
 div#dataset-map-attribution div a{
     font-size: 12px;
 }
-
 
 [data-module="facet-search"] .input-group {
     padding: 10px;
@@ -827,9 +792,8 @@ div#dataset-map-attribution div a{
     scrollbar-width: thin;
 }
 
-
 [data-module="facet-search"] ul li.search {
-    border-left: 1px solid #00615B;
+    border-left: 1px solid #00847d;
     background-color: #c8e9e842;
 }
 
@@ -844,11 +808,10 @@ div#dataset-map-attribution div a{
     text-decoration: underline;
 }
 
-
 .dataset-map-expanded #dataset-map {
     height: 412px !important;
     top: -412px !important;
-  }
+}
 
 /* Footer Bereich Start */
 
@@ -881,6 +844,10 @@ div#dataset-map-attribution div a{
     order: 0;
 } */
 
+.site-footer h2 {
+    color: white;
+}
+
 .site-footer div.social-media{
     color: white !important;
     margin-left: 0;
@@ -891,7 +858,6 @@ div.social-media a i{
      line-height: 1.4;
      padding-right: 3px;
 }
-
 
 .copyright{
     font-family: "Montserrat-Regular";
@@ -965,7 +931,6 @@ div#dataset-map-container.map-draw-field {
     border-color: #4a4747;
 }
 
-
 .badge[data-format*=csv] {
   background-color: #6B5600;
 }
@@ -973,7 +938,6 @@ div#dataset-map-container.map-draw-field {
 .badge[data-format=geojson] {
     background-color: #7526CA !important;
 }
-
 
 #dataset-map {
     position: relative;
@@ -993,7 +957,7 @@ div#dataset-map-container.map-draw-field {
   height: 300px;
 }
 .dataset-map-expanded #dataset-map #dataset-map-attribution {
-  *zoom: 1;
+  zoom: 1;
 }
 .dataset-map-expanded #dataset-map #dataset-map-attribution:before,
 .dataset-map-expanded #dataset-map #dataset-map-attribution:after {
