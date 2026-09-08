@@ -570,6 +570,11 @@ th,td {
     padding-left: 40px;
 }
 
+.daterangepicker th,
+.daterangepicker td {
+    padding: 0 !important;
+}
+
 .col2.block2{
     position: relative !important;
     display: flexbox;

@@ -237,6 +237,7 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
             "get_facet_description": helpers.get_facet_description,
             "get_cookie_control_config": helpers.get_cookie_control_config,
             "is_valid_spatial": helpers.is_valid_spatial,
+            "map_format": helpers.map_format,
         }
 
     # IConfigurer

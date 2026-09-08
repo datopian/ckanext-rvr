@@ -15,19 +15,19 @@ main_js:
     - js/facetSearch.js
 
 daterange_css:
-  output: rvr/%(version)s_daterange.css
+  output: rvr/%(version)s_daterange_v2.css
   contents:
     - css/daterangepicker.css
 
 daterange_js:
-  output: rvr/%(version)s_daterange.js
+  output: rvr/%(version)s_daterange_v2.js
   extra:
     preload:
       - vendor/jquery
   contents:
-    - js/rvrDateRange.js
-    - js/daterangepicker.min.js
     - js/moment.min.js
+    - js/daterangepicker.min.js
+    - js/rvrDateRange.js
 
 spatial_query_js:
   output: rvr/%(version)s_spatial_query.js

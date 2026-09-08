@@ -12,6 +12,7 @@ import ckan.lib.plugins as lib_plugins
 import ckan.lib.search as search
 import ckan.model as model
 from ckan.logic.action.get import package_show as ckan_package_show
+from ckanext.rvr import helpers
 
 log = logging.getLogger(__name__)
 toolkit = plugins.toolkit
@@ -19,6 +20,42 @@ _validate = dictization_functions.validate
 ValidationError = logic.ValidationError
 _check_access = logic.check_access
 get_action = logic.get_action
+
+
+def _expand_res_format(fq_string):
+    """
+    Expands res_format filters in a Solr fq string to include aliased URIs/names.
+    e.g. res_format:CSV -> res_format:(CSV OR "http://.../CSV")
+    """
+    if not fq_string or "res_format:" not in fq_string:
+        return fq_string
+
+    import re
+    from ckanext.rvr.helpers import get_format_aliases
+
+    # Match res_format:value or res_format:"quoted value"
+    # We look for res_format: followed by either a quoted string or non-space characters
+    pattern = r'res_format:("(?:[^"\\]|\\.)*"|[^\s\)\ combat]+)'
+    
+    def expand_match(match):
+        full_match = match.group(0)
+        value = match.group(1)
+        
+        # Strip quotes if present
+        quoted = False
+        if value.startswith('"') and value.endswith('"'):
+            value = value[1:-1]
+            quoted = True
+            
+        aliases = get_format_aliases(value)
+        if len(aliases) <= 1:
+            return full_match
+            
+        # Build expanded OR query
+        expanded = " OR ".join(['"{}"'.format(a) for a in aliases])
+        return "res_format:({})".format(expanded)
+
+    return re.sub(pattern, expand_match, fq_string)
 
 
 def get_package_field(field, package):
@@ -30,9 +67,10 @@ def get_package_field(field, package):
     if package.get(field, ""):
         value = package[field]
     else:
-        for item in package["extras"]:
-            if item.get("key", "") == field:
-                value = item["value"]
+        if "extras" in package:
+            for item in package["extras"]:
+                if item.get("key", "") == field:
+                    value = item["value"]
     return value
 
 
@@ -267,13 +305,14 @@ def package_search(context, data_dict):
     """
     # Get dateranges and requested pagination parameters
     dateranges = data_dict.pop("dateranges", {})
+    dateranges_active = (dateranges and any(all(d['params']) for d in dateranges.values()))
     data_dict.pop("date_filters", {})
     items_per_page = int(data_dict.pop("rows", 20))
     start = int(data_dict.pop("start", 0))
 
     # OPTIMIZATION: If no dateranges specified, use default rows/start
     # instead of forcing 1000 rows and pagination through entire dataset
-    if not dateranges:
+    if not dateranges_active:
         data_dict["rows"] = items_per_page
         data_dict["start"] = start
     else:
@@ -343,6 +382,11 @@ def package_search(context, data_dict):
         if include_drafts:
             data_dict["fq"] += " +state:(active OR draft)"
 
+        # Expand res_format filters to include unified aliases
+        data_dict["fq"] = _expand_res_format(data_dict["fq"])
+        if "fq_list" in data_dict:
+            data_dict["fq_list"] = [_expand_res_format(f) for f in data_dict["fq_list"]]
+
         # Pop these ones as Solr does not need them
         extras = data_dict.pop("extras", None)
 
@@ -411,6 +455,12 @@ def package_search(context, data_dict):
                                 plugins.IPackageController
                             ):
                                 package_dict = item.before_dataset_view(package_dict)
+                        
+                        # Unify resource formats
+                        for res in package_dict.get("resources", []):
+                            res["format"] = helpers.map_format(res["format"])
+
+                        # Check daterange
                         # Check daterange
                         is_in_range = True
                         for k in dateranges:
@@ -433,7 +483,7 @@ def package_search(context, data_dict):
             return scanned_package_count, removed_packages_count, current_facets
 
         # OPTIMIZATION: Only run expensive daterange filtering if dateranges exist
-        if dateranges:
+        if dateranges_active:
             scanned_packages_count = 0
             removed_packages_count = 0
             facets = {}
@@ -475,6 +525,11 @@ def package_search(context, data_dict):
                                 plugins.IPackageController
                             ):
                                 package_dict = item.before_dataset_view(package_dict)
+                        
+                        # Unify resource formats
+                        for res in package_dict.get("resources", []):
+                            res["format"] = helpers.map_format(res["format"])
+
                         results.append(package_dict)
                     else:
                         log.error(
@@ -484,8 +539,13 @@ def package_search(context, data_dict):
             
             count = int(query.count)
         
-        # Apply pagination to results
-        paginated_results = results[start : start + items_per_page]
+        # For daterange filtering, results contains the full filtered set — paginate with Python slice.
+        # For the fast path (no dateranges), Solr already handled pagination via rows/start,
+        # so results already contains exactly the current page items.
+        if dateranges_active:
+            paginated_results = results[start : start + items_per_page]
+        else:
+            paginated_results = results
     else:
         count = 0
         facets = {}
@@ -517,25 +577,41 @@ def package_search(context, data_dict):
     restructured_facets = {}
     for key, value in facets.items():
         restructured_facets[key] = {"title": key, "items": []}
+        
+        # Use a dict to merge items with the same display name
+        facet_items = {}
+        
         for key_, value_ in value.items():
-            new_facet_dict = {}
-            new_facet_dict["name"] = key_
+            name = key_
+            display_name = key_
+            
             if key in ("groups", "organization"):
                 display_name = group_titles_by_name.get(key_, key_)
                 display_name = (
                     display_name if display_name and display_name.strip() else key_
                 )
-                new_facet_dict["display_name"] = display_name
             elif key == "license_id":
                 license = model.Package.get_license_register().get(key_)
                 if license:
-                    new_facet_dict["display_name"] = license.title
-                else:
-                    new_facet_dict["display_name"] = key_
+                    display_name = license.title
+            elif key == "res_format":
+                display_name = helpers.map_format(key_)
+            
+            if display_name in facet_items:
+                facet_items[display_name]["count"] += value_
+                # Prefer non-URI names for the facet link if possible
+                if not name.startswith("http"):
+                    facet_items[display_name]["name"] = name
             else:
-                new_facet_dict["display_name"] = key_
-            new_facet_dict["count"] = value_
-            restructured_facets[key]["items"].append(new_facet_dict)
+                facet_items[display_name] = {
+                    "name": name,
+                    "display_name": display_name,
+                    "count": value_
+                }
+        
+        for item in facet_items.values():
+            restructured_facets[key]["items"].append(item)
+
     search_results["search_facets"] = restructured_facets
 
     # check if some extension needs to modify the search results
@@ -591,6 +667,11 @@ def package_show(up_func, context, data_dict):
     """
     result = up_func(context, data_dict)
     result["spatial"] = result.get("dataset_spatial", "")
+    
+    # Unify resource formats
+    for res in result.get("resources", []):
+        res["format"] = helpers.map_format(res["format"])
+        
     return result
 
 
