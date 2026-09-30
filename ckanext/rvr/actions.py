@@ -666,12 +666,23 @@ def package_show(up_func, context, data_dict):
     `dataset_spatial` fields from the extras to the main dict object.
     """
     result = up_func(context, data_dict)
-    result["spatial"] = result.get("dataset_spatial", "")
-    
+    spatial = result.get("dataset_spatial")
+    if not spatial:
+        # With validate=False (e.g. when indexing) scheming fields stay in
+        # the extras, so fall back to them instead of blanking `spatial`
+        extras = {
+            e.get("key"): e.get("value")
+            for e in result.get("extras") or []
+            if isinstance(e, dict)
+        }
+        spatial = extras.get("dataset_spatial") or extras.get("spatial")
+    if spatial:
+        result["spatial"] = spatial
+
     # Unify resource formats
     for res in result.get("resources", []):
         res["format"] = helpers.map_format(res["format"])
-        
+
     return result
 
 
