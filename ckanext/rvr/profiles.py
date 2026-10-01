@@ -32,6 +32,9 @@ HVD_CATEGORY_MAPPING = {
 }
 
 
+EU_FILE_TYPE_PREFIX = "http://publications.europa.eu/resource/authority/file-type/"
+
+
 class DCATdeHVDProfile(DCATdeProfile):
     """
     An RDF profile for the Dublin Core Terms with custom metadata mappings.
