@@ -4,6 +4,11 @@
       {{ super() }}
         {% endblock %}
 {% block styles %}
+  {{ super() }} 
+  {% asset 'rvr/main_css' %}
+{% endblock %}
+
+{% block scripts %}
   {% block cookie_control %}
     {% set cookie_control_config = h.get_cookie_control_config() %}
     {% if cookie_control_config %}
@@ -70,11 +75,6 @@
       </div>
     {% endif %}
   {% endblock %}
-  {{ super() }} 
-  {% asset 'rvr/main_css' %}
-{% endblock %}
-
-{% block scripts %}
   {{ super() }}
   {% asset 'rvr/main_js' %}
 {% endblock %}
