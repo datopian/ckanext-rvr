@@ -1165,6 +1165,17 @@ div#dataset-map-container.map-draw-field {
 .cookie-banner__minimized-content {
     display: none;
     cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+}
+
+.cookie-banner__minimized-content:focus {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
 }
 
 .cookie-banner--minimized .cookie-banner__minimized-content {

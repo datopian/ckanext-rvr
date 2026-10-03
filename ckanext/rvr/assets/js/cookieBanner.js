@@ -8,13 +8,15 @@ ckan.module('cookie_banner', function (jQuery) {
             var self = this;
             this.sandbox_ref = this.sandbox;
             this.el.removeClass('js-hide');
+            this.consent = undefined;
+            this.applyConsent();
             
             // Check if user has already made a consent choice
             if (!this.hasConsent()) {
                 this.showBanner();
             } else {
-                // Apply previously saved consent
-                this.applyConsent();
+                // Keep settings available after navigation or reload.
+                this.minimizeBanner();
             }
             
             // Set up event handlers
@@ -42,19 +44,32 @@ ckan.module('cookie_banner', function (jQuery) {
                 self.minimizeBanner();
             });
             
-            this.el.on('click', '.cookie-banner__minimized', function(e) {
+            this.el.on('click', '.cookie-banner__minimized-content', function(e) {
                 e.preventDefault();
                 self.showBanner();
             });
         },
         
         hasConsent: function() {
-            return localStorage.getItem('cookie_consent') !== null;
+            return this.getConsent() !== null;
         },
         
         getConsent: function() {
-            var consent = localStorage.getItem('cookie_consent');
-            return consent ? JSON.parse(consent) : null;
+            // Cache consent for this page, including when persistence is unavailable.
+            if (this.consent !== undefined) {
+                return this.consent;
+            }
+            this.consent = null;
+            try {
+                var stored = localStorage.getItem('cookie_consent');
+                var consent = stored ? JSON.parse(stored) : null;
+                if (consent && consent.necessary === true && typeof consent.analytics === 'boolean') {
+                    this.consent = consent;
+                }
+            } catch (e) {
+                // Blocked storage or invalid JSON means no saved consent.
+            }
+            return this.consent;
         },
         
         saveConsent: function(analytics) {
@@ -63,7 +78,12 @@ ckan.module('cookie_banner', function (jQuery) {
                 analytics: analytics,
                 timestamp: new Date().toISOString()
             };
-            localStorage.setItem('cookie_consent', JSON.stringify(consent));
+            this.consent = consent;
+            try {
+                localStorage.setItem('cookie_consent', JSON.stringify(consent));
+            } catch (e) {
+                // Retain the choice in memory if storage is blocked or full.
+            }
             this.applyConsent();
         },
         
@@ -100,9 +120,7 @@ ckan.module('cookie_banner', function (jQuery) {
             
             // Pre-populate checkbox if consent exists
             var consent = this.getConsent();
-            if (consent) {
-                this.el.find('.cookie-banner__analytics-toggle').prop('checked', consent.analytics);
-            }
+            this.el.find('.cookie-banner__analytics-toggle').prop('checked', !!(consent && consent.analytics));
         },
         
         hideBanner: function() {
