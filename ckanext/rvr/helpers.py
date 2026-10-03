@@ -219,60 +219,9 @@ def get_facet_description(facet_name):
 
 
 def get_cookie_control_config():
-
-    cookie_control_config = {}
-
-    api_key = tk.config.get(
-        "ckanext.rvr.cc.api_key", False
-    )
-    
-    if not api_key:
-        return False
-    
-    cookie_control_config["api_key"] = api_key
-
-    license_type = tk.config.get("ckanext.rvr.cc.license_type", "COMMUNITY")
-    cookie_control_config["license_type"] = license_type
-
-    popup_position = tk.config.get("ckanext.rvr.cc.popup_position", "LEFT")
-    cookie_control_config["popup_position"] = popup_position
-
-    theme_color = tk.config.get("ckanext.rvr.cc.theme_color", "DARK")
-    cookie_control_config["theme_color"] = theme_color
-
-    initial_state = tk.config.get("ckanext.rvr.cc.initial_state", "OPEN")
-    cookie_control_config["initial_state"] = initial_state
-
-    return cookie_control_config
-
-
-def map_format(format_name):
     """
-    Maps a resource format (potentially an EU URI) to a human-readable label
-    by extracting the last part of the URI.
+    Returns configuration for the self-hosted cookie banner.
+    No longer requires external API key.
+    Always returns True to enable the banner.
     """
-    if not format_name:
-        return ""
-    if "/" in format_name:
-        return format_name.split("/")[-1].replace("_", "-").upper()
-    return format_name.upper()
-
-
-def get_format_aliases(format_name):
-    """
-    Returns a list of aliased names/URIs for a given format name for search expansion.
-    """
-    from ckanext.rvr.profiles import EU_FILE_TYPE_PREFIX
-    aliases = [format_name]
-    
-    if format_name.startswith("http"):
-        # If it's a URI, add the short name (last part)
-        short_name = format_name.split("/")[-1].replace("_", "-").upper()
-        aliases.append(short_name)
-    else:
-        # If it's a short name, add the predicted EU URI version
-        # e.g. CSV -> http://.../CSV, JSON-LD -> http://.../JSON_LD
-        uri_val = format_name.replace("-", "_").upper()
-        aliases.append(EU_FILE_TYPE_PREFIX + uri_val)
-                
-    return list(set(aliases))
+    return True

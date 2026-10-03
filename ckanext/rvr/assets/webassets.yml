@@ -11,7 +11,7 @@ main_js:
   contents:
     - js/collapseArrow.js
     - js/rvr.js
-    - js/civicCookies.js
+    - js/cookieBanner.js
     - js/facetSearch.js
 
 daterange_css:
