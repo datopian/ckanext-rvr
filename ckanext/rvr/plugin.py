@@ -1,7 +1,7 @@
 import ckan.plugins as p
 import ckan.plugins.toolkit as tk
 from ckan.lib.plugins import DefaultTranslation
-from ckanext.rvr import actions, helpers, validators, views
+from ckanext.rvr import actions, geometry, helpers, validators, views
 from ckanext.dcat.interfaces import IDCATRDFHarvester
 import ckan.logic as logic
 from ckanext.scheming.helpers import scheming_get_dataset_schema
@@ -96,6 +96,29 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
                     break
 
     @staticmethod
+    def fix_wkt_spatial(dataset_dict):
+        """
+        Some DCAT sources (e.g. Duisburg) publish `dct:spatial` as a raw WKT
+        literal, which ckanext-dcat stores as `spatial_text`. Convert it to a
+        simplified GeoJSON `spatial` so the dataset map and spatial search
+        work. The original WKT is kept in `spatial_text`.
+        """
+        if dataset_dict.get("spatial"):
+            return
+
+        spatial_text = dataset_dict.get("spatial_text")
+        if not spatial_text:
+            for field in dataset_dict.get("extras") or []:
+                if field.get("key") == "spatial_text":
+                    spatial_text = field.get("value")
+                    break
+
+        spatial = geometry.geojson_from_wkt(spatial_text)
+        if spatial:
+            dataset_dict["spatial"] = spatial
+            dataset_dict["dataset_spatial"] = spatial
+
+    @staticmethod
     def set_dataset_groups(dataset_dict):
         groups = dataset_dict.get("groups")
         if not groups or not isinstance(groups, list):
@@ -161,6 +184,7 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
 
         # RvrPlugin.set_license(dataset_dict, licenses, default_license_url)  # Uncomment and provide args if needed
         RvrPlugin.fix_spatial(dataset_dict)
+        RvrPlugin.fix_wkt_spatial(dataset_dict)
         RvrPlugin.set_dataset_groups(dataset_dict)
 
         # --- BEGIN: Schema-compliant normalization for applicable_legislation and hvd_category (AFTER extras assignment) ---
@@ -263,6 +287,23 @@ class RvrPlugin(p.SingletonPlugin, DefaultTranslation):
             "package_create": actions.package_create,
             "package_update": actions.package_update,
         }
+
+    # IPackageController
+    def before_dataset_index(self, pkg_dict):
+        # CKAN indexes each extra both as `extras_<key>` (tokenized text) and
+        # as `<key>`, which for `spatial_text` falls into the dynamic string
+        # field and breaks indexing when the WKT is longer than Solr's 32766
+        # chars term limit. The full WKT is not needed for search
+        spatial_text = pkg_dict.pop("spatial_text", None)
+
+        # Datasets not yet converted by fix_wkt_spatial don't get a bbox from
+        # ckanext-spatial, so compute it here (solr-bbox backend fields)
+        if spatial_text and "minx" not in pkg_dict:
+            bbox = geometry.bbox_from_wkt(spatial_text)
+            if bbox:
+                pkg_dict.update(bbox)
+
+        return pkg_dict
 
     # IDCATRDFHarvester
     def before_download(self, url, harvest_job):
