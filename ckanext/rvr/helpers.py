@@ -225,26 +225,3 @@ def get_cookie_control_config():
     Always returns True to enable the banner.
     """
     return True
-
-
-def map_format(format_name):
-    """Map a resource format or EU URI to a human-readable label."""
-    if not format_name:
-        return ""
-    if "/" in format_name:
-        return format_name.split("/")[-1].replace("_", "-").upper()
-    return format_name.upper()
-
-
-def get_format_aliases(format_name):
-    """Return short names and EU URIs for resource-format search expansion."""
-    from ckanext.rvr.profiles import EU_FILE_TYPE_PREFIX
-
-    aliases = [format_name]
-    if format_name.startswith("http"):
-        short_name = format_name.split("/")[-1].replace("_", "-").upper()
-        aliases.append(short_name)
-    else:
-        uri_val = format_name.replace("-", "_").upper()
-        aliases.append(EU_FILE_TYPE_PREFIX + uri_val)
-    return list(set(aliases))
