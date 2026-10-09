@@ -111,7 +111,6 @@ ckan.module('cookie_banner', function (jQuery) {
         saveCustomPreferences: function() {
             var analyticsEnabled = this.el.find('.cookie-banner__analytics-toggle').is(':checked');
             this.saveConsent(analyticsEnabled);
-            this.hideBanner();
         },
         
         showBanner: function() {
@@ -124,15 +123,7 @@ ckan.module('cookie_banner', function (jQuery) {
         },
         
         hideBanner: function() {
-            this.el.removeClass('cookie-banner--visible');
-            this.el.addClass('cookie-banner--hidden');
-            
-            // After animation, show minimized version
-            var self = this;
-            setTimeout(function() {
-                self.el.removeClass('cookie-banner--hidden');
-                self.el.addClass('cookie-banner--minimized');
-            }, 500);
+            this.minimizeBanner();
         },
         
         minimizeBanner: function() {

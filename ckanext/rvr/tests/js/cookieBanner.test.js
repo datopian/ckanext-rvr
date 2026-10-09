@@ -56,6 +56,11 @@ function createBanner(stored = null, options = {}) {
         instance, classes, handlers, published,
         getStored() { return stored; },
         getChecked() { return checked; },
+        getTimerCount() { return timers.length; },
+        changeAnalytics(value) {
+            checked = value;
+            handlers.get('change .cookie-banner__analytics-toggle')({});
+        },
         flushTimers() { timers.splice(0).forEach(callback => callback()); },
         click(selector) {
             handlers.get('click ' + selector)({preventDefault() {}});
@@ -69,6 +74,34 @@ test('first visit shows the banner with analytics disabled and handlers register
     assert.deepEqual(banner.published, [['analytics_enabled', false]]);
     assert.equal(banner.handlers.size, 6);
 });
+
+test('changing analytics persists each choice without closing the banner', () => {
+    const banner = createBanner();
+    for (const analytics of [true, false]) {
+        banner.changeAnalytics(analytics);
+        assert.equal(JSON.parse(banner.getStored()).analytics, analytics);
+        assert.deepEqual(banner.published.at(-1), ['analytics_enabled', analytics]);
+        assert.ok(banner.classes.has('cookie-banner--visible'));
+        assert.ok(!banner.classes.has('cookie-banner--hidden'));
+        assert.ok(!banner.classes.has('cookie-banner--minimized'));
+        assert.equal(banner.getTimerCount(), 0);
+    }
+});
+
+for (const selector of ['.cookie-banner__accept-all', '.cookie-banner__reject', '.cookie-banner__close']) {
+    test(selector + ' immediately restores the notice and allows reopening', () => {
+        const banner = createBanner();
+        banner.click(selector);
+        assert.ok(banner.classes.has('cookie-banner--minimized'));
+        assert.ok(!banner.classes.has('cookie-banner--visible'));
+        assert.ok(!banner.classes.has('cookie-banner--hidden'));
+        assert.equal(banner.getTimerCount(), 0);
+        banner.click('.cookie-banner__minimized-content');
+        banner.flushTimers();
+        assert.ok(banner.classes.has('cookie-banner--visible'));
+        assert.ok(!banner.classes.has('cookie-banner--minimized'));
+    });
+}
 
 for (const analytics of [true, false]) {
     test('saved analytics=' + analytics + ' retains a working settings control', () => {
