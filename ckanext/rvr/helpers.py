@@ -118,6 +118,7 @@ def get_faq_page():
             "private": True,
         },
     )
+    faq_page = None
     for page in page_list:
         if page["name"] == "faq":
             faq_page = page["content"]
@@ -125,6 +126,8 @@ def get_faq_page():
                 faq_page = faq_page.replace("\r\n", "")
             else:
                 log.warning("Page content is not a string type: {}".format(faq_page))
+    if not faq_page:
+        return []
     doc = html.fromstring(faq_page)
     faq_page_dict = []
 

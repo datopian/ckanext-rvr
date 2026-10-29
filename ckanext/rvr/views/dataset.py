@@ -164,12 +164,6 @@ def _get_search_details():
 def search(package_type):
     extra_vars = {}
 
-    try:
-        context = {"model": model, "user": g.user, "auth_user_obj": g.userobj}
-        check_access("site_read", context)
-    except NotAuthorized:
-        base.abort(403, _("Not authorized to see this page"))
-
     # unicode format (decoded from utf8)
     extra_vars["q"] = q = request.args.get("q", "")
 
