@@ -1396,3 +1396,10 @@ input:disabled + .cookie-banner__slider {
     }
 }
   /* =======================END FAQ PAGE STYLE=========================== */
+
+/* CKAN 2.11 keeps <img> in rendered descriptions (2.10 stripped it), so keep
+   harvested images inside the content column */
+.notes.embedded-content img {
+  max-width: 100%;
+  height: auto;
+}
