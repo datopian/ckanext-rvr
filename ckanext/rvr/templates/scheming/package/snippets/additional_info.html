@@ -19,8 +19,14 @@
           h.scheming_language_text(field.label) }}</th>
         <td class="dataset-details"{%
           if field.display_property %} property="{{ field.display_property
-          }}"{% endif %}>{%- snippet 'scheming/snippets/display_field.html',
-          field=field, data=pkg_dict, schema=schema -%}</td>
+          }}"{% endif %}>
+          {#- CKAN 2.11's h.link_to raises on None, so leave empty link fields
+              (e.g. a dataset without url) blank like 2.10 did -#}
+          {%- if field.display_snippet != 'link.html'
+              or pkg_dict.get(field.field_name) -%}
+          {%- snippet 'scheming/snippets/display_field.html',
+          field=field, data=pkg_dict, schema=schema -%}
+          {%- endif -%}</td>
       </tr>
     {%- endif -%}
   {%- endfor -%}
